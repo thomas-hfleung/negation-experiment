@@ -1,0 +1,230 @@
+{{ block content }}
+{{if player.round_number <= 1}}
+<h1>Practice Round</h1>
+{{else}}
+    <h1>Round {{player.play_round_number}}</h1>
+{{endif}}
+<br>
+<h2>You are the {{player.type}}.</h2>
+<br>
+<div class = "row">
+    <div class = column1>
+    </div>
+    <div class="divider"></div>
+    <div class = column1>
+        <h3>Receiver</h3>
+        <br>
+        <h4>Actions available: <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>, <b>E</b>, <b>F</b>, <b>G</b></h4>
+        <h4>Sender's message: <b style="color: blue">{{group.message}}</b></h4>
+        <br>
+        <h4>Possible rewards:</h4>
+        <center>
+        <table class="table">
+            <colgroup>
+                <col style="width: 35%;">   <!-- Action column -->
+                <col style="width: 35%;">   <!-- If valid column -->
+                <col style="width: 30%;">   <!-- If invalid column -->
+            </colgroup>
+            <tr>
+                <td style="font-weight: bold">Action</td>
+                <td style="font-weight: bold">If valid</td>
+                <td style="font-weight: bold">If invalid</td>
+            </tr>
+            <tr>
+                <td><button type="button" class="action-button" data-letter="A" id="action-button">A</button></td>
+                <td>{{possible_rewards.0}}</td>
+                <td>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td><button type="button" class="action-button" data-letter="B" id="action-button">B</button></td>
+                <td>{{possible_rewards.1}}</td>
+                <td>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td><button type="button" class="action-button" data-letter="C" id="action-button">C</button></td>
+                <td>{{possible_rewards.2}}</td>
+                <td>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td><button type="button" class="action-button" data-letter="D" id="action-button">D</button></td>
+                <td>{{possible_rewards.3}}</td>
+                <td>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td><button type="button" class="action-button" data-letter="E" id="action-button">E</button></td>
+                <td>{{possible_rewards.4}}</td>
+                <td>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td><button type="button" class="action-button" data-letter="F" id="action-button">F</button></td>
+                <td>{{possible_rewards.5}}</td>
+                <td>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td><button type="button" class="action-button" data-letter="G" id="action-button">G</button></td>
+                <td>{{possible_rewards.6}}</td>
+                <td>{{C.INVALID_REWARD}}</td>
+            </tr>
+        </table>
+            </center>
+        <hr>
+        <h4>Your action choice:</h4>
+        <div id="receiver-output"></div>
+        <div id="error-message"></div>
+
+        <form method="post">
+            <input type="hidden" name="action" id="action-field">
+            <button id="submit-action-button" type="button">Submit Choice</button>
+        </form>
+    </div>
+
+</div>
+
+{{ endblock }}
+
+
+{% block app_styles %}
+<style>
+    h1 {
+        font-size: 35px;
+        text-align: center;
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    h2 {
+        font-size: 25px;
+        font-weight: bold;
+    }
+    h3 {
+        font-size: 25px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: underline;
+    }
+    h4 {
+        font-size: 20px;
+    }
+    h5 {
+        font-size: 25px;
+        color: red;
+    }
+    .column1{
+        float: left;
+        width: 46%;
+        padding: 5px;
+        height: 750px;
+        font-size: 15px;
+    }
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    .divider {
+    float: left;
+    width: 1px;
+    border-left: 1px solid black;    /* color of the line */
+    height: 750px;              /* match .column1 height */
+    margin: 0 10px;             /* optional spacing around the line */
+    }
+    .highlight {
+        background-color: orange;
+    }
+    td {
+        border: 1px solid black;
+        font-size: 20px;
+        text-align: center;
+        vertical-align: middle;
+    }
+    hr {
+      border:none;
+      border-top:3px dashed black;
+      color:#fff;
+      background-color:#fff;
+      height:1px;
+    }
+    #receiver-output {
+      margin-top: 0px;
+      font-size: 24px;
+      font-weight: bold;
+      border: 1px solid #ccc;
+      width: 50px;
+      min-height: 40px;
+      text-align: center;
+    }
+    #error-message {
+        font-size: 20px;
+        color: red;
+        margin-bottom: 10px;
+    }
+    #cost-display {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    #action-button {
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    #submit-action-button {
+        border-color: white;
+        font-size: 25px;
+        background-color: yellowgreen;
+    }
+</style>
+{%endblock%}
+
+{% block scripts %}
+<script>
+  const errorDiv = document.getElementById('error-message');
+  let errorTimeout;
+
+  function showError(message) {
+    errorDiv.innerText = message;
+    clearTimeout(errorTimeout); // clear previous timeout if any
+    errorTimeout = setTimeout(() => {
+      errorDiv.innerText = '';
+    }, 3000); // hide after 3 seconds
+  }
+
+  function clearError() {
+    errorDiv.innerText = '';
+    clearTimeout(errorTimeout);
+  }
+
+  const actionButtons = document.querySelectorAll(".action-button");
+  const receiverOutput = document.getElementById("receiver-output");
+  const actionsubmitBtn = document.getElementById('submit-action-button');
+
+  if (receiverOutput && actionButtons.length > 0) {
+        actionButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                receiverOutput.innerText = this.innerText; // only one symbol
+                actionButtons.forEach(btn => {
+                btn.closest("tr").classList.remove("highlight");
+                btn.classList.remove("highlight");
+            });
+
+            // Highlight this row and button
+            this.closest("tr").classList.add("highlight");
+            this.classList.add("highlight");
+            });
+        });
+    }
+
+
+    actionsubmitBtn.onclick = () => {
+    const inputField = document.querySelector('input[name="action"]');
+    if (!inputField) return;
+    if (receiverOutput.innerText === '') {
+        showError('Please select an action.');
+        return;
+    }
+    inputField.value = receiverOutput.innerText;  // attach output to form field
+    inputField.form.submit();                // submit the form
+  };
+
+</script>
+
+{{endblock}}

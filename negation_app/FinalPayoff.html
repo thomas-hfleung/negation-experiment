@@ -1,0 +1,24 @@
+{{ block content }}
+<h1>Final Payoff</h1>
+<br>
+<p>
+    <strong>Round {{participant.selected_rounds.0}} and {{participant.selected_rounds.1}}</strong> were randomly selected for your payment. <br>
+    Your payoff from these two rounds are <b>{{participant.selected_payoffs.0}} points and {{participant.selected_payoffs.1}} points</b> respectively. <br><br>
+    Your total payment for the experiment is <strong>${{participant.payoff}}</strong> (${{C.SHOW_UP_FEE}} show-up fee included).
+</p><br>
+
+{{ endblock }}
+
+{% block app_styles %}
+<style>
+    h1 {
+        font-size: 35px;
+        text-align: center;
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    p {
+        font-size: 20px;
+    }
+</style>
+{%endblock%}

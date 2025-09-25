@@ -1,0 +1,226 @@
+{{ block content }}
+{{if player.round_number <= 1}}
+<h1>Practice Round</h1>
+{{else}}
+    <h1>Round {{player.play_round_number}}</h1>
+{{endif}}
+<br>
+<h2>You are the {{player.type}}.</h2>
+<br>
+<div class = "row">
+    <div class = column1>
+        <h3>Sender</h3>
+        <br>
+        <h4>Receiver's available actions: <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>, <b>E</b>, <b>F</b>, <b>G</b></h4>
+        <h4>Valid actions: <b style="color: green">{{valid_actions}}</b></h4>
+        <br>
+        <hr>
+        <br>
+        <h4>Symbols to compose your message:</h4>
+        <div id="buttons">
+          <!-- Buttons will go here -->
+        </div><br>
+        <h4>Cost: {{C.COST}} points per symbol (First one is free)</h4>
+        <br>
+        <h4>Your message choice:</h4>
+        <div class = "row">
+            <div class = "column2">
+                <div id="output"></div>
+            </div>
+            <div class = "column3">
+                <button id="backspace-button" type="button" style="border-color: white; font-size: 20px;">Delete</button>
+            </div>
+        </div>
+        <div id="error-message"></div>
+        <br>
+        <div id="cost-display">Total cost: 0 points</div>
+        <br>
+
+        <form method="post">
+            <input type="hidden" name="message" id="message-field">
+            <button id="submit-message-button" type="button">Send Message</button>
+        </form>
+    </div>
+    <div class="divider"></div>
+    <div class = column1>
+    </div>
+</div>
+
+{{ endblock }}
+
+
+{% block app_styles %}
+<style>
+    h1 {
+        font-size: 35px;
+        text-align: center;
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    h2 {
+        font-size: 25px;
+        font-weight: bold;
+    }
+    h3 {
+        font-size: 25px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: underline;
+    }
+    h4 {
+        font-size: 20px;
+    }
+    h5 {
+        font-size: 50px;
+        text-align: center;
+    }
+    .column1{
+        float: left;
+        width: 46%;
+        padding: 5px;
+        height: 600px;
+        font-size: 15px;
+    }
+    .column2{
+        float: left;
+        width: 60%;
+        padding: 10px;
+    }
+    .column3{
+        float: left;
+        width: 40%;
+        padding: 10px;
+    }
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    .divider {
+    float: left;
+    width: 1px;
+    border-left: 1px solid black;    /* color of the line */
+    height: 600px;              /* match .column1 height */
+    margin: 0 10px;             /* optional spacing around the line */
+}
+    td {
+        border: 1px solid black;
+        font-size: 20px;
+        text-align: center;
+    }
+    hr {
+      border:none;
+      border-top:3px dashed black;
+      color:#fff;
+      background-color:#fff;
+      height:1px;
+    }
+    .letter-button {
+        width: 40px;
+        height: 40px;
+        margin: 4px;
+        font-size: 18px;
+        font-weight: bold;
+        border-color: white;
+    }
+    #output {
+      margin-top: 0px;
+      font-size: 24px;
+      font-weight: bold;
+      border: 1px solid #ccc;
+      min-height: 40px;
+      text-align: center;
+    }
+    #backspace-button {
+        margin-top: 5px;
+    }
+    #error-message {
+        font-size: 20px;
+        color: red;
+        margin-bottom: 10px;
+    }
+    #cost-display {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    #submit-message-button {
+        border-color: white;
+        font-size: 25px;
+        background-color: yellowgreen;
+    }
+</style>
+{%endblock%}
+
+{% block scripts %}
+<script>
+  const letters = ['#','%','A','B','C','D','E','F','G'];
+  const buttonsDiv = document.getElementById('buttons');
+  const outputDiv = document.getElementById('output');
+  const backspaceBtn = document.getElementById('backspace-button');
+  const errorDiv = document.getElementById('error-message');
+  const submitBtn = document.getElementById('submit-message-button');
+  const costDiv = document.getElementById('cost-display');
+  const costPerSymbol = {{ C.COST }};
+  const maxLength = 10;
+  let errorTimeout;
+
+  function updateCost() {
+    const numSymbols = outputDiv.innerText.length;
+    // First symbol free: only charge for symbols beyond the first
+    const chargeableSymbols = Math.max(0, numSymbols - 1);
+    costDiv.innerText = "Total cost: " + (chargeableSymbols * costPerSymbol) + " points";
+}
+
+  // Create buttons dynamically
+  letters.forEach(letter => {
+    const btn = document.createElement('button');
+    btn.innerText = letter;
+    btn.className = 'letter-button';
+    btn.type = 'button'; // prevents form submission
+    btn.onclick = () => {
+      if (outputDiv.innerText.length < maxLength) {
+        outputDiv.innerText += letter; // append letter
+        clearError();
+        updateCost();
+      } else {
+        showError('Maximum 10 symbols allowed.');
+      }
+    };
+    buttonsDiv.appendChild(btn);
+  });
+
+  backspaceBtn.onclick = () => {
+    outputDiv.innerText = outputDiv.innerText.slice(0, -1);
+    updateCost();
+  };
+
+
+
+  function showError(message) {
+    errorDiv.innerText = message;
+    clearTimeout(errorTimeout); // clear previous timeout if any
+    errorTimeout = setTimeout(() => {
+      errorDiv.innerText = '';
+    }, 3000); // hide after 3 seconds
+  }
+
+  function clearError() {
+    errorDiv.innerText = '';
+    clearTimeout(errorTimeout);
+  }
+
+
+    submitBtn.onclick = () => {
+    const inputField = document.querySelector('input[name="message"]');
+    if (!inputField) return;
+    if (outputDiv.innerText === '') {
+        showError('Please enter at least one symbol.');
+        return;
+    }
+    inputField.value = outputDiv.innerText;  // attach output to form field
+    inputField.form.submit();                // submit the form
+    };
+
+</script>
+
+{{endblock}}
