@@ -15,7 +15,9 @@
         <br>
         <h3>Receiver</h3>
         <br>
-        <h4>Actions available: <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>, <b>E</b>, <b>F</b>, <b>G</b></h4>
+        <h4>Actions available: <b>{{receiver_actions}}</b></h4>
+        <h4>Probability that the sender observed the same available actions: {{player.prob_align_actions}}</h4>
+        <br>
         <h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
         <h4>Probability of 2 valid actions: {{prob_2}}</h4>
         <br>
@@ -34,41 +36,17 @@
                 <td style="font-weight: bold">If valid</td>
                 <td style="font-weight: bold">If invalid</td>
             </tr>
-            <tr>
-                <td><button type="button" class="action-button" data-letter="A" id="action-button">A</button></td>
-                <td>{{possible_rewards.0}}</td>
-                <td>{{C.INVALID_REWARD}}</td>
-            </tr>
-            <tr>
-                <td><button type="button" class="action-button" data-letter="B" id="action-button">B</button></td>
-                <td>{{possible_rewards.1}}</td>
-                <td>{{C.INVALID_REWARD}}</td>
-            </tr>
-            <tr>
-                <td><button type="button" class="action-button" data-letter="C" id="action-button">C</button></td>
-                <td>{{possible_rewards.2}}</td>
-                <td>{{C.INVALID_REWARD}}</td>
-            </tr>
-            <tr>
-                <td><button type="button" class="action-button" data-letter="D" id="action-button">D</button></td>
-                <td>{{possible_rewards.3}}</td>
-                <td>{{C.INVALID_REWARD}}</td>
-            </tr>
-            <tr>
-                <td><button type="button" class="action-button" data-letter="E" id="action-button">E</button></td>
-                <td>{{possible_rewards.4}}</td>
-                <td>{{C.INVALID_REWARD}}</td>
-            </tr>
-            <tr>
-                <td><button type="button" class="action-button" data-letter="F" id="action-button">F</button></td>
-                <td>{{possible_rewards.5}}</td>
-                <td>{{C.INVALID_REWARD}}</td>
-            </tr>
-            <tr>
-                <td><button type="button" class="action-button" data-letter="G" id="action-button">G</button></td>
-                <td>{{possible_rewards.6}}</td>
-                <td>{{C.INVALID_REWARD}}</td>
-            </tr>
+            {% for action, reward in action_reward_pairs %}
+    <tr>
+        <td>
+            <button type="button" class="action-button" data-letter="{{ action }}" id="action-button">
+                {{ action }}
+            </button>
+        </td>
+        <td>{{ reward }}</td>
+        <td>{{ C.INVALID_REWARD }}</td>
+    </tr>
+    {% endfor %}
         </table>
             </center>
         <hr>
@@ -116,7 +94,7 @@
         float: left;
         width: 46%;
         padding: 5px;
-        height: 750px;
+        height: 950px;
         font-size: 15px;
     }
     .row:after {
@@ -128,7 +106,7 @@
     float: left;
     width: 1px;
     border-left: 1px solid black;    /* color of the line */
-    height: 750px;              /* match .column1 height */
+    height: 900px;              /* match .column1 height */
     margin: 0 10px;             /* optional spacing around the line */
     }
     .highlight {

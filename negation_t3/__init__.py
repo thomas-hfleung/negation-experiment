@@ -10,7 +10,7 @@ Your app description
 
 
 class C(BaseConstants):
-    NAME_IN_URL = 'negation_app'
+    NAME_IN_URL = 'negation_t3'
     PLAYERS_PER_GROUP = 2
     NUM_ROUNDS = 10
     COST = 2
@@ -30,6 +30,8 @@ class Group(BaseGroup):
     message_cost = models.IntegerField()
     action = models.StringField(blank=True)
     reward = models.IntegerField()
+    receiver_actions = models.StringField()
+    sender_actions = models.StringField()
 
 class Player(BasePlayer):
     q1 = models.IntegerField(choices=[[1, 'True'], [0, 'False']], widget=widgets.RadioSelect, label='')
@@ -37,9 +39,11 @@ class Player(BasePlayer):
     q3 = models.IntegerField(choices=[[1, 'True'], [0, 'False']], widget=widgets.RadioSelect, label='')
     q4 = models.IntegerField(choices=[[1, 'True'], [0, 'False']], widget=widgets.RadioSelect, label='')
     q5 = models.IntegerField(choices=[[1, 'True'], [0, 'False']], widget=widgets.RadioSelect, label='')
+    q6 = models.IntegerField(choices=[[1, 'True'], [0, 'False']], widget=widgets.RadioSelect, label='')
     play_round_number = models.IntegerField(initial=0)
     type = models.StringField()
     prob_5 = models.FloatField()
+    prob_align_actions = models.FloatField()
 
 # functions
 def creating_session(subsession):
@@ -49,6 +53,7 @@ def creating_session(subsession):
         subsession.group_like_round(1)
     for i in subsession.get_players():
         i.prob_5 = round(subsession.session.config['prob_5'],2)
+        i.prob_align_actions = subsession.session.config['prob_align_action']
         if i.id_in_group == 1:
             i.type = "Sender"
         else:
@@ -60,7 +65,7 @@ def creating_session(subsession):
 # PAGES
 class Instructions(Page):
     form_model = "player"
-    form_fields = ["q1", "q2", "q3", "q4", "q5"]
+    form_fields = ["q1", "q2", "q3", "q4", "q5", "q6"]
 
     @staticmethod
     def error_message(player, values):
@@ -68,7 +73,8 @@ class Instructions(Page):
                          q2=1,
                          q3=1,
                          q4=0,
-                         q5=0)
+                         q5=0,
+                         q6=0)
         error_messages = dict()
         for field_name in solutions:
             if values[field_name] != solutions[field_name]:
@@ -84,27 +90,36 @@ class Instructions(Page):
             num_playrounds = C.NUM_ROUNDS - 1,
             num_players = player.session.num_participants,
             num_groups = int(player.session.num_participants/2),
-            prob_2= round(1 - player.prob_5, 2)
+            prob_2=1 - player.prob_5,
+            prob_not_align = round(1-player.prob_align_actions,2)
         )
 
 class StartWaitPage(WaitPage):
     @staticmethod
     def after_all_players_arrive(group:Group):
         player = group.get_players()
-        letters = ['A','B','C','D','E','F','G']
+        letters = ['A','B','C','D','E','F','G','H','J','K','L','M']
         rewards = [40,50,60,70,80,90,100]
         random_rewards = random.sample(rewards, 7)
         group.possible_rewards = json.dumps(random_rewards)
+        receiver_actions = random.sample(letters, 7)
+        group.receiver_actions = json.dumps(sorted(receiver_actions))
         if random.random() < player[0].prob_5:
             group.valid_no=5
-            valid = random.sample(letters, group.valid_no)
+            valid = random.sample(receiver_actions, group.valid_no)
             valid_sorted = sorted(valid)
             group.valid_actions = json.dumps(valid_sorted)
         else:
             group.valid_no = 2
-            valid = random.sample(letters, group.valid_no)
+            valid = random.sample(receiver_actions, group.valid_no)
             valid_sorted = sorted(valid)
             group.valid_actions = json.dumps(valid_sorted)
+        if random.random() < player[0].prob_align_actions:
+            group.sender_actions = group.receiver_actions
+        else:
+            remaining = list(set(letters) - set(valid))
+            extra = random.sample(remaining, 7 - group.valid_no)
+            group.sender_actions = json.dumps(sorted(json.loads(group.valid_actions) + extra))
 
 class Sender(Page):
     form_model = "group"
@@ -113,8 +128,9 @@ class Sender(Page):
     def vars_for_template(player: Player):
         group = player.group
         return dict(
+            sender_actions = ", ".join(json.loads(group.sender_actions)),
             valid_actions = ", ".join(json.loads(group.valid_actions)),
-            prob_2 = round(1 - player.prob_5, 2)
+            prob_2 = 1-player.prob_5
         )
 
     @staticmethod
@@ -133,9 +149,11 @@ class Receiver(Page):
 
     def vars_for_template(player: Player):
         group = player.group
+        action_reward_pairs = list(zip(json.loads(group.receiver_actions), json.loads(group.possible_rewards)))
         return dict(
-            possible_rewards = json.loads(group.possible_rewards),
-            prob_2=round(1 - player.prob_5, 2)
+            receiver_actions=", ".join(json.loads(group.receiver_actions)),
+            action_reward_pairs = action_reward_pairs,
+            prob_2=1 - player.prob_5
         )
 
     @staticmethod
@@ -150,8 +168,7 @@ class ResultsWaitPage(WaitPage):
     def after_all_players_arrive(group: Group):
         player_list = group.get_players()
         group.message_cost = max(0, len(group.message)-1) * C.COST
-        letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-        index = letters.index(group.action)
+        index = json.loads(group.receiver_actions).index(group.action)
         if group.action in json.loads(group.valid_actions):
             group.reward = json.loads(group.possible_rewards)[index]
         else:
@@ -173,10 +190,14 @@ class Results(Page):
 
     def vars_for_template(player: Player):
         group = player.group
+        action_reward_pairs = list(zip(json.loads(group.receiver_actions), json.loads(group.possible_rewards)))
         return dict(
+            sender_actions=", ".join(json.loads(group.sender_actions)),
+            receiver_actions=", ".join(json.loads(group.receiver_actions)),
             valid_actions = ", ".join(json.loads(group.valid_actions)),
             possible_rewards=json.loads(group.possible_rewards),
-            prob_2=round(1 - player.prob_5, 2)
+            action_reward_pairs=action_reward_pairs,
+            prob_2=1 - player.prob_5
         )
 
 class AllGroupsWaitPage(WaitPage):

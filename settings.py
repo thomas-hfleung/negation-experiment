@@ -2,11 +2,29 @@ from os import environ
 
 SESSION_CONFIGS = [
     dict(
-        name='Negation',
+        name='Negation_baseline',
         app_sequence=['negation_app'],
         num_demo_participants=2,
         prob_5=0.5,
-
+    ),
+    dict(
+        name='Negation_t1',
+        app_sequence=['negation_app'],
+        num_demo_participants=2,
+        prob_5=1/3,
+    ),
+    dict(
+        name='Negation_t2',
+        app_sequence=['negation_app'],
+        num_demo_participants=2,
+        prob_5=2/3,
+    ),
+    dict(
+        name='Negation_t3',
+        app_sequence=['negation_t3'],
+        num_demo_participants=2,
+        prob_5=0.5,
+        prob_align_action = 0.8,
     )
 ]
 
@@ -19,7 +37,7 @@ SESSION_CONFIG_DEFAULTS = dict(
     real_world_currency_per_point=1.00, participation_fee=0.00, doc=""
 )
 
-PARTICIPANT_FIELDS = ["selected_rounds", "selected_payoffs"]
+PARTICIPANT_FIELDS = ["selected_rounds", "highround", "selected_payoffs"]
 SESSION_FIELDS = []
 
 # ISO-639 code

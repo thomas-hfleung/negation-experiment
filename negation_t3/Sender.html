@@ -11,10 +11,14 @@
         <br>
         <h3>Sender</h3>
         <br>
-        <h4>Receiver's available actions: <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>, <b>E</b>, <b>F</b>, <b>G</b></h4>
+        <h4>Observed Available Actions: <b>{{sender_actions}}</b></h4>
+        <h4>Probability that the observed available actions matches the Receiver's available actions: {{player.prob_align_actions}}</h4>
+        <br>
         <h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
-        <h4>Probability of 2 valid actions: {{prob_2}}</h4><br>
+        <h4>Probability of 2 valid actions: {{prob_2}}</h4>
+        <br>
         <h4>Valid actions in this round: <b style="color: green">{{valid_actions}}</b></h4>
+        <h4><b>Reminder</b>: the valid actions are always available to the Receiver.</h4>
         <br>
         <hr>
         <br>
@@ -80,7 +84,7 @@
         float: left;
         width: 46%;
         padding: 5px;
-        height: 700px;
+        height: 900px;
         font-size: 15px;
     }
     .column2{
@@ -102,7 +106,7 @@
     float: left;
     width: 1px;
     border-left: 1px solid black;    /* color of the line */
-    height: 700px;              /* match .column1 height */
+    height: 850px;              /* match .column1 height */
     margin: 0 10px;             /* optional spacing around the line */
 }
     td {
@@ -155,7 +159,7 @@
 
 {% block scripts %}
 <script>
-  const letters = ['#','%','a','b','c','d','e','f','g'];
+  letters = ['%', '#', 'a','b','c','d','e','f','g','h','j','k','l','m'];
   const buttonsDiv = document.getElementById('buttons');
   const outputDiv = document.getElementById('output');
   const backspaceBtn = document.getElementById('backspace-button');

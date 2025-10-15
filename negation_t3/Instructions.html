@@ -27,15 +27,21 @@
     <span class="red">{{num_groups}}</span> pairs are formed. <b>The pairs stay the same throughout the entire experiment too.</b>
   </p>
 
-  <h3>Actions and Reward</h3>
+  <h3>Actions and Rewards</h3>
   <p>
-    There are seven actions <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>,
-    <b>E</b>, <b>F</b>, and <b>G</b> – and seven positive rewards, 100, 90, 80, 70, 60, 50, and 40 points.
+    There are twelve actions <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>,
+    <b>E</b>, <b>F</b>, <b>G</b>, <b>H</b>, <b>J</b>, <b>K</b>, <b>L</b>, and <b>M</b> – and seven positive rewards, 100, 90, 80, 70, 60, 50, and 40 points.
   </p>
   <p>
-    In each round, the computer randomly assigns rewards to actions. Each of the seven rewards is assigned to one of
+      In each round, the computer randomly selects <b>7</b> actions as the <b><i>Receiver Available Actions</i></b>. Then, the computer randomly assigns rewards to the available actions. Each of the seven rewards is assigned to one of
     the seven actions. At the same time, the computer randomly determines which actions are <b>valid</b>. There are either <b>five valid actions</b>
-    or <b>two valid actions</b> with the probability of having five valid actions as <b>{{player.prob_5}}</b>. The reward from an action that is not valid is 0 points instead of the assigned reward.
+      or <b>two valid actions</b> with the probability of having five valid actions as <b>{{player.prob_5}}</b>. The reward from an action that is not valid is 0 points instead of the assigned reward.
+  </p>
+  <p>
+      The sender will observe <b>7</b> actions available to the Receiver, called the <b><i>"Observed Available Actions"</i></b>. It might or might not be the same as the <i>Receiver Available Actions</i>,
+      but it will <span class="red">always include the valid actions</span>. With probability <b>{{player.prob_align_actions}}</b>, the <i>Observed Available Actions</i> will be the same as the <i>Receiver Available Actions</i>;
+      With probability <b>{{prob_not_align}}</b>, the invalid actions are randomly drawn from the remaining actions. For example, if there are five valid actions in this round (e.g. A, B, C, D, E), the invalid actions will be
+      randomly selected from the remaining 7 actions (F, G, H, J, K, L, M).
   </p>
   <p>
     Both participants in the same pair obtain the same reward. The reward is determined jointly by the <b>Action</b>
@@ -50,7 +56,7 @@
   </p>
   <p>
     Each message is a string of up to 10 symbols. You can freely assemble your message using the symbols:
-    <b>%</b>, <b>#</b>, <b>a</b>, <b>b</b>, <b>c</b>, <b>d</b>, <b>e</b>, <b>f</b>, or <b>g</b> by clicking the corresponding buttons.
+    <b>%</b>, <b>#</b>, <b>a</b>, <b>b</b>, <b>c</b>, <b>d</b>, <b>e</b>, <b>f</b>, <b>g</b>, <b>h</b>, <b>j</b>, <b>k</b>, <b>l</b>, and <b>m</b> by clicking the corresponding buttons.
     You can change your message by using the “Delete” button. Once you have finished assembling your message,
     you can click the “Send Message” button. You are allowed to send an empty message. The receiver will see "No message" when that is the case.
   </p>
@@ -63,10 +69,14 @@
     <div class = column1>
         <h5>Sender</h5>
         <br>
-        <h4>Receiver's available actions: <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>, <b>E</b>, <b>F</b>, <b>G</b></h4>
+        <h4>Observed Available Actions: <b>A</b>, <b>C</b>, <b>D</b>, <b>F</b>, <b>G</b>, <b>L</b>, <b>M</b></h4>
+        <h4>Probability that the Observed Available Actions matches the Receiver's Available Actions: {{player.prob_align_actions}}</h4>
+        <br>
         <h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
-        <h4>Probability of 2 valid actions: {{prob_2}}</h4><br>
-        <h4>Valid actions in this round: <b style="color: green">B, G</b></h4>
+        <h4>Probability of 2 valid actions: {{prob_2}}</h4>
+        <br>
+        <h4>Valid actions in this round: <b style="color: green">D, L</b></h4>
+        <h4><b>Reminder</b>: the valid actions are always available to the Receiver.</h4>
         <br>
         <hr>
         <br>
@@ -112,10 +122,13 @@
     <div class = column4>
         <h5>Receiver</h5>
         <br>
-        <h4>Actions available: <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>, <b>E</b>, <b>F</b>, <b>G</b></h4>
+        <h4>Actions available: <b>B</b>, <b>C</b>, <b>D</b>, <b>F</b>, <b>H</b>, <b>K</b>, <b>L</b></h4>
+        <h4>Probability that the sender observed the same available actions: {{player.prob_align_actions}}</h4>
+        <br>
         <h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
-        <h4>Probability of 2 valid actions: {{prob_2}}</h4><br>
-        <h4>Sender's message: <b style="color: blue">ab</b></h4>
+        <h4>Probability of 2 valid actions: {{prob_2}}</h4>
+        <br>
+        <h4>Sender's message: <b style="color: blue">ac</b></h4>
         <br>
         <h4>Possible rewards:</h4>
         <center>
@@ -131,37 +144,37 @@
                 <td style="font-weight: bold">If invalid</td>
             </tr>
             <tr>
-                <td><button type="button" class="action-button" data-letter="A" id="action-button">A</button></td>
+                <td><button type="button" class="action-button" data-letter="B" id="action-button">B</button></td>
                 <td>{{possible_rewards.0}}</td>
                 <td>{{C.INVALID_REWARD}}</td>
             </tr>
             <tr>
-                <td><button type="button" class="action-button" data-letter="B" id="action-button">B</button></td>
+                <td><button type="button" class="action-button" data-letter="C" id="action-button">C</button></td>
                 <td>{{possible_rewards.1}}</td>
                 <td>{{C.INVALID_REWARD}}</td>
             </tr>
             <tr>
-                <td><button type="button" class="action-button" data-letter="C" id="action-button">C</button></td>
+                <td><button type="button" class="action-button" data-letter="D" id="action-button">D</button></td>
                 <td>{{possible_rewards.2}}</td>
                 <td>{{C.INVALID_REWARD}}</td>
             </tr>
             <tr>
-                <td><button type="button" class="action-button" data-letter="D" id="action-button">D</button></td>
+                <td><button type="button" class="action-button" data-letter="F" id="action-button">F</button></td>
                 <td>{{possible_rewards.3}}</td>
                 <td>{{C.INVALID_REWARD}}</td>
             </tr>
             <tr>
-                <td><button type="button" class="action-button" data-letter="E" id="action-button">E</button></td>
+                <td><button type="button" class="action-button" data-letter="H" id="action-button">H</button></td>
                 <td>{{possible_rewards.4}}</td>
                 <td>{{C.INVALID_REWARD}}</td>
             </tr>
             <tr>
-                <td><button type="button" class="action-button" data-letter="F" id="action-button">F</button></td>
+                <td><button type="button" class="action-button" data-letter="K" id="action-button">K</button></td>
                 <td>{{possible_rewards.5}}</td>
                 <td>{{C.INVALID_REWARD}}</td>
             </tr>
             <tr>
-                <td><button type="button" class="action-button" data-letter="G" id="action-button">G</button></td>
+                <td><button type="button" class="action-button" data-letter="L" id="action-button">L</button></td>
                 <td>{{possible_rewards.6}}</td>
                 <td>{{C.INVALID_REWARD}}</td>
             </tr>
@@ -231,8 +244,12 @@
     {{formfield "q4"}}
   </div>
   <div class="quiz-question">
-    5. Only the Sender will pay the cost of the message.<br>
+      5. If the valid actions are <b>A</b> and <b>B</b>, the receiver's available actions can be B, C, F, G, J, L, M. <br>
     {{formfield "q5"}}
+  </div>
+  <div class="quiz-question">
+    6. Only the Sender will pay the cost of the message.<br>
+    {{formfield "q6"}}
   </div>
 
   <center><button type="submit">Submit</button></center>
@@ -281,7 +298,7 @@
     .column1{
         width: 46%;
         padding: 5px;
-        height: 650px;
+        height: 850px;
         font-size: 15px;
     }
     .column2{
@@ -297,7 +314,7 @@
     .column4{
         width: 46%;
         padding: 5px;
-        height: 800px;
+        height: 950px;
         font-size: 15px;
     }
     .red {
@@ -384,7 +401,7 @@
 
 {% block scripts %}
 <script>
-  const letters = ['#','%','a','b','c','d','e','f','g'];
+  const letters = ['%', '#', 'a','b','c','d','e','f','g','h','j','k','l','m'];
   const buttonsDiv = document.getElementById('buttons');
   const outputDiv = document.getElementById('output');
   const backspaceBtn = document.getElementById('backspace-button');

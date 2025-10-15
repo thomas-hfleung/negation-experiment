@@ -16,8 +16,11 @@
     <div class = column1>
         <h3>Sender</h3>
         <br>
-        <h4>Receiver's available actions: <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>, <b>E</b>, <b>F</b>, <b>G</b></h4>
+        <h4>Observed Available Actions: <b>{{sender_actions}}</b></h4>
+        <br>
         <h4>Valid actions in this round: <b style="color: green">{{valid_actions}}</b></h4>
+        <h4><b>Reminder</b>: the valid actions are always available to the Receiver.</h4>
+        <br>
         <h4>Sender's message: {{if group.message == ""}}<b style="color: blue">No message</b> {{else}} <b style="color: blue">{{group.message}}</b>{{endif}}</h4>
         <h4>Total cost: {{group.message_cost}} points</h4>
         <br>
@@ -32,7 +35,8 @@
     <div class = column1>
         <h3>Receiver</h3>
         <br>
-        <h4>Actions available: <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>, <b>E</b>, <b>F</b>, <b>G</b></h4>
+        <h4>Actions available: <b>{{receiver_actions}}</b></h4>
+        <br>
         <h4>Receiver's action: <b style="color: orange">{{group.action}}</b></h4>
         <br>
         <h4>Possible rewards:</h4>
@@ -48,51 +52,44 @@
                 <td style="font-weight: bold">If valid</td>
                 <td style="font-weight: bold">If invalid</td>
             </tr>
-            <tr>
-                <td {% if group.action == "A" %}style="background-color: orange;"{% endif %}><button type="button" class="action-button" data-letter="A" id="action-button" {% if group.action == "A" %}style="background-color: orange;"{% endif %}>A</button></td>
-                <td {% if "A" in valid_actions and group.action == "A"%}style="background-color: green; color: white;"{% endif %}>{{possible_rewards.0}}</td>
-                <td {% if "A" not in valid_actions and group.action == "A"%}style="background-color: red;"{% endif %}>{{C.INVALID_REWARD}}</td>
-            </tr>
-            <tr>
-                <td {% if group.action == "B" %}style="background-color: orange;"{% endif %}><button type="button" class="action-button" data-letter="B" id="action-button" {% if group.action == "B" %}style="background-color: orange;"{% endif %}>B</button></td>
-                <td {% if "B" in valid_actions and group.action == "B"%}style="background-color: green; color: white;"{% endif %}>{{possible_rewards.1}}</td>
-                <td {% if "B" not in valid_actions and group.action == "B"%}style="background-color: red;"{% endif %}>{{C.INVALID_REWARD}}</td>
-            </tr>
-            <tr>
-                <td {% if group.action == "C" %}style="background-color: orange;"{% endif %}><button type="button" class="action-button" data-letter="C" id="action-button" {% if group.action == "C" %}style="background-color: orange;"{% endif %}>C</button></td>
-                <td {% if "C" in valid_actions and group.action == "C"%}style="background-color: green; color: white;"{% endif %}>{{possible_rewards.2}}</td>
-                <td {% if "C" not in valid_actions and group.action == "C"%}style="background-color: red;"{% endif %}>{{C.INVALID_REWARD}}</td>
-            </tr>
-            <tr>
-                <td {% if group.action == "D" %}style="background-color: orange;"{% endif %}><button type="button" class="action-button" data-letter="D" id="action-button" {% if group.action == "D" %}style="background-color: orange;"{% endif %}>D</button></td>
-                <td {% if "D" in valid_actions and group.action == "D"%}style="background-color: green; color: white;"{% endif %}>{{possible_rewards.3}}</td>
-                <td {% if "D" not in valid_actions and group.action == "D"%}style="background-color: red;"{% endif %}>{{C.INVALID_REWARD}}</td>
-            </tr>
-            <tr>
-                <td {% if group.action == "E" %}style="background-color: orange;"{% endif %}><button type="button" class="action-button" data-letter="E" id="action-button" {% if group.action == "E" %}style="background-color: orange;"{% endif %}>E</button></td>
-                <td {% if "E" in valid_actions and group.action == "E"%}style="background-color: green; color: white;"{% endif %}>{{possible_rewards.4}}</td>
-                <td {% if "E" not in valid_actions and group.action == "E"%}style="background-color: red;"{% endif %}>{{C.INVALID_REWARD}}</td>
-            </tr>
-            <tr>
-                <td {% if group.action == "F" %}style="background-color: orange;"{% endif %}><button type="button" class="action-button" data-letter="F" id="action-button" {% if group.action == "F" %}style="background-color: orange;"{% endif %}>F</button></td>
-                <td {% if "F" in valid_actions and group.action == "F"%}style="background-color: green; color: white;"{% endif %}>{{possible_rewards.5}}</td>
-                <td {% if "F" not in valid_actions and group.action == "F"%}style="background-color: red;"{% endif %}>{{C.INVALID_REWARD}}</td>
-            </tr>
-            <tr>
-                <td {% if group.action == "G" %}style="background-color: orange;"{% endif %}><button type="button" class="action-button" data-letter="G" id="action-button" {% if group.action == "G" %}style="background-color: orange;"{% endif %}>G</button></td>
-                <td {% if "G" in valid_actions and group.action == "G"%}style="background-color: green; color: white;"{% endif %}>{{possible_rewards.6}}</td>
-                <td {% if "G" not in valid_actions and group.action == "G"%}style="background-color: red;"{% endif %}>{{C.INVALID_REWARD}}</td>
-            </tr>
+            {% for letter, reward in action_reward_pairs %}
+    <tr>
+        <!-- Action cell -->
+        <td {% if group.action == letter %}style="background-color: orange;"{% endif %}>
+            <button type="button" class="action-button"
+                    data-letter="{{ letter }}"
+                    id="action-button"
+                    {% if group.action == letter %}style="background-color: orange;"{% endif %}>
+                {{ letter }}
+            </button>
+        </td>
+
+        <!-- If valid -->
+        <td {% if letter in valid_actions and group.action == letter %}
+                style="background-color: green; color: white;"
+            {% endif %}>
+            {{ reward }}
+        </td>
+
+        <!-- If invalid -->
+        <td {% if letter not in valid_actions and group.action == letter %}
+                style="background-color: red;"
+            {% endif %}>
+            {{ C.INVALID_REWARD }}
+        </td>
+    </tr>
+    {% endfor %}
         </table>
             </center>
     </div>
 </div>
 <center><button style="font-size: 20px">Next Round</button></center>
+
 <hr>
 <h3>Facts:</h3>
+<h4>Probability that the Sender's observed available actions matches the Receiver's available actions: {{player.prob_align_actions}}</h4>
 <h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
 <h4>Probability of 2 valid actions: {{prob_2}}</h4>
-
 {{ endblock }}
 
 
@@ -176,7 +173,7 @@
 
 {% block scripts %}
 <script>
-  const letters = ['#','%','a','b','c','d','e','f','g'];
+  letters = ['%', '#', 'a','b','c','d','e','f','g','h','j','k','l','m']
   const buttonsDiv = document.getElementById('buttons');
 
   // Create buttons dynamically
