@@ -13,9 +13,10 @@ class C(BaseConstants):
     NAME_IN_URL = 'negation_app'
     PLAYERS_PER_GROUP = 2
     NUM_ROUNDS = 10
-    COST = 2
+    COST = 4
     INVALID_REWARD = 0
     SHOW_UP_FEE = 10
+    ENDOWMENT = COST * 10
 
 
 class Subsession(BaseSubsession):
@@ -25,6 +26,7 @@ class Subsession(BaseSubsession):
 class Group(BaseGroup):
     valid_no = models.IntegerField()
     valid_actions = models.StringField()
+    invalid_actions = models.StringField()
     possible_rewards = models.StringField()
     message = models.StringField(blank=True)
     message_cost = models.IntegerField()
@@ -97,14 +99,14 @@ class StartWaitPage(WaitPage):
         group.possible_rewards = json.dumps(random_rewards)
         if random.random() < player[0].prob_5:
             group.valid_no=5
-            valid = random.sample(letters, group.valid_no)
-            valid_sorted = sorted(valid)
-            group.valid_actions = json.dumps(valid_sorted)
+
         else:
             group.valid_no = 2
-            valid = random.sample(letters, group.valid_no)
-            valid_sorted = sorted(valid)
-            group.valid_actions = json.dumps(valid_sorted)
+        valid = random.sample(letters, group.valid_no)
+        valid_sorted = sorted(valid)
+        group.valid_actions = json.dumps(valid_sorted)
+        invalid = sorted(list(set(letters) - set(valid)))
+        group.invalid_actions = json.dumps(invalid)
 
 class Sender(Page):
     form_model = "group"
@@ -114,6 +116,7 @@ class Sender(Page):
         group = player.group
         return dict(
             valid_actions = ", ".join(json.loads(group.valid_actions)),
+            invalid_actions = ", ".join (json.loads(group.invalid_actions)),
             prob_2 = round(1 - player.prob_5, 2)
         )
 
@@ -157,7 +160,7 @@ class ResultsWaitPage(WaitPage):
         else:
             group.reward = C.INVALID_REWARD
         for player in player_list:
-            player.payoff = group.reward - group.message_cost
+            player.payoff = C.ENDOWMENT + group.reward - group.message_cost
 
 
 class Results(Page):
@@ -175,6 +178,7 @@ class Results(Page):
         group = player.group
         return dict(
             valid_actions = ", ".join(json.loads(group.valid_actions)),
+            invalid_actions=", ".join(json.loads(group.invalid_actions)),
             possible_rewards=json.loads(group.possible_rewards),
             prob_2=round(1 - player.prob_5, 2)
         )

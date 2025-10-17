@@ -9,7 +9,7 @@
     In this round, the valid actions are <b style="color: green">{{valid_actions}}</b>. <br>
     Action <b style="color: orange">{{group.action}}</b> was chosen, which yields reward <b>{{group.reward}}</b> points to both players. <br>
     {{if group.message == ""}}<b style="color: blue">No message</b>{{else}}The message <b style="color: blue">{{group.message}}</b>{{endif}} was sent and cost <b>{{group.message_cost}}</b> points.<br><br>
-    <b>You and your partner both get {{group.reward}} - {{group.message_cost}} = {{player.payoff}} points for this round.</b>
+    <b>You and your partner both get {{C.ENDOWMENT}} + {{group.reward}} - {{group.message_cost}} = {{player.payoff}} points for this round.</b>
 </h6>
 <br><br>
 <div class = "row">
@@ -17,7 +17,10 @@
         <h3>Sender</h3>
         <br>
         <h4>Receiver's available actions: <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>, <b>E</b>, <b>F</b>, <b>G</b></h4>
+        <br>
         <h4>Valid actions in this round: <b style="color: green">{{valid_actions}}</b></h4>
+        <h4>Invalid actions in this round: <b style="color: red">{{invalid_actions}}</b></h4>
+        <br>
         <h4>Sender's message: {{if group.message == ""}}<b style="color: blue">No message</b> {{else}} <b style="color: blue">{{group.message}}</b>{{endif}}</h4>
         <h4>Total cost: {{group.message_cost}} points</h4>
         <br>
@@ -25,7 +28,7 @@
         <br>
         <h4>Symbols to compose your message:</h4>
         <div id="buttons">
-        </div><br>
+        </div><br><br>
         <h4>Cost: {{C.COST}} points per symbol (First one is free)</h4>
     </div>
     <div class="divider"></div>
@@ -33,7 +36,10 @@
         <h3>Receiver</h3>
         <br>
         <h4>Actions available: <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>, <b>E</b>, <b>F</b>, <b>G</b></h4>
+        <br>
         <h4>Receiver's action: <b style="color: orange">{{group.action}}</b></h4>
+        <br>
+        <hr>
         <br>
         <h4>Possible rewards:</h4>
         <center>
@@ -92,6 +98,7 @@
 <h3>Facts:</h3>
 <h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
 <h4>Probability of 2 valid actions: {{prob_2}}</h4>
+<br><br>
 
 {{ endblock }}
 
@@ -127,23 +134,22 @@
     }
     .column1{
         float: left;
-        width: 46%;
+        width: 48%;
         padding: 5px;
-        height: 650px;
+        height: 750px;
         font-size: 15px;
     }
-    .row:after {
-        content: "";
-        display: table;
-        clear: both;
+    .row {
+      display: flex;
+      justify-content: center;   /* centers everything horizontally */
+      align-items: flex-start;   /* aligns columns at the top */
     }
     .divider {
-    float: left;
-    width: 1px;
-    border-left: 1px solid black;    /* color of the line */
-    height: 600px;              /* match .column1 height */
-    margin: 0 10px;             /* optional spacing around the line */
-}
+        width: 1px;
+        border-left: 1px solid black;    /* color of the line */
+        height: 700px;              /* match .column1 height */
+        margin: 0 5px;             /* optional spacing around the line */
+    }
     td {
         border: 1px solid black;
         font-size: 20px;
@@ -158,18 +164,30 @@
       height:1px;
     }
     .letter-button {
-        width: 40px;
-        height: 40px;
+        width: 45px;
+        height: 45px;
         margin: 4px;
-        font-size: 18px;
+        font-size: 23px;
         font-weight: bold;
-        border-color: white;
+        border-color: black;
     }
     #action-button {
-        width: 35px;
-        height: 35px;
-        font-size: 18px;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
         font-weight: bold;
+    }
+    #buttons {
+      display: grid;
+      grid-template-columns: repeat(9, auto); /* make columns only as wide as needed */
+      justify-content: left;                /* center the grid */
+      gap: 15px;                               /* small gap between buttons */
+    }
+    .otree-body, .container, .content {
+      width: 100% !important;
+      max-width: 70% !important;
+      margin: 0 auto !important;
+      padding: 0 10px; /* optional small horizontal padding */
     }
 </style>
 {%endblock%}

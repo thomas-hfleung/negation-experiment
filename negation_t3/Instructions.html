@@ -46,6 +46,7 @@
   <p>
     Both participants in the same pair obtain the same reward. The reward is determined jointly by the <b>Action</b>
     taken and the <b>Validity</b> of that action. For your pair to receive a positive reward, the receiver must take an action that is <b>valid</b>.
+      Both players are endowed with {{C.ENDOWMENT}} points in each round.
   </p>
 
 
@@ -70,20 +71,18 @@
         <h5>Sender</h5>
         <br>
         <h4>Observed Available Actions: <b>A</b>, <b>C</b>, <b>D</b>, <b>F</b>, <b>G</b>, <b>L</b>, <b>M</b></h4>
-        <h4>Probability that the Observed Available Actions matches the Receiver's Available Actions: {{player.prob_align_actions}}</h4>
-        <br>
-        <h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
-        <h4>Probability of 2 valid actions: {{prob_2}}</h4>
         <br>
         <h4>Valid actions in this round: <b style="color: green">D, L</b></h4>
-        <h4><b>Reminder</b>: the valid actions are always available to the Receiver.</h4>
+        <h4>Observed invalid actions in this round: <b style="color: red">A, C, F, G, M</b></h4>
+        <br>
+        <h4><b>Reminder</b>: Only the valid actions are always available to the Receiver.</h4>
         <br>
         <hr>
         <br>
         <h4>Symbols to compose your message:</h4>
         <div id="buttons">
           <!-- Buttons will go here -->
-        </div><br>
+        </div><br><br>
         <h4>Cost: {{C.COST}} points per symbol (First one is free)</h4>
         <br>
         <h4>Your message choice:</h4>
@@ -95,7 +94,7 @@
                 <button id="backspace-button" type="button" style="border-color: white; font-size: 20px;">Delete</button>
             </div>
         </div>
-        <div id="error-message"></div>
+        <div id="error-message-sender"></div>
         <br>
         <div id="cost-display">Total cost: 0 points</div>
         <br>
@@ -123,12 +122,10 @@
         <h5>Receiver</h5>
         <br>
         <h4>Actions available: <b>B</b>, <b>C</b>, <b>D</b>, <b>F</b>, <b>H</b>, <b>K</b>, <b>L</b></h4>
-        <h4>Probability that the sender observed the same available actions: {{player.prob_align_actions}}</h4>
-        <br>
-        <h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
-        <h4>Probability of 2 valid actions: {{prob_2}}</h4>
         <br>
         <h4>Sender's message: <b style="color: blue">ac</b></h4>
+        <br>
+        <hr>
         <br>
         <h4>Possible rewards:</h4>
         <center>
@@ -180,10 +177,9 @@
             </tr>
         </table>
             </center>
-        <hr>
         <h4>Your action choice:</h4>
         <div id="receiver-output"></div>
-        <div id="error-message"></div>
+        <div id="error-message-receiver"></div>
 
         <form method="post">
             <input type="hidden" name="action" id="action-field">
@@ -195,7 +191,7 @@
 
   <h3>Information Feedback</h3>
   <p>
-      The payoff you obtain in each round will be the <b>assigned reward - cost of message</b>. Again remember that you will only
+      The payoff you obtain in each round will be the <b>initial endowment ({{C.ENDOWMENT}} points) + assigned reward - cost of message</b>. Again remember that you will only
       obtain the assigned reward if the action is valid, but the cost of message is incurred regardless of the validity of the action.
     At the end of each round, you will be provided with a summary of what happened in the round, including the assignment
     of rewards to actions, which actions were valid, the Sender's choice of message, the Receiver's choice of action,
@@ -296,7 +292,7 @@
         justify-content: center; /* centers horizontally */
     }
     .column1{
-        width: 46%;
+        width: 48%;
         padding: 5px;
         height: 850px;
         font-size: 15px;
@@ -312,9 +308,9 @@
         padding: 10px;
     }
     .column4{
-        width: 46%;
+        width: 48%;
         padding: 5px;
-        height: 950px;
+        height: 850px;
         font-size: 15px;
     }
     .red {
@@ -332,12 +328,12 @@
       font-size: 25px;
     }
     .letter-button {
-        width: 40px;
-        height: 40px;
+        width: 45px;
+        height: 45px;
         margin: 4px;
-        font-size: 18px;
+        font-size: 23px;
         font-weight: bold;
-        border-color: white;
+        border-color: black;
     }
     #output {
       margin-top: 0px;
@@ -347,7 +343,12 @@
       min-height: 40px;
       text-align: center;
     }
-    #error-message {
+    #error-message-sender {
+        font-size: 20px;
+        color: red;
+        margin-bottom: 10px;
+    }
+    #error-message-receiver {
         font-size: 20px;
         color: red;
         margin-bottom: 10px;
@@ -391,10 +392,22 @@
         background-color: yellowgreen;
     }
     #action-button {
-        width: 35px;
-        height: 35px;
-        font-size: 18px;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
         font-weight: bold;
+    }
+    #buttons {
+      display: grid;
+      grid-template-columns: repeat(7, auto); /* make columns only as wide as needed */
+      justify-content: left;                /* center the grid */
+      gap: 15px;                               /* small gap between buttons */
+    }
+    .otree-body, .container, .content {
+      width: 100% !important;
+      max-width: 70% !important;
+      margin: 0 auto !important;
+      padding: 0 10px; /* optional small horizontal padding */
     }
   </style>
 {% endblock %}
@@ -405,12 +418,14 @@
   const buttonsDiv = document.getElementById('buttons');
   const outputDiv = document.getElementById('output');
   const backspaceBtn = document.getElementById('backspace-button');
-  const errorDiv = document.getElementById('error-message');
+  const errorDivSender = document.getElementById('error-message-sender');
+  const errorDivReceiver = document.getElementById('error-message-receiver');
   const submitBtn = document.getElementById('submit-message-button');
   const costDiv = document.getElementById('cost-display');
   const costPerSymbol = {{ C.COST }};
   const maxLength = 10;
-  let errorTimeout;
+  let errorTimeoutSender;
+  let errorTimeoutReceiver;
 
   function updateCost() {
     const numSymbols = outputDiv.innerText.length;
@@ -428,10 +443,10 @@
     btn.onclick = () => {
       if (outputDiv.innerText.length < maxLength) {
         outputDiv.innerText += letter; // append letter
-        clearError();
+        clearErrorSender();
         updateCost();
       } else {
-        showError('Maximum 10 symbols allowed.');
+        showErrorSender('Maximum 10 symbols allowed.');
       }
     };
     buttonsDiv.appendChild(btn);
@@ -444,17 +459,30 @@
 
 
 
-  function showError(message) {
-    errorDiv.innerText = message;
-    clearTimeout(errorTimeout); // clear previous timeout if any
-    errorTimeout = setTimeout(() => {
-      errorDiv.innerText = '';
+  function showErrorSender(message) {
+    errorDivSender.innerText = message;
+    clearTimeout(errorTimeoutSender); // clear previous timeout if any
+    errorTimeoutSender = setTimeout(() => {
+      errorDivSender.innerText = '';
     }, 3000); // hide after 3 seconds
   }
 
-  function clearError() {
-    errorDiv.innerText = '';
-    clearTimeout(errorTimeout);
+  function clearErrorSender() {
+    errorDivSender.innerText = '';
+    clearTimeout(errorTimeoutSender);
+  }
+
+  function showErrorReceiver(message) {
+    errorDivReceiver.innerText = message;
+    clearTimeout(errorTimeoutReceiver); // clear previous timeout if any
+    errorTimeoutReceiver = setTimeout(() => {
+      errorDivReceiver.innerText = '';
+    }, 3000); // hide after 3 seconds
+  }
+
+  function clearErrorReceiver() {
+    errorDivReceiver.innerText = '';
+    clearTimeout(errorTimeoutReceiver);
   }
 
 
@@ -488,7 +516,7 @@
     const inputField = document.querySelector('input[name="action"]');
     if (!inputField) return;
     if (receiverOutput.innerText === '') {
-        showError('Please select an action.');
+        showErrorReceiver('Please select an action.');
         return;
     }
   };

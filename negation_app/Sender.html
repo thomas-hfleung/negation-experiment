@@ -12,16 +12,16 @@
         <h3>Sender</h3>
         <br>
         <h4>Receiver's available actions: <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>, <b>E</b>, <b>F</b>, <b>G</b></h4>
-        <h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
-        <h4>Probability of 2 valid actions: {{prob_2}}</h4><br>
+        <br>
         <h4>Valid actions in this round: <b style="color: green">{{valid_actions}}</b></h4>
+        <h4>Invalid actions in this round: <b style="color: red">{{invalid_actions}}</b></h4>
         <br>
         <hr>
         <br>
         <h4>Symbols to compose your message:</h4>
         <div id="buttons">
           <!-- Buttons will go here -->
-        </div><br>
+        </div><br><br>
         <h4>Cost: {{C.COST}} points per symbol (First one is free)</h4>
         <br>
         <h4>Your message choice:</h4>
@@ -47,6 +47,11 @@
     <div class = column1>
     </div>
 </div>
+<hr>
+<h3>Facts:</h3>
+<h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
+<h4>Probability of 2 valid actions: {{prob_2}}</h4>
+<br><br>
 
 {{ endblock }}
 
@@ -78,9 +83,9 @@
     }
     .column1{
         float: left;
-        width: 46%;
+        width: 48%;
         padding: 5px;
-        height: 700px;
+        height: 750px;
         font-size: 15px;
     }
     .column2{
@@ -103,7 +108,7 @@
     width: 1px;
     border-left: 1px solid black;    /* color of the line */
     height: 700px;              /* match .column1 height */
-    margin: 0 10px;             /* optional spacing around the line */
+    margin: 0 5px;             /* optional spacing around the line */
 }
     td {
         border: 1px solid black;
@@ -118,12 +123,12 @@
       height:1px;
     }
     .letter-button {
-        width: 40px;
-        height: 40px;
+        width: 45px;
+        height: 45px;
         margin: 4px;
-        font-size: 18px;
+        font-size: 23px;
         font-weight: bold;
-        border-color: white;
+        border-color: black;
     }
     #output {
       margin-top: 0px;
@@ -149,6 +154,18 @@
         border-color: white;
         font-size: 25px;
         background-color: yellowgreen;
+    }
+    #buttons {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr); /* make columns only as wide as needed */
+      justify-content: left;                /* center the grid */
+      gap: 15px;                               /* small gap between buttons */
+    }
+    .otree-body, .container, .content {
+      width: 100% !important;
+      max-width: 70% !important;
+      margin: 0 auto !important;
+      padding: 0 10px; /* optional small horizontal padding */
     }
 </style>
 {%endblock%}

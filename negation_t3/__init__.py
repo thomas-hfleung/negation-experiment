@@ -13,9 +13,10 @@ class C(BaseConstants):
     NAME_IN_URL = 'negation_t3'
     PLAYERS_PER_GROUP = 2
     NUM_ROUNDS = 10
-    COST = 2
+    COST = 4
     INVALID_REWARD = 0
     SHOW_UP_FEE = 10
+    ENDOWMENT = COST * 10
 
 
 class Subsession(BaseSubsession):
@@ -25,6 +26,7 @@ class Subsession(BaseSubsession):
 class Group(BaseGroup):
     valid_no = models.IntegerField()
     valid_actions = models.StringField()
+    invalid_actions = models.StringField()
     possible_rewards = models.StringField()
     message = models.StringField(blank=True)
     message_cost = models.IntegerField()
@@ -106,20 +108,19 @@ class StartWaitPage(WaitPage):
         group.receiver_actions = json.dumps(sorted(receiver_actions))
         if random.random() < player[0].prob_5:
             group.valid_no=5
-            valid = random.sample(receiver_actions, group.valid_no)
-            valid_sorted = sorted(valid)
-            group.valid_actions = json.dumps(valid_sorted)
         else:
             group.valid_no = 2
-            valid = random.sample(receiver_actions, group.valid_no)
-            valid_sorted = sorted(valid)
-            group.valid_actions = json.dumps(valid_sorted)
+        valid = random.sample(receiver_actions, group.valid_no)
+        valid_sorted = sorted(valid)
+        group.valid_actions = json.dumps(valid_sorted)
         if random.random() < player[0].prob_align_actions:
             group.sender_actions = group.receiver_actions
         else:
             remaining = list(set(letters) - set(valid))
             extra = random.sample(remaining, 7 - group.valid_no)
             group.sender_actions = json.dumps(sorted(json.loads(group.valid_actions) + extra))
+        invalid = sorted(set(json.loads(group.sender_actions)) - set(valid))
+        group.invalid_actions = json.dumps(invalid)
 
 class Sender(Page):
     form_model = "group"
@@ -130,6 +131,7 @@ class Sender(Page):
         return dict(
             sender_actions = ", ".join(json.loads(group.sender_actions)),
             valid_actions = ", ".join(json.loads(group.valid_actions)),
+            invalid_actions = ", ".join(json.loads(group.invalid_actions)),
             prob_2 = 1-player.prob_5
         )
 
@@ -174,7 +176,7 @@ class ResultsWaitPage(WaitPage):
         else:
             group.reward = C.INVALID_REWARD
         for player in player_list:
-            player.payoff = group.reward - group.message_cost
+            player.payoff = C.ENDOWMENT + group.reward - group.message_cost
 
 
 class Results(Page):
@@ -195,6 +197,7 @@ class Results(Page):
             sender_actions=", ".join(json.loads(group.sender_actions)),
             receiver_actions=", ".join(json.loads(group.receiver_actions)),
             valid_actions = ", ".join(json.loads(group.valid_actions)),
+            invalid_actions=", ".join(json.loads(group.invalid_actions)),
             possible_rewards=json.loads(group.possible_rewards),
             action_reward_pairs=action_reward_pairs,
             prob_2=1 - player.prob_5
