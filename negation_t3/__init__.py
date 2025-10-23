@@ -130,7 +130,7 @@ class Sender(Page):
         group = player.group
         return dict(
             sender_actions = ", ".join(json.loads(group.sender_actions)),
-            valid_actions = ", ".join(json.loads(group.valid_actions)),
+            valid_actions = json.loads(group.valid_actions),
             invalid_actions = ", ".join(json.loads(group.invalid_actions)),
             prob_2 = 1-player.prob_5
         )
@@ -153,7 +153,7 @@ class Receiver(Page):
         group = player.group
         action_reward_pairs = list(zip(json.loads(group.receiver_actions), json.loads(group.possible_rewards)))
         return dict(
-            receiver_actions=", ".join(json.loads(group.receiver_actions)),
+            receiver_actions=" , ".join(json.loads(group.receiver_actions)),
             action_reward_pairs = action_reward_pairs,
             prob_2=1 - player.prob_5
         )
@@ -195,8 +195,9 @@ class Results(Page):
         action_reward_pairs = list(zip(json.loads(group.receiver_actions), json.loads(group.possible_rewards)))
         return dict(
             sender_actions=", ".join(json.loads(group.sender_actions)),
-            receiver_actions=", ".join(json.loads(group.receiver_actions)),
-            valid_actions = ", ".join(json.loads(group.valid_actions)),
+            receiver_actions=" , ".join(json.loads(group.receiver_actions)),
+            valid_actions = json.loads(group.valid_actions),
+            valid_actions_string = ", ".join(json.loads(group.valid_actions)),
             invalid_actions=", ".join(json.loads(group.invalid_actions)),
             possible_rewards=json.loads(group.possible_rewards),
             action_reward_pairs=action_reward_pairs,

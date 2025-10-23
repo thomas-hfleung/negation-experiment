@@ -70,12 +70,11 @@
     <div class = column1>
         <h5>Sender</h5>
         <br>
-        <h4>Observed Available Actions: <b>A</b>, <b>C</b>, <b>D</b>, <b>F</b>, <b>G</b>, <b>L</b>, <b>M</b></h4>
+        <h4>Observed Available Actions: <b>A</b> , <b>C</b> , <b style="color: green">D</b> , <b>F</b> , <b>G</b> , <b style="color: green">L</b> , <b>M</b></h4>
         <br>
-        <h4>Valid actions in this round: <b style="color: green">D, L</b></h4>
-        <h4>Observed invalid actions in this round: <b style="color: red">A, C, F, G, M</b></h4>
-        <br>
-        <h4><b>Reminder</b>: Only the valid actions are always available to the Receiver.</h4>
+        <h4><b>Reminder</b>:</h4>
+        <h4>Actions highlighted in <span style="color: green; font-weight: bold">green</span> are the valid actions.</h4>
+        <h4>Only the valid actions are always available to the Receiver.</h4>
         <br>
         <hr>
         <br>
@@ -105,6 +104,7 @@
         </form>
     </div>
 </div>
+  <br>
 
   <h3>The Receiver’s Decision</h3>
   <p>
@@ -121,7 +121,7 @@
     <div class = column4>
         <h5>Receiver</h5>
         <br>
-        <h4>Actions available: <b>B</b>, <b>C</b>, <b>D</b>, <b>F</b>, <b>H</b>, <b>K</b>, <b>L</b></h4>
+        <h4>Actions available: <b>B</b> , <b>C</b> , <b>D</b> , <b>F</b> , <b>H</b> , <b>K</b> , <b>L</b></h4>
         <br>
         <h4>Sender's message: <b style="color: blue">ac</b></h4>
         <br>
@@ -188,6 +188,7 @@
     </div>
 
 </div>
+  <br>
 
   <h3>Information Feedback</h3>
   <p>
@@ -278,7 +279,7 @@
         text-decoration: underline;
     }
     h4 {
-        font-size: 20px;
+        font-size: 22px;
     }
     hr {
       border:none;
@@ -289,12 +290,14 @@
     }
     .row {
         display: flex;
-        justify-content: center; /* centers horizontally */
+        justify-content: center;
+        align-items: stretch; /* ensures all children match tallest height */
+        flex-wrap: wrap;      /* allows stacking on small screens */
     }
     .column1{
-        width: 48%;
+        width: 46%;
         padding: 5px;
-        height: 850px;
+        height: auto;
         font-size: 15px;
     }
     .column2{
@@ -310,7 +313,7 @@
     .column4{
         width: 48%;
         padding: 5px;
-        height: 850px;
+        height: auto;
         font-size: 15px;
     }
     .red {
@@ -330,7 +333,7 @@
     .letter-button {
         width: 45px;
         height: 45px;
-        margin: 4px;
+        margin: 10px;
         font-size: 23px;
         font-weight: bold;
         border-color: black;
@@ -396,12 +399,6 @@
         height: 40px;
         font-size: 20px;
         font-weight: bold;
-    }
-    #buttons {
-      display: grid;
-      grid-template-columns: repeat(7, auto); /* make columns only as wide as needed */
-      justify-content: left;                /* center the grid */
-      gap: 15px;                               /* small gap between buttons */
     }
     .otree-body, .container, .content {
       width: 100% !important;

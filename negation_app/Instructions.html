@@ -97,6 +97,7 @@
         </form>
     </div>
 </div>
+  <br>
 
   <h3>The Receiver’s Decision</h3>
   <p>
@@ -180,6 +181,7 @@
     </div>
 
 </div>
+  <br>
 
   <h3>Information Feedback</h3>
   <p>
@@ -266,7 +268,7 @@
         text-decoration: underline;
     }
     h4 {
-        font-size: 20px;
+        font-size: 22px;
     }
     hr {
       border:none;
@@ -277,12 +279,14 @@
     }
     .row {
         display: flex;
-        justify-content: center; /* centers horizontally */
+        justify-content: center;
+        align-items: stretch; /* ensures all children match tallest height */
+        flex-wrap: wrap;      /* allows stacking on small screens */
     }
     .column1{
         width: 46%;
         padding: 5px;
-        height: 700px;
+        height: auto;
         font-size: 15px;
     }
     .column2{
@@ -298,7 +302,7 @@
     .column4{
         width: 46%;
         padding: 5px;
-        height: 850px;
+        height: auto;
         font-size: 15px;
     }
     .red {
@@ -318,7 +322,7 @@
     .letter-button {
         width: 45px;
         height: 45px;
-        margin: 4px;
+        margin: 10px;
         font-size: 23px;
         font-weight: bold;
         border-color: black;
@@ -384,12 +388,6 @@
         height: 40px;
         font-size: 20px;
         font-weight: bold;
-    }
-    #buttons {
-      display: grid;
-      grid-template-columns: repeat(9, auto); /* make columns only as wide as needed */
-      justify-content: left;                /* center the grid */
-      gap: 15px;                               /* small gap between buttons */
     }
     .otree-body, .container, .content {
       width: 100% !important;

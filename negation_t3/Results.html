@@ -6,21 +6,33 @@
 {{endif}}
 <br>
 <h6>
-    In this round, the valid actions are <b style="color: green">{{valid_actions}}</b>. <br>
+    In this round, the valid actions are <b style="color: green">{{valid_actions_string}}</b>. <br>
+    You are your partner both start with <b>{{C.ENDOWMENT}}</b> points. <br>
+    {{if group.message == ""}}<b style="color: blue">No message</b>{{else}}The message <b style="color: blue">{{group.message}}</b>{{endif}} was sent and cost <b>{{group.message_cost}}</b> points.<br>
     Action <b style="color: orange">{{group.action}}</b> was chosen, which yields reward <b>{{group.reward}}</b> points to both players. <br>
-    {{if group.message == ""}}<b style="color: blue">No message</b>{{else}}The message <b style="color: blue">{{group.message}}</b>{{endif}} was sent and cost <b>{{group.message_cost}}</b> points.<br><br>
-    <b>You and your partner both get {{C.ENDOWMENT}} + {{group.reward}} - {{group.message_cost}} = {{player.payoff}} points for this round.</b>
+    <br>
+    <b>You and your partner both get {{C.ENDOWMENT}} - {{group.message_cost}} + {{group.reward}} = {{player.payoff}} points for this round.</b>
 </h6>
 <br><br>
 <div class = "row">
     <div class = column1>
         <h3>Sender</h3>
         <br>
-        <h4>Observed Available Actions: <b>{{sender_actions}}</b></h4>
+        <h4>
+            Observed Available Actions:
+            {% for action in sender_actions %}
+                {% if action in valid_actions %}
+                    <span style="color: green; font-weight: bold;">{{action}}</span>
+                {% else %}
+                <b>{{action}}</b>
+                {% endif %}
+            {% endfor %}
+        </h4>
         <br>
-        <h4>Valid actions in this round: <b style="color: green">{{valid_actions}}</b></h4>
-        <h4>Observed invalid actions in this round: <b style="color: red">{{invalid_actions}}</b></h4>
-        <h4><b>Reminder</b>: Only the valid actions are always available to the Receiver.</h4>
+        <h4><b>Reminder</b>:</h4>
+        <h4>Actions highlighted in <span style="color: green; font-weight: bold">green</span> are the valid actions.</h4>
+        <h4>Only the valid actions are always available to the Receiver.</h4>
+
         <br>
         <h4>Sender's message: {{if group.message == ""}}<b style="color: blue">No message</b> {{else}} <b style="color: blue">{{group.message}}</b>{{endif}}</h4>
         <h4>Total cost: {{group.message_cost}} points</h4>
@@ -68,14 +80,14 @@
         </td>
 
         <!-- If valid -->
-        <td {% if letter in valid_actions and group.action == letter %}
+        <td {% if letter in valid_actions_string and group.action == letter %}
                 style="background-color: green; color: white;"
             {% endif %}>
             {{ reward }}
         </td>
 
         <!-- If invalid -->
-        <td {% if letter not in valid_actions and group.action == letter %}
+        <td {% if letter not in valid_actions_string and group.action == letter %}
                 style="background-color: red;"
             {% endif %}>
             {{ C.INVALID_REWARD }}
@@ -86,7 +98,9 @@
             </center>
     </div>
 </div>
+<br>
 <center><button style="font-size: 20px">Next Round</button></center>
+<br>
 
 <hr>
 <h3>Facts:</h3>
@@ -117,7 +131,7 @@
         text-decoration: underline;
     }
     h4 {
-        font-size: 20px;
+        font-size: 22px;
     }
     h5 {
         font-size: 25px;
@@ -131,21 +145,22 @@
         float: left;
         width: 48%;
         padding: 5px;
-        height: 750px;
+        height: auto;
         font-size: 15px;
     }
-    .row:after {
-        content: "";
-        display: table;
-        clear: both;
+    .row {
+        display: flex;
+        justify-content: center;
+        align-items: stretch; /* ensures all children match tallest height */
+        flex-wrap: wrap;      /* allows stacking on small screens */
     }
     .divider {
-    float: left;
-    width: 1px;
-    border-left: 1px solid black;    /* color of the line */
-    height: 700px;              /* match .column1 height */
-    margin: 0 5px;             /* optional spacing around the line */
-}
+        float: left;
+        width: 1px;
+        border-left: 1px solid black;    /* color of the line */
+        align-self: stretch;              /* match .column1 height */
+        margin: 0 5px;             /* optional spacing around the line */
+    }
     td {
         border: 1px solid black;
         font-size: 20px;
@@ -162,7 +177,7 @@
     .letter-button {
         width: 45px;
         height: 45px;
-        margin: 4px;
+        margin: 10px;
         font-size: 23px;
         font-weight: bold;
         border-color: black;
@@ -172,12 +187,6 @@
         height: 40px;
         font-size: 20px;
         font-weight: bold;
-    }
-    #buttons {
-      display: grid;
-      grid-template-columns: repeat(7, auto); /* make columns only as wide as needed */
-      justify-content: left;                /* center the grid */
-      gap: 15px;                               /* small gap between buttons */
     }
     .otree-body, .container, .content {
       width: 100% !important;

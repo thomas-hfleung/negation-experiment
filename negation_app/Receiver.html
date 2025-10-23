@@ -82,6 +82,7 @@
     </div>
 
 </div>
+<br>
 <hr>
 <h3>Facts:</h3>
 <h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
@@ -110,7 +111,7 @@
         text-decoration: underline;
     }
     h4 {
-        font-size: 20px;
+        font-size: 22px;
     }
     h5 {
         font-size: 25px;
@@ -120,20 +121,21 @@
         float: left;
         width: 48%;
         padding: 5px;
-        height: 950px;
+        height: auto;
         font-size: 15px;
     }
-    .row:after {
-        content: "";
-        display: table;
-        clear: both;
+    .row {
+        display: flex;
+        justify-content: center;
+        align-items: stretch; /* ensures all children match tallest height */
+        flex-wrap: wrap;      /* allows stacking on small screens */
     }
     .divider {
-    float: left;
-    width: 1px;
-    border-left: 1px solid black;    /* color of the line */
-    height: 900px;              /* match .column1 height */
-    margin: 0 5px;             /* optional spacing around the line */
+        float: left;
+        width: 1px;
+        border-left: 1px solid black;    /* color of the line */
+        align-self: stretch;              /* match .column1 height */
+        margin: 0 5px;             /* optional spacing around the line */
     }
     .highlight {
         background-color: orange;

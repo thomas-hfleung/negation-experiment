@@ -7,9 +7,10 @@
 <br>
 <h6>
     In this round, the valid actions are <b style="color: green">{{valid_actions}}</b>. <br>
-    Action <b style="color: orange">{{group.action}}</b> was chosen, which yields reward <b>{{group.reward}}</b> points to both players. <br>
-    {{if group.message == ""}}<b style="color: blue">No message</b>{{else}}The message <b style="color: blue">{{group.message}}</b>{{endif}} was sent and cost <b>{{group.message_cost}}</b> points.<br><br>
-    <b>You and your partner both get {{C.ENDOWMENT}} + {{group.reward}} - {{group.message_cost}} = {{player.payoff}} points for this round.</b>
+    You are your partner both start with <b>{{C.ENDOWMENT}}</b> points. <br>
+    {{if group.message == ""}}<b style="color: blue">No message</b>{{else}}The message <b style="color: blue">{{group.message}}</b>{{endif}} was sent and cost <b>{{group.message_cost}}</b> points.<br>
+    Action <b style="color: orange">{{group.action}}</b> was chosen, which yields reward <b>{{group.reward}}</b> points to both players. <br><br>
+    <b>You and your partner both get {{C.ENDOWMENT}} - {{group.message_cost}} + {{group.reward}} = {{player.payoff}} points for this round.</b>
 </h6>
 <br><br>
 <div class = "row">
@@ -92,8 +93,9 @@
         </table>
             </center>
     </div>
-</div>
+</div><br>
 <center><button style="font-size: 20px">Next Round</button></center>
+<br>
 <hr>
 <h3>Facts:</h3>
 <h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
@@ -122,7 +124,7 @@
         text-decoration: underline;
     }
     h4 {
-        font-size: 20px;
+        font-size: 22px;
     }
     h5 {
         font-size: 25px;
@@ -136,18 +138,20 @@
         float: left;
         width: 48%;
         padding: 5px;
-        height: 750px;
+        height: auto;
         font-size: 15px;
     }
     .row {
-      display: flex;
-      justify-content: center;   /* centers everything horizontally */
-      align-items: flex-start;   /* aligns columns at the top */
+        display: flex;
+        justify-content: center;
+        align-items: stretch; /* ensures all children match tallest height */
+        flex-wrap: wrap;      /* allows stacking on small screens */
     }
     .divider {
+        float: left;
         width: 1px;
         border-left: 1px solid black;    /* color of the line */
-        height: 700px;              /* match .column1 height */
+        align-self: stretch;              /* match .column1 height */
         margin: 0 5px;             /* optional spacing around the line */
     }
     td {
@@ -166,7 +170,7 @@
     .letter-button {
         width: 45px;
         height: 45px;
-        margin: 4px;
+        margin: 10px;
         font-size: 23px;
         font-weight: bold;
         border-color: black;
@@ -176,12 +180,6 @@
         height: 40px;
         font-size: 20px;
         font-weight: bold;
-    }
-    #buttons {
-      display: grid;
-      grid-template-columns: repeat(9, auto); /* make columns only as wide as needed */
-      justify-content: left;                /* center the grid */
-      gap: 15px;                               /* small gap between buttons */
     }
     .otree-body, .container, .content {
       width: 100% !important;

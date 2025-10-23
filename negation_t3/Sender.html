@@ -11,12 +11,26 @@
         <br>
         <h3>Sender</h3>
         <br>
+        <h4>
+            Observed Available Actions:
+            {% for action in sender_actions %}
+                {% if action in valid_actions %}
+                    <span style="color: green; font-weight: bold;">{{ action }}</span>
+                {% else %}
+                <b>{{ action }}</b>
+                {% endif %}
+            {% endfor %}
+        </h4>
+        <!--
         <h4>Observed Available Actions: <b>{{sender_actions}}</b></h4>
         <br>
         <h4>Valid actions in this round: <b style="color: green">{{valid_actions}}</b></h4>
         <h4>Observed invalid actions in this round: <b style="color: red">{{invalid_actions}}</b></h4>
+        -->
         <br>
-        <h4><b>Reminder</b>: Only the valid actions are always available to the Receiver.</h4>
+        <h4><b>Reminder</b>:</h4>
+        <h4>Actions highlighted in <span style="color: green; font-weight: bold">green</span> are the valid actions.</h4>
+        <h4>Only the valid actions are always available to the Receiver.</h4>
         <br>
         <hr>
         <br>
@@ -49,6 +63,7 @@
     <div class = column1>
     </div>
 </div>
+<br>
 <hr>
 <h3>Facts:</h3>
 <h4>Probability that the Sender's observed available actions matches the Receiver's available actions: {{player.prob_align_actions}}</h4>
@@ -89,7 +104,7 @@
         float: left;
         width: 48%;
         padding: 5px;
-        height: 920px;
+        height: auto;
         font-size: 15px;
     }
     .column2{
@@ -102,18 +117,19 @@
         width: 40%;
         padding: 10px;
     }
-    .row:after {
-        content: "";
-        display: table;
-        clear: both;
+    .row {
+        display: flex;
+        justify-content: center;
+        align-items: stretch; /* ensures all children match tallest height */
+        flex-wrap: wrap;      /* allows stacking on small screens */
     }
     .divider {
-    float: left;
-    width: 1px;
-    border-left: 1px solid black;    /* color of the line */
-    height: 850px;              /* match .column1 height */
-    margin: 0 5px;             /* optional spacing around the line */
-}
+        float: left;
+        width: 1px;
+        border-left: 1px solid black;    /* color of the line */
+        align-self: stretch;              /* match .column1 height */
+        margin: 0 5px;             /* optional spacing around the line */
+    }
     td {
         border: 1px solid black;
         font-size: 20px;
@@ -129,7 +145,7 @@
     .letter-button {
         width: 45px;
         height: 45px;
-        margin: 4px;
+        margin: 10px;
         font-size: 23px;
         font-weight: bold;
         border-color: black;
@@ -158,12 +174,6 @@
         border-color: white;
         font-size: 25px;
         background-color: yellowgreen;
-    }
-    #buttons {
-      display: grid;
-      grid-template-columns: repeat(7, auto); /* make columns only as wide as needed */
-      justify-content: left;                /* center the grid */
-      gap: 15px;                               /* small gap between buttons */
     }
     .otree-body, .container, .content {
   width: 100% !important;
