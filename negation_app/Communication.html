@@ -12,11 +12,9 @@
     <div class = column1>
         <h3>Sender</h3>
         <h4>Actions available to the Receiver: <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>, <b>E</b>, <b>F</b>, <b>G</b></h4>
-        {{if group.valid_no == 5}}
-            <h4>Valid actions: <b style="color: red">{{valid_actions.0}}, {{valid_actions.1}}, {{valid_actions.2}}, {{valid_actions.3}}, {{valid_actions.4}}</b></h4>
-        {{else}}
-            <h4>Valid actions: <b style="color: red">{{valid_actions.0}}, {{valid_actions.1}}</b></h4>
-        {{endif}}
+        <br>
+        <h4>Valid actions in this round: <b style="color: green">{{valid_actions}}</b></h4>
+        <h4>Invalid actions in this round: <b style="color: red">{{invalid_actions}}</b></h4>
         <hr>
         <h4>Symbols to compose your message:</h4>
         <div id="buttons">
@@ -112,6 +110,14 @@
 
 </div>
 {{endif}}
+<br>
+<hr>
+<h3>Facts:</h3>
+<h4>Probability that the Sender's observed available actions matches the Receiver's available actions: {{player.prob_align_actions}}</h4>
+<br>
+<h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
+<h4>Probability of 2 valid actions: {{prob_2}}</h4>
+<br><br>
 
 {{ endblock }}
 

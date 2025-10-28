@@ -12,7 +12,7 @@ Your app description
 class C(BaseConstants):
     NAME_IN_URL = 'negation_t3'
     PLAYERS_PER_GROUP = 2
-    NUM_ROUNDS = 10
+    NUM_ROUNDS = 6
     COST = 4
     INVALID_REWARD = 0
     SHOW_UP_FEE = 10
@@ -131,7 +131,7 @@ class Sender(Page):
         return dict(
             sender_actions = ", ".join(json.loads(group.sender_actions)),
             valid_actions = json.loads(group.valid_actions),
-            invalid_actions = ", ".join(json.loads(group.invalid_actions)),
+            invalid_actions = json.loads(group.invalid_actions),
             prob_2 = 1-player.prob_5
         )
 
@@ -198,7 +198,7 @@ class Results(Page):
             receiver_actions=" , ".join(json.loads(group.receiver_actions)),
             valid_actions = json.loads(group.valid_actions),
             valid_actions_string = ", ".join(json.loads(group.valid_actions)),
-            invalid_actions=", ".join(json.loads(group.invalid_actions)),
+            invalid_actions=json.loads(group.invalid_actions),
             possible_rewards=json.loads(group.possible_rewards),
             action_reward_pairs=action_reward_pairs,
             prob_2=1 - player.prob_5

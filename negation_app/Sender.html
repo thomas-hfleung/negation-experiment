@@ -9,12 +9,21 @@
     <div class = column1>
         <h2>You are the {{player.type}}.</h2>
         <br>
-        <h3>Sender</h3>
+        <h4>
+            Receiver's available actions:
+            {% for action in actions %}
+                {% if action in valid_actions %}
+                    <span style="color: green; font-weight: bold;">{{ action }}</span>
+                {% elif action in invalid_actions %}
+                    <span style="color: red; font-weight: bold;">{{ action }}</span>
+                {% else %}
+                    {{action}}
+                {% endif %}
+            {% endfor %}
+        </h4>
         <br>
-        <h4>Receiver's available actions: <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>, <b>E</b>, <b>F</b>, <b>G</b></h4>
-        <br>
-        <h4>Valid actions in this round: <b style="color: green">{{valid_actions}}</b></h4>
-        <h4>Invalid actions in this round: <b style="color: red">{{invalid_actions}}</b></h4>
+        <h4><b>Reminder</b>:</h4>
+        <h4>Actions highlighted in <span style="color: green; font-weight: bold">green</span> are the <span style="color: green; font-weight: bold">valid</span> actions.</h4>
         <br>
         <hr>
         <br>
@@ -44,15 +53,13 @@
         </form>
     </div>
     <div class="divider"></div>
-    <div class = column1>
+    <div class = column1 style = "display: flex; flex-direction: column; justify-content: center">
+        <h3>Reminder:</h3>
+        <h5>Probability of 5 valid actions: {{player.prob_5}}</h5>
+        <h5>Probability of 2 valid actions: {{prob_2}}</h5>
     </div>
 </div>
-<br>
-<hr>
-<h3>Facts:</h3>
-<h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
-<h4>Probability of 2 valid actions: {{prob_2}}</h4>
-<br><br>
+
 
 {{ endblock }}
 
@@ -79,7 +86,7 @@
         font-size: 22px;
     }
     h5 {
-        font-size: 50px;
+        font-size: 25px;
         text-align: center;
     }
     .column1{

@@ -7,13 +7,16 @@
 <br>
 
 <div class = "row">
-    <div class = column1>
+    <div class = column1 style = "display: flex; flex-direction: column; justify-content: center">
+        <h3>Reminder:</h3>
+        <h5>Probability that the Sender's observed available actions matches the Receiver's available actions: {{player.prob_align_actions}}</h5>
+        <br>
+        <h5>Probability of 5 valid actions: {{player.prob_5}}</h5>
+        <h5>Probability of 2 valid actions: {{prob_2}}</h5>
     </div>
     <div class="divider"></div>
     <div class = column1>
         <h2>You are the {{player.type}}.</h2>
-        <br>
-        <h3>Receiver</h3>
         <br>
         <h4>Actions available: <b>{{receiver_actions}}</b></h4>
         <br>
@@ -58,14 +61,7 @@
     </div>
 
 </div>
-<br>
-<hr>
-<h3>Facts:</h3>
-<h4>Probability that the Sender's observed available actions matches the Receiver's available actions: {{player.prob_align_actions}}</h4>
-<br>
-<h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
-<h4>Probability of 2 valid actions: {{prob_2}}</h4>
-<br><br>
+
 
 {{ endblock }}
 
@@ -93,7 +89,7 @@
     }
     h5 {
         font-size: 25px;
-        color: red;
+        text-align: center;
     }
     .column1{
         float: left;

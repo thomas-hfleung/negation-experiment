@@ -9,15 +9,15 @@
     <div class = column1>
         <h2>You are the {{player.type}}.</h2>
         <br>
-        <h3>Sender</h3>
-        <br>
         <h4>
             Observed Available Actions:
             {% for action in sender_actions %}
                 {% if action in valid_actions %}
                     <span style="color: green; font-weight: bold;">{{ action }}</span>
+                {% elif action in invalid_actions %}
+                    <span style="color: red; font-weight: bold;">{{ action }}</span>
                 {% else %}
-                <b>{{ action }}</b>
+                    {{action}}
                 {% endif %}
             {% endfor %}
         </h4>
@@ -29,8 +29,8 @@
         -->
         <br>
         <h4><b>Reminder</b>:</h4>
-        <h4>Actions highlighted in <span style="color: green; font-weight: bold">green</span> are the valid actions.</h4>
-        <h4>Only the valid actions are always available to the Receiver.</h4>
+        <h4>Actions highlighted in <span style="color: green; font-weight: bold">green</span> are the <span style="color: green; font-weight: bold">valid</span> actions.</h4>
+        <h4>Only the <span style="color: green; font-weight: bold">valid</span> actions are always available to the Receiver.</h4>
         <br>
         <hr>
         <br>
@@ -60,17 +60,14 @@
         </form>
     </div>
     <div class="divider"></div>
-    <div class = column1>
+    <div class = column1 style = "display: flex; flex-direction: column; justify-content: center">
+        <h3>Reminder:</h3>
+        <h5>Probability that the Sender's observed available actions matches the Receiver's available actions: {{player.prob_align_actions}}</h5>
+        <br>
+        <h5>Probability of 5 valid actions: {{player.prob_5}}</h5>
+        <h5>Probability of 2 valid actions: {{prob_2}}</h5>
     </div>
 </div>
-<br>
-<hr>
-<h3>Facts:</h3>
-<h4>Probability that the Sender's observed available actions matches the Receiver's available actions: {{player.prob_align_actions}}</h4>
-<br>
-<h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
-<h4>Probability of 2 valid actions: {{prob_2}}</h4>
-<br><br>
 
 {{ endblock }}
 
@@ -94,10 +91,10 @@
         text-decoration: underline;
     }
     h4 {
-        font-size: 20px;
+        font-size: 22px;
     }
     h5 {
-        font-size: 50px;
+        font-size: 25px;
         text-align: center;
     }
     .column1{

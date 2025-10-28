@@ -12,7 +12,7 @@ Your app description
 class C(BaseConstants):
     NAME_IN_URL = 'negation_app'
     PLAYERS_PER_GROUP = 2
-    NUM_ROUNDS = 10
+    NUM_ROUNDS = 6
     COST = 4
     INVALID_REWARD = 0
     SHOW_UP_FEE = 10
@@ -115,8 +115,9 @@ class Sender(Page):
     def vars_for_template(player: Player):
         group = player.group
         return dict(
-            valid_actions = ", ".join(json.loads(group.valid_actions)),
-            invalid_actions = ", ".join (json.loads(group.invalid_actions)),
+            actions = ", ".join(['A','B','C','D','E','F','G']),
+            valid_actions = json.loads(group.valid_actions),
+            invalid_actions = json.loads(group.invalid_actions),
             prob_2 = round(1 - player.prob_5, 2)
         )
 
@@ -177,8 +178,10 @@ class Results(Page):
     def vars_for_template(player: Player):
         group = player.group
         return dict(
-            valid_actions = ", ".join(json.loads(group.valid_actions)),
-            invalid_actions=", ".join(json.loads(group.invalid_actions)),
+            actions=", ".join(['A', 'B', 'C', 'D', 'E', 'F', 'G']),
+            valid_actions=json.loads(group.valid_actions),
+            invalid_actions=json.loads(group.invalid_actions),
+            valid_actions_string=", ".join(json.loads(group.valid_actions)),
             possible_rewards=json.loads(group.possible_rewards),
             prob_2=round(1 - player.prob_5, 2)
         )

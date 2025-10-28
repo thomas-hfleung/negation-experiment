@@ -6,7 +6,7 @@
 {{endif}}
 <br>
 <h6>
-    In this round, the valid actions are <b style="color: green">{{valid_actions}}</b>. <br>
+    In this round, the valid actions are <b style="color: green">{{valid_actions_string}}</b>. <br>
     You are your partner both start with <b>{{C.ENDOWMENT}}</b> points. <br>
     {{if group.message == ""}}<b style="color: blue">No message</b>{{else}}The message <b style="color: blue">{{group.message}}</b>{{endif}} was sent and cost <b>{{group.message_cost}}</b> points.<br>
     Action <b style="color: orange">{{group.action}}</b> was chosen, which yields reward <b>{{group.reward}}</b> points to both players. <br><br>
@@ -17,10 +17,21 @@
     <div class = column1>
         <h3>Sender</h3>
         <br>
-        <h4>Receiver's available actions: <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>, <b>E</b>, <b>F</b>, <b>G</b></h4>
+        <h4>
+            Receiver's available actions:
+            {% for action in actions %}
+                {% if action in valid_actions %}
+                    <span style="color: green; font-weight: bold;">{{ action }}</span>
+                {% elif action in invalid_actions %}
+                    <span style="color: red; font-weight: bold;">{{ action }}</span>
+                {% else %}
+                    {{action}}
+                {% endif %}
+            {% endfor %}
+        </h4>
         <br>
-        <h4>Valid actions in this round: <b style="color: green">{{valid_actions}}</b></h4>
-        <h4>Invalid actions in this round: <b style="color: red">{{invalid_actions}}</b></h4>
+        <h4><b>Reminder</b>:</h4>
+        <h4>Actions highlighted in <span style="color: green; font-weight: bold">green</span> are the <span style="color: green; font-weight: bold">valid</span> actions.</h4>
         <br>
         <h4>Sender's message: {{if group.message == ""}}<b style="color: blue">No message</b> {{else}} <b style="color: blue">{{group.message}}</b>{{endif}}</h4>
         <h4>Total cost: {{group.message_cost}} points</h4>
@@ -36,7 +47,7 @@
     <div class = column1>
         <h3>Receiver</h3>
         <br>
-        <h4>Actions available: <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>, <b>E</b>, <b>F</b>, <b>G</b></h4>
+        <h4>Actions available: <b>A</b> , <b>B</b> , <b>C</b> , <b>D</b> , <b>E</b> , <b>F</b> , <b>G</b></h4>
         <br>
         <h4>Receiver's action: <b style="color: orange">{{group.action}}</b></h4>
         <br>
@@ -97,7 +108,7 @@
 <center><button style="font-size: 20px">Next Round</button></center>
 <br>
 <hr>
-<h3>Facts:</h3>
+<h3>Reminder:</h3>
 <h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
 <h4>Probability of 2 valid actions: {{prob_2}}</h4>
 <br><br>
@@ -113,10 +124,6 @@
         font-weight: bold;
         text-decoration: underline;
     }
-    h2 {
-        font-size: 25px;
-        font-weight: bold;
-    }
     h3 {
         font-size: 25px;
         font-weight: bold;
@@ -125,10 +132,6 @@
     }
     h4 {
         font-size: 22px;
-    }
-    h5 {
-        font-size: 25px;
-        color: red;
     }
     h6 {
         font-size: 25px;

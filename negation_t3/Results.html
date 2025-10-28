@@ -22,16 +22,18 @@
             Observed Available Actions:
             {% for action in sender_actions %}
                 {% if action in valid_actions %}
-                    <span style="color: green; font-weight: bold;">{{action}}</span>
+                    <span style="color: green; font-weight: bold;">{{ action }}</span>
+                {% elif action in invalid_actions %}
+                    <span style="color: red; font-weight: bold;">{{ action }}</span>
                 {% else %}
-                <b>{{action}}</b>
+                    {{action}}
                 {% endif %}
             {% endfor %}
         </h4>
         <br>
         <h4><b>Reminder</b>:</h4>
-        <h4>Actions highlighted in <span style="color: green; font-weight: bold">green</span> are the valid actions.</h4>
-        <h4>Only the valid actions are always available to the Receiver.</h4>
+        <h4>Actions highlighted in <span style="color: green; font-weight: bold">green</span> are the <span style="color: green; font-weight: bold">valid</span> actions.</h4>
+        <h4>Only the <span style="color: green; font-weight: bold">valid</span> actions are always available to the Receiver.</h4>
 
         <br>
         <h4>Sender's message: {{if group.message == ""}}<b style="color: blue">No message</b> {{else}} <b style="color: blue">{{group.message}}</b>{{endif}}</h4>
@@ -103,7 +105,7 @@
 <br>
 
 <hr>
-<h3>Facts:</h3>
+<h3>Reminder:</h3>
 <h4>Probability that the Sender's observed available actions matches the Receiver's available actions: {{player.prob_align_actions}}</h4>
 <br>
 <h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
@@ -120,10 +122,6 @@
         font-weight: bold;
         text-decoration: underline;
     }
-    h2 {
-        font-size: 25px;
-        font-weight: bold;
-    }
     h3 {
         font-size: 25px;
         font-weight: bold;
@@ -132,10 +130,6 @@
     }
     h4 {
         font-size: 22px;
-    }
-    h5 {
-        font-size: 25px;
-        color: red;
     }
     h6 {
         font-size: 25px;
