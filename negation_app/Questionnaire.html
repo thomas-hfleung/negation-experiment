@@ -1,0 +1,238 @@
+{{ block content }}
+<h1>Questionnaire</h1>
+<br>
+<h3>{{ formfield "Q_gender" }}</h3>
+{{ formfield 'Q_gender_other' label=" " }}
+<h4>2. What is your ethnicity (select all that apply)?</h4>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="True" name="Q_eth_amnative">
+    <label class="form-check-label">
+    American Indian or Alaska Native
+    </label>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="True" name="Q_eth_asian">
+    <label class="form-check-label">
+    Asian
+    </label>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="True" name="Q_eth_black">
+    <label class="form-check-label">
+    Black or African American
+    </label>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="True" name="Q_eth_pacific">
+    <label class="form-check-label">
+    Native Hawaiian or other Pacific Islander
+    </label>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="True" name="Q_eth_white">
+    <label class="form-check-label">
+    White
+    </label>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="True" name="Q_eth_prefer_not">
+    <label class="form-check-label">
+    Prefer not to answer
+    </label>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="True" name="Q_eth_other_option">
+    <label class="form-check-label">
+    Other (Please specify)
+    </label>
+    {{ formfield 'Q_eth_other' label=" " }}
+</div>
+
+
+<div id="ethnicity-warning" style="color:red; display:none; margin-top:8px; font-size: 20px; font-weight: bold">
+  Please select at least one option.
+</div>
+<br>
+
+<h3>{{ formfield "Q_native_lang" }}</h3><br>
+<h3>{{ formfield "Q_year" }}</h3>
+{{ formfield 'Q_year_other' label=" " }}
+<h4>2. What is your major (select all that apply)?</h4>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="True" name="Q_major_busi">
+    <label class="form-check-label">
+    Business
+    </label>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="True" name="Q_major_econ">
+    <label class="form-check-label">
+    Economics
+    </label>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="True" name="Q_major_eng">
+    <label class="form-check-label">
+    Engineering
+    </label>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="True" name="Q_major_hum">
+    <label class="form-check-label">
+    Humanities
+    </label>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="True" name="Q_major_sci">
+    <label class="form-check-label">
+    Science
+    </label>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="True" name="Q_major_sosci">
+    <label class="form-check-label">
+    Social Science
+    </label>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="True" name="Q_major_undeclared">
+    <label class="form-check-label">
+    Undeclared
+    </label>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="True" name="Q_major_prefer_not">
+    <label class="form-check-label">
+    Prefer not to answer
+    </label>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" value="True" name="Q_major_other_option">
+    <label class="form-check-label">
+    Other (Please specify)
+    </label>
+    {{ formfield 'Q_major_other' label=" " }}
+</div>
+
+
+<div id="ethnicity-warning" style="color:red; display:none; margin-top:8px; font-size: 20px; font-weight: bold">
+  Please select at least one option.
+</div>
+<h3>{{ formfield 'Q_comments'}}</h3>
+<br>
+<button>Next</button>
+{{ endblock }}
+
+{% block app_styles %}
+<style>
+    h1 {
+        font-size: 35px;
+        text-align: center;
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    h3 {
+        font-size: 20px;
+    }
+    h4 {
+        font-size: 25px;
+        font-weight: bold;
+    }
+    p {
+        font-size: 20px;
+    }
+    .form-check-label {
+        font-size: 20px;
+    }
+
+</style>
+{%endblock%}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("[name$='_other']").forEach(el => {
+        el.closest("div")?.style?.setProperty("display", "none");
+    });
+    // List all your field base names
+    const questionPrefixes = [
+        "Q_gender",
+        "Q_eth",
+        "Q_native_lang",
+        "Q_year",
+        "Q_major"
+    ];
+
+    questionPrefixes.forEach(prefix => {
+        const radios = document.getElementsByName(prefix);
+        const otherInput = document.querySelector(`[name='${prefix}_other']`);
+
+        if (!radios || !otherInput) return;
+
+        // Hide the "Other" text box initially
+        otherInput.closest("div")?.style?.setProperty("display", "none");
+
+        // Add listener for radio change
+        radios.forEach(radio => {
+            radio.addEventListener("change", () => {
+                // Find the "Other" radio — assume its value is the one for "Other"
+                // You can adjust if needed (e.g., if you want to check radio.value === '6')
+                const otherSelected = (
+                    radio.checked && radio.labels[0].textContent.includes("Other")
+                );
+
+                if (otherSelected) {
+                    otherInput.closest("div")?.style?.setProperty("display", "block");
+                    otherInput.required = true;
+                } else {
+                    otherInput.closest("div")?.setAttribute("style", "display:none;");
+                    otherInput.required = false;
+                    otherInput.value = "";
+                }
+            });
+        });
+    });
+    function getWrapper(el) {
+        if (!el) return null;
+        return el.closest("div.form-group") || el.closest("div") || el.parentElement;
+    }
+
+    function wireCheckboxOther(checkboxName, otherFieldName) {
+        const checkbox = document.querySelector(`input[name='${checkboxName}']`);
+        const otherInput = document.querySelector(`[name='${otherFieldName}']`);
+        if (!checkbox || !otherInput) return;
+
+        function update() {
+            const wrapper = getWrapper(otherInput);
+            if (checkbox.checked) {
+                if (wrapper) wrapper.style.display = "block";
+                otherInput.required = true;
+            } else {
+                if (wrapper) wrapper.style.display = "none";
+                otherInput.required = false;
+                otherInput.value = "";
+            }
+        }
+        checkbox.addEventListener("change", update);
+        update();
+    }
+    wireCheckboxOther("Q_eth_other_option", "Q_eth_other");
+    wireCheckboxOther("Q_major_other_option", "Q_major_other");
+
+
+    const checkboxes = document.querySelectorAll('input[name^="Q_eth_"]');
+    const form = document.getElementById('form');  // oTree gives the main form this id
+    const eth_warning = document.getElementById("ethnicity-warning");
+
+    form.addEventListener('submit', function(event) {
+        const checked = [...checkboxes].some(cb => cb.checked);
+        if (!checked) {
+            event.preventDefault();
+            eth_warning.style.display = "block";
+        } else {
+            eth_warning.style.display = "none"; // hide warning if valid
+        }
+    });
+});
+</script>
+{% endblock %}

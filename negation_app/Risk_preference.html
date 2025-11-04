@@ -1,0 +1,45 @@
+{{ block content }}
+<h1>Questionnaire</h1>
+<br>
+<p>
+    Make a choice for each of the rows below.
+    A random row will be chosen and you will be paid according to your choice of lottery for that row.
+</p>
+
+{{ include C.table_template }}
+
+<input type="hidden" name="RA_raw_responses" id="RA_raw_responses">
+
+<button type="button" class="btn btn-primary" onclick="submitForm()">Submit</button>
+
+<script>
+    function submitForm() {
+        let form = document.getElementById('form');
+        if (!form.reportValidity()) return;
+        let responses = {};
+        for (let radio of document.getElementsByClassName('radio-choice')) {
+            if (radio.checked) {
+                responses[radio.name] = radio.value === '1';
+            }
+        }
+        document.getElementById('RA_raw_responses').value = JSON.stringify(responses);
+        form.submit();
+    }
+</script>
+
+{{ endblock }}
+
+{% block app_styles %}
+<style>
+    h1 {
+        font-size: 35px;
+        text-align: center;
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    p {
+        font-size: 20px;
+    }
+
+</style>
+{%endblock%}

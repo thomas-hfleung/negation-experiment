@@ -13,7 +13,7 @@
             Receiver's available actions:
             {% for action in actions %}
                 {% if action in valid_actions %}
-                    <span style="color: green; font-weight: bold;">{{ action }}</span>
+                    <span style="color: blue; font-weight: bold;">{{ action }}</span>
                 {% elif action in invalid_actions %}
                     <span style="color: red; font-weight: bold;">{{ action }}</span>
                 {% else %}
@@ -23,7 +23,7 @@
         </h4>
         <br>
         <h4><b>Reminder</b>:</h4>
-        <h4>Actions highlighted in <span style="color: green; font-weight: bold">green</span> are the <span style="color: green; font-weight: bold">valid</span> actions.</h4>
+        <h4>Actions highlighted in <span style="color: blue; font-weight: bold">blue</span> are the <span style="color: blue; font-weight: bold">valid</span> actions.</h4>
         <br>
         <hr>
         <br>

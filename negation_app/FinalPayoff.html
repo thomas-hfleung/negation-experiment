@@ -3,10 +3,44 @@
 <br>
 <p>
     <strong>Round {{participant.selected_rounds.0}} and {{participant.selected_rounds.1}}</strong> were randomly selected for your payment. <br>
-    Your payoff from these two rounds are <b>{{participant.selected_payoffs.0}} points and {{participant.selected_payoffs.1}} points</b> respectively. <br><br>
-    Your total payment for the experiment is <strong>${{participant.payoff}}</strong> (${{C.SHOW_UP_FEE}} show-up fee included).
+    Your payoff from these two rounds are <b>{{participant.selected_payoffs.0}} points and {{participant.selected_payoffs.1}} points</b> respectively.  <br>
+    The highest payoff {{participant.highest_payoff}} points converted to dollars with a <b>{{C.CONVERSION_RATE}}:1 ratio</b> is <b>${{max_round_payoff}}</b>.
 </p>
+
 <br>
+
+    <p>Here is the row that was randomly chosen in the lottery selection.</p>
+
+    <table class="table table-striped">
+    <tr>
+        <td><b>Lottery 1</b></td>
+        <td><b>Lottery 2</b></td>
+    </tr>
+        {% for t in trials %}
+    <tr>
+        <td {{if not player.RA_chose_safe}} style="background-color: yellow; font-weight: bold;" {{ endif }}>
+            ${{ t.lottery_high_b|to2}} with a probability of {{ t.probability }}%, ${{ t.lottery_low_b|to2 }} otherwise.
+        </td>
+        <td {{if player.RA_chose_safe}} style="background-color: yellow; font-weight: bold;" {{ endif }}>
+            ${{ t.lottery_high_a|to2 }} with a probability of {{ t.probability }}%, ${{ t.lottery_low_a|to2 }} otherwise.
+        </td>
+    </tr>
+        {% endfor %}
+</table>
+
+    <p>
+        {{ if player.RA_chose_safe }}
+        You chose <b>Lottery 2</b> and {{ if player.RA_won_lottery }}won{{ else }}lost{{ endif }} the small lottery,
+        {{ else }}
+        You chose <b>Lottery 1</b> and {{ if player.RA_won_lottery }}won{{ else }}lost{{ endif }} the small lottery, {{ endif }}
+        so your reward from the lottery is <b>${{ player.RA_payoff }}</b>.
+    </p>
+
+    <br><br>
+<h2>
+    Your total payment for the experiment is <strong>${{max_round_payoff}} + ${{player.RA_payoff}} + ${{C.SHOW_UP_FEE}} (show-up fee) = ${{participant.payoff}}</strong>.
+</h2>
+<br><br>
 <table class="table">
   <tr>
     <td style="font-weight: bold">Round</td>
@@ -19,6 +53,8 @@
   </tr>
   {% endfor %}
 </table>
+<br>
+
 
 {{ endblock }}
 
@@ -28,6 +64,10 @@
         font-size: 35px;
         text-align: center;
         font-weight: bold;
+        text-decoration: underline;
+    }
+    h2 {
+        font-size: 25px;
         text-decoration: underline;
     }
     p {

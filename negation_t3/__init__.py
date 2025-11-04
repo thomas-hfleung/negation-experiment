@@ -1,6 +1,7 @@
 from otree.api import *
 import random
 import json
+import math
 
 
 
@@ -15,8 +16,9 @@ class C(BaseConstants):
     NUM_ROUNDS = 6
     COST = 4
     INVALID_REWARD = 0
-    SHOW_UP_FEE = 10
+    SHOW_UP_FEE = 7
     ENDOWMENT = COST * 10
+    CONVERSION_RATE = 4
 
 
 class Subsession(BaseSubsession):
@@ -188,7 +190,8 @@ class Results(Page):
             p1 = player.in_round(selected_rounds[0]).payoff
             p2 = player.in_round(selected_rounds[1]).payoff
             participant.selected_payoffs = [p1, p2]
-            participant.payoff = max(p1, p2) + C.SHOW_UP_FEE
+            participant.highest_payoff = max(p1, p2)
+            participant.payoff = math.ceil(participant.highest_payoff/C.CONVERSION_RATE + C.SHOW_UP_FEE)
 
     def vars_for_template(player: Player):
         group = player.group
@@ -224,7 +227,8 @@ class FinalPayoff(Page):
                     'is_selected': p.round_number - 1 in selected_rounds
                 })
         return dict(
-            rounds_data=rounds_data
+            rounds_data=rounds_data,
+            max_round_payoff = player.participant.payoff - C.SHOW_UP_FEE
         )
 
 
