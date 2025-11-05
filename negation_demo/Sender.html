@@ -1,0 +1,246 @@
+{{ block content }}
+{{if player.round_number <= 1}}
+<h1>Practice Round</h1>
+{{else}}
+    <h1>Round {{player.play_round_number}}</h1>
+{{endif}}
+<br>
+<div class = "row">
+    <div class = column1>
+        <h2>You are the {{player.type}}.</h2>
+        <br>
+        <h4>
+            Receiver's available actions:
+            {% for action in actions %}
+                {% if action in valid_actions %}
+                    <span style="color: blue; font-weight: bold;">{{ action }}</span>
+                {% elif action in invalid_actions %}
+                    <span style="color: red; font-weight: bold;">{{ action }}</span>
+                {% else %}
+                    {{action}}
+                {% endif %}
+            {% endfor %}
+        </h4>
+        <br>
+        <h4><b>Reminder</b>:</h4>
+        <h4>Actions highlighted in <span style="color: blue; font-weight: bold">blue</span> are the <span style="color: blue; font-weight: bold">valid</span> actions.</h4>
+        <br>
+        <hr>
+        <br>
+        <h4>Symbols to compose your message:</h4>
+        <div id="buttons">
+          <!-- Buttons will go here -->
+        </div><br><br>
+        <h4>Cost: {{C.COST}} points per symbol (First one is free)</h4>
+        <br>
+        <h4>Your message choice:</h4>
+        <div class = "row">
+            <div class = "column2">
+                <div id="output"></div>
+            </div>
+            <div class = "column3">
+                <button id="backspace-button" type="button" style="border-color: white; font-size: 20px;">Delete</button>
+            </div>
+        </div>
+        <div id="error-message"></div>
+        <br>
+        <div id="cost-display">Total cost: 0 points</div>
+        <br>
+
+        <form method="post">
+            <input type="hidden" name="message" id="message-field">
+            <button id="submit-message-button" type="button">Send Message</button>
+        </form>
+    </div>
+    <div class="divider"></div>
+    <div class = column1 style = "display: flex; flex-direction: column; justify-content: center">
+        <h3>Reminder:</h3>
+        <h5>Probability of 5 valid actions: {{player.prob_5}}</h5>
+        <h5>Probability of 2 valid actions: {{prob_2}}</h5>
+    </div>
+</div>
+
+
+{{ endblock }}
+
+
+{% block app_styles %}
+<style>
+    h1 {
+        font-size: 35px;
+        text-align: center;
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    h2 {
+        font-size: 25px;
+        font-weight: bold;
+    }
+    h3 {
+        font-size: 25px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: underline;
+    }
+    h4 {
+        font-size: 22px;
+    }
+    h5 {
+        font-size: 25px;
+        text-align: center;
+    }
+    .column1{
+        float: left;
+        width: 48%;
+        padding: 5px;
+        height: auto;
+        font-size: 15px;
+    }
+    .column2{
+        float: left;
+        width: 60%;
+        padding: 10px;
+    }
+    .column3{
+        float: left;
+        width: 40%;
+        padding: 10px;
+    }
+
+    .row {
+        display: flex;
+        justify-content: center;
+        align-items: stretch; /* ensures all children match tallest height */
+        flex-wrap: wrap;      /* allows stacking on small screens */
+    }
+    .divider {
+        float: left;
+        width: 1px;
+        border-left: 1px solid black;    /* color of the line */
+        align-self: stretch;              /* match .column1 height */
+        margin: 0 5px;             /* optional spacing around the line */
+    }
+    td {
+        border: 1px solid black;
+        font-size: 20px;
+        text-align: center;
+    }
+    hr {
+      border:none;
+      border-top:3px dashed black;
+      color:#fff;
+      background-color:#fff;
+      height:1px;
+    }
+    .letter-button {
+        width: 45px;
+        height: 45px;
+        margin: 10px;
+        font-size: 23px;
+        font-weight: bold;
+        border-color: black;
+    }
+    #output {
+      margin-top: 0px;
+      font-size: 24px;
+      font-weight: bold;
+      border: 1px solid #ccc;
+      min-height: 40px;
+      text-align: center;
+    }
+    #backspace-button {
+        margin-top: 5px;
+    }
+    #error-message {
+        font-size: 20px;
+        color: red;
+        margin-bottom: 10px;
+    }
+    #cost-display {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    #submit-message-button {
+        border-color: white;
+        font-size: 25px;
+        background-color: yellowgreen;
+    }
+
+    .otree-body, .container, .content {
+      width: 100% !important;
+      max-width: 70% !important;
+      margin: 0 auto !important;
+      padding: 0 10px; /* optional small horizontal padding */
+    }
+</style>
+{%endblock%}
+
+{% block scripts %}
+<script>
+  const letters = ['#','%','a','b','c','d','e','f','g'];
+  const buttonsDiv = document.getElementById('buttons');
+  const outputDiv = document.getElementById('output');
+  const backspaceBtn = document.getElementById('backspace-button');
+  const errorDiv = document.getElementById('error-message');
+  const submitBtn = document.getElementById('submit-message-button');
+  const costDiv = document.getElementById('cost-display');
+  const costPerSymbol = {{ C.COST }};
+  const maxLength = 10;
+  let errorTimeout;
+
+  function updateCost() {
+    const numSymbols = outputDiv.innerText.length;
+    // First symbol free: only charge for symbols beyond the first
+    const chargeableSymbols = Math.max(0, numSymbols - 1);
+    costDiv.innerText = "Total cost: " + (chargeableSymbols * costPerSymbol) + " points";
+}
+
+  // Create buttons dynamically
+  letters.forEach(letter => {
+    const btn = document.createElement('button');
+    btn.innerText = letter;
+    btn.className = 'letter-button';
+    btn.type = 'button'; // prevents form submission
+    btn.onclick = () => {
+      if (outputDiv.innerText.length < maxLength) {
+        outputDiv.innerText += letter; // append letter
+        clearError();
+        updateCost();
+      } else {
+        showError('Maximum 10 symbols allowed.');
+      }
+    };
+    buttonsDiv.appendChild(btn);
+  });
+
+  backspaceBtn.onclick = () => {
+    outputDiv.innerText = outputDiv.innerText.slice(0, -1);
+    updateCost();
+  };
+
+
+
+  function showError(message) {
+    errorDiv.innerText = message;
+    clearTimeout(errorTimeout); // clear previous timeout if any
+    errorTimeout = setTimeout(() => {
+      errorDiv.innerText = '';
+    }, 3000); // hide after 3 seconds
+  }
+
+  function clearError() {
+    errorDiv.innerText = '';
+    clearTimeout(errorTimeout);
+  }
+
+
+    submitBtn.onclick = () => {
+    const inputField = document.querySelector('input[name="message"]');
+    if (!inputField) return;
+    inputField.value = outputDiv.innerText;  // attach output to form field
+    inputField.form.submit();                // submit the form
+    };
+
+</script>
+
+{{endblock}}

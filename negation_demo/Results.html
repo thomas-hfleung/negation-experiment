@@ -1,0 +1,215 @@
+{{ block content }}
+{{if player.round_number <= 1}}
+<h1>Practice Round - Result</h1>
+{{else}}
+    <h1>Round {{player.play_round_number}} - Result</h1>
+{{endif}}
+<br>
+<h6>
+    In this round, the valid actions are <b style="color: blue">{{valid_actions_string}}</b>. <br>
+    You are your partner both start with <b>{{C.ENDOWMENT}}</b> points. <br>
+    {{if group.message == ""}}<b style="color: saddlebrown">No message</b>{{else}}The message <b style="color: saddlebrown">{{group.message}}</b>{{endif}} was sent and cost <b>{{group.message_cost}}</b> points.<br>
+    Action <b style="color: orange">{{group.action}}</b> was chosen, which yields reward <b>{{group.reward}}</b> points to both players. <br><br>
+    <b>You and your partner both get {{C.ENDOWMENT}} - {{group.message_cost}} + {{group.reward}} = {{player.payoff}} points for this round.</b>
+</h6>
+<br><br>
+<div class = "row">
+    <div class = column1>
+        <h3>Sender</h3>
+        <br>
+        <h4>
+            Receiver's available actions:
+            {% for action in actions %}
+                {% if action in valid_actions %}
+                    <span style="color: blue; font-weight: bold;">{{ action }}</span>
+                {% elif action in invalid_actions %}
+                    <span style="color: red; font-weight: bold;">{{ action }}</span>
+                {% else %}
+                    {{action}}
+                {% endif %}
+            {% endfor %}
+        </h4>
+        <br>
+        <h4><b>Reminder</b>:</h4>
+        <h4>Actions highlighted in <span style="color: blue; font-weight: bold">blue</span> are the <span style="color: blue; font-weight: bold">valid</span> actions.</h4>
+        <br>
+        <h4>Sender's message: {{if group.message == ""}}<b style="color: saddlebrown">No message</b> {{else}} <b style="color: saddlebrown">{{group.message}}</b>{{endif}}</h4>
+        <h4>Total cost: {{group.message_cost}} points</h4>
+        <br>
+        <hr>
+        <br>
+        <h4>Symbols to compose your message:</h4>
+        <div id="buttons">
+        </div><br><br>
+        <h4>Cost: {{C.COST}} points per symbol (First one is free)</h4>
+    </div>
+    <div class="divider"></div>
+    <div class = column1>
+        <h3>Receiver</h3>
+        <br>
+        <h4>Actions available: <b>A</b> , <b>B</b> , <b>C</b> , <b>D</b> , <b>E</b> , <b>F</b> , <b>G</b></h4>
+        <br>
+        <h4>Receiver's action: <b style="color: orange">{{group.action}}</b></h4>
+        <br>
+        <hr>
+        <br>
+        <h4>Possible rewards:</h4>
+        <center>
+        <table class="table">
+            <colgroup>
+                <col style="width: 35%;">   <!-- Action column -->
+                <col style="width: 35%;">   <!-- If valid column -->
+                <col style="width: 30%;">   <!-- If invalid column -->
+            </colgroup>
+            <tr>
+                <td style="font-weight: bold">Action</td>
+                <td style="font-weight: bold">If valid</td>
+                <td style="font-weight: bold">If invalid</td>
+            </tr>
+            <tr>
+                <td {% if group.action == "A" %}style="background-color: orange;"{% endif %}><button type="button" class="action-button" data-letter="A" id="action-button" {% if group.action == "A" %}style="background-color: orange;"{% endif %}>A</button></td>
+                <td {% if "A" in valid_actions and group.action == "A"%}style="background-color: blue; color: white;"{% endif %}>{{possible_rewards.0}}</td>
+                <td {% if "A" not in valid_actions and group.action == "A"%}style="background-color: red;"{% endif %}>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td {% if group.action == "B" %}style="background-color: orange;"{% endif %}><button type="button" class="action-button" data-letter="B" id="action-button" {% if group.action == "B" %}style="background-color: orange;"{% endif %}>B</button></td>
+                <td {% if "B" in valid_actions and group.action == "B"%}style="background-color: blue; color: white;"{% endif %}>{{possible_rewards.1}}</td>
+                <td {% if "B" not in valid_actions and group.action == "B"%}style="background-color: red;"{% endif %}>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td {% if group.action == "C" %}style="background-color: orange;"{% endif %}><button type="button" class="action-button" data-letter="C" id="action-button" {% if group.action == "C" %}style="background-color: orange;"{% endif %}>C</button></td>
+                <td {% if "C" in valid_actions and group.action == "C"%}style="background-color: blue; color: white;"{% endif %}>{{possible_rewards.2}}</td>
+                <td {% if "C" not in valid_actions and group.action == "C"%}style="background-color: red;"{% endif %}>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td {% if group.action == "D" %}style="background-color: orange;"{% endif %}><button type="button" class="action-button" data-letter="D" id="action-button" {% if group.action == "D" %}style="background-color: orange;"{% endif %}>D</button></td>
+                <td {% if "D" in valid_actions and group.action == "D"%}style="background-color: blue; color: white;"{% endif %}>{{possible_rewards.3}}</td>
+                <td {% if "D" not in valid_actions and group.action == "D"%}style="background-color: red;"{% endif %}>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td {% if group.action == "E" %}style="background-color: orange;"{% endif %}><button type="button" class="action-button" data-letter="E" id="action-button" {% if group.action == "E" %}style="background-color: orange;"{% endif %}>E</button></td>
+                <td {% if "E" in valid_actions and group.action == "E"%}style="background-color: blue; color: white;"{% endif %}>{{possible_rewards.4}}</td>
+                <td {% if "E" not in valid_actions and group.action == "E"%}style="background-color: red;"{% endif %}>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td {% if group.action == "F" %}style="background-color: orange;"{% endif %}><button type="button" class="action-button" data-letter="F" id="action-button" {% if group.action == "F" %}style="background-color: orange;"{% endif %}>F</button></td>
+                <td {% if "F" in valid_actions and group.action == "F"%}style="background-color: blue; color: white;"{% endif %}>{{possible_rewards.5}}</td>
+                <td {% if "F" not in valid_actions and group.action == "F"%}style="background-color: red;"{% endif %}>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td {% if group.action == "G" %}style="background-color: orange;"{% endif %}><button type="button" class="action-button" data-letter="G" id="action-button" {% if group.action == "G" %}style="background-color: orange;"{% endif %}>G</button></td>
+                <td {% if "G" in valid_actions and group.action == "G"%}style="background-color: blue; color: white;"{% endif %}>{{possible_rewards.6}}</td>
+                <td {% if "G" not in valid_actions and group.action == "G"%}style="background-color: red;"{% endif %}>{{C.INVALID_REWARD}}</td>
+            </tr>
+        </table>
+            </center>
+    </div>
+</div><br>
+<center><button style="font-size: 20px">Next Round</button></center>
+<br>
+<hr>
+<h3>Reminder:</h3>
+<h4>Probability of 5 valid actions: {{player.prob_5}}</h4>
+<h4>Probability of 2 valid actions: {{prob_2}}</h4>
+<br><br>
+
+{{ endblock }}
+
+
+{% block app_styles %}
+<style>
+    h1 {
+        font-size: 35px;
+        text-align: center;
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    h3 {
+        font-size: 25px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: underline;
+    }
+    h4 {
+        font-size: 22px;
+    }
+    h6 {
+        font-size: 25px;
+        text-align: center;
+    }
+    .column1{
+        float: left;
+        width: 48%;
+        padding: 5px;
+        height: auto;
+        font-size: 15px;
+    }
+    .row {
+        display: flex;
+        justify-content: center;
+        align-items: stretch; /* ensures all children match tallest height */
+        flex-wrap: wrap;      /* allows stacking on small screens */
+    }
+    .divider {
+        float: left;
+        width: 1px;
+        border-left: 1px solid black;    /* color of the line */
+        align-self: stretch;              /* match .column1 height */
+        margin: 0 5px;             /* optional spacing around the line */
+    }
+    td {
+        border: 1px solid black;
+        font-size: 20px;
+        text-align: center;
+        vertical-align: middle;
+    }
+    hr {
+      border:none;
+      border-top:3px dashed black;
+      color:#fff;
+      background-color:#fff;
+      height:1px;
+    }
+    .letter-button {
+        width: 45px;
+        height: 45px;
+        margin: 10px;
+        font-size: 23px;
+        font-weight: bold;
+        border-color: black;
+    }
+    #action-button {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .otree-body, .container, .content {
+      width: 100% !important;
+      max-width: 70% !important;
+      margin: 0 auto !important;
+      padding: 0 10px; /* optional small horizontal padding */
+    }
+</style>
+{%endblock%}
+
+{% block scripts %}
+<script>
+  const letters = ['#','%','a','b','c','d','e','f','g'];
+  const buttonsDiv = document.getElementById('buttons');
+
+  // Create buttons dynamically
+  if (buttonsDiv) {
+      letters.forEach(letter => {
+        const btn = document.createElement('button');
+        btn.innerText = letter;
+        btn.className = 'letter-button';
+        btn.type = 'button'; // prevents form submission
+        buttonsDiv.appendChild(btn);
+      });
+  }
+</script>
+
+{{endblock}}
+
+

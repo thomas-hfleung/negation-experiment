@@ -1,0 +1,28 @@
+<table class="table table-striped">
+    <tr>
+        <th></th>
+        <th><b>Lottery 1</b></th>
+        <th>Or...</th>
+        <th><b>Lottery 2</b></th>
+    </tr>
+    {% for t in trials %}
+    <tr>
+        <td>
+            {% if t.chose_safe == None %}
+            <input type="radio" name="{{ t.id }} - {{ t.probability }}" value="0" required class="radio-choice">
+            {% endif %}
+        </td>
+        <td>
+            ${{ t.lottery_high_b|to2}} with a probability of {{ t.probability }}%, ${{ t.lottery_low_b|to2 }} otherwise.
+        </td>
+        <td>
+            {% if t.chose_safe == None %}
+            <input type="radio" name="{{ t.id }} - {{ t.probability }}" value="1" required class="radio-choice">
+            {% endif %}
+        </td>
+        <td>
+            ${{ t.lottery_high_a|to2 }} with a probability of {{ t.probability }}%, ${{ t.lottery_low_a|to2 }} otherwise.
+        </td>
+    </tr>
+    {% endfor %}
+</table>

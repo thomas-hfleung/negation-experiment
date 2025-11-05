@@ -1,0 +1,512 @@
+{{ block content }}
+<head>
+  <title>Instructions</title>
+</head>
+<body>
+  {{ if form.errors }}
+        <div class="alert alert-danger" role="alert">
+            <h6 class="alert-heading">Some of the answers are incorrect, please read the instructions carefully again.</h6>
+        </div>
+    {{ endif }}
+  <h1><u>Instructions</u></h1>
+  <br>
+  <p>
+    Welcome to the experiment. This experiment studies decision making in pairs of individuals.
+    The experiment will last approximately one and a half hours. There will be
+    <span class="red">{{num_playrounds}}</span> rounds, and in each round you will be making one decision.
+    Please read these instructions carefully. The cash payment you will receive at the end of the
+    experiment will depend on the decisions you make. You will not learn
+    the identity of any participants, nor will any participants learn your identity, even after the end of the experiment.
+  </p>
+
+  <h3>Your Role and Your Partner</h3>
+  <p>
+    There are <span class="red">{{num_players}}</span> participants in today's session. Half of the participants will be randomly assigned
+    to the role of a <b>Sender</b>. The other half will be randomly assigned to the role of a <b>Receiver</b>.
+    <b>Your role stays the same throughout the experiment.</b> Each Sender will be paired with a Receiver so that
+    <span class="red">{{num_groups}}</span> pairs are formed. <b>The pairs stay the same throughout the entire experiment too.</b>
+  </p>
+
+  <h3>Actions and Reward</h3>
+  <p>
+    There are seven actions <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>,
+    <b>E</b>, <b>F</b>, and <b>G</b> – and seven positive rewards, 100, 90, 80, 70, 60, 50, and 40 points.
+  </p>
+  <p>
+    In each round, the computer randomly assigns rewards to actions. Each of the seven rewards is assigned to one of
+    the seven actions. At the same time, the computer randomly determines which actions are <b>valid</b>. There are either <b>five valid actions</b>
+    or <b>two valid actions</b> with the probability of having five valid actions as <b>{{player.prob_5}}</b>. The reward from an action that is not valid is 0 points instead of the assigned reward.
+  </p>
+  <p>
+    Both participants in the same pair obtain the same reward. The reward is determined jointly by the <b>Action</b>
+    taken and the <b>Validity</b> of that action. For your pair to receive a positive reward, the receiver must take an action that is <b>valid</b>.
+      Both players are endowed with {{C.ENDOWMENT}} points in each round.
+  </p>
+
+
+  <h3>The Sender’s Decision</h3>
+  <p>
+    If you are a Sender, only you will learn which actions are <b>valid</b>. You will not learn the assignment of rewards to actions.
+    After learning which actions are valid, you choose a <b>message</b> to send to the Receiver.
+  </p>
+  <p>
+    Each message is a string of up to 10 symbols. You can freely assemble your message using the symbols:
+    <b>%</b>, <b>#</b>, <b>a</b>, <b>b</b>, <b>c</b>, <b>d</b>, <b>e</b>, <b>f</b>, or <b>g</b> by clicking the corresponding buttons.
+    You can change your message by using the “Delete” button. Once you have finished assembling your message,
+    you can click the “Send Message” button. You are allowed to send an empty message. The receiver will see "No message" when that is the case.
+  </p>
+  <p>
+    The first symbol in your message is costless. Each additional symbol in the message that you send <b>costs</b>
+    both you and the Receiver <span class="red">{{C.COST}}</span> points. An example of the screen a Sender will see is as follows.
+  </p>
+  <br>
+  <div class = "row">
+    <div class = column1>
+        <h5>Sender</h5>
+        <br>
+        <h4>Receiver's available actions: <b style = "color: red">A</b> , <b style = "color: blue">B</b> , <b style = "color: red">C</b> , <b style = "color: red">D</b> , <b style = "color: red">E</b> , <b style = "color: red">F</b> , <b style = "color: blue">G</b></h4>
+         <br>
+        <h4><b>Reminder</b>:</h4>
+        <h4>Actions highlighted in <span style="color: blue; font-weight: bold">blue</span> are the <span style="color: blue; font-weight: bold">valid</span> actions.</h4>
+        <br>
+        <hr>
+        <br>
+        <h4>Symbols to compose your message:</h4>
+        <div id="buttons">
+          <!-- Buttons will go here -->
+        </div><br><br>
+        <h4>Cost: {{C.COST}} points per symbol (First one is free)</h4>
+        <br>
+        <h4>Your message choice:</h4>
+        <div class = "row">
+            <div class = "column2">
+                <div id="output"></div>
+            </div>
+            <div class = "column3">
+                <button id="backspace-button" type="button" style="border-color: white; font-size: 20px;">Delete</button>
+            </div>
+        </div>
+        <div id="error-message-sender"></div>
+        <br>
+        <div id="cost-display">Total cost: 0 points</div>
+        <br>
+
+        <form method="post">
+            <input type="hidden" name="message" id="message-field">
+            <button id="submit-message-button" type="button">Send Message</button>
+        </form>
+    </div>
+</div>
+  <br>
+
+  <h3>The Receiver’s Decision</h3>
+  <p>
+    If you are a Receiver, only you will see the <b>assignment of rewards to actions</b>. You can also observe the message from the Sender.
+    Each action is assigned a different reward from among 100, 90, 80, 70, 60, 50, and 40 points.
+  </p>
+  <p>
+    If you choose an action that is <b>valid</b>, both you and the Sender will receive the reward assigned to that action.
+    If you choose an invalid action, your reward and the Sender’s reward is {{C.INVALID_REWARD}} points. You can choose the action by clicking the corresponding button.
+    An example of the screen a Receiver will see is as follows.
+  </p>
+  <br>
+  <div class = "row">
+    <div class = column4>
+        <h5>Receiver</h5>
+        <br>
+        <h4>Actions available: <b>A</b> , <b>B</b> , <b>C</b> , <b>D</b> , <b>E</b> , <b>F</b> , <b>G</b></h4>
+        <br>
+        <h4>Sender's message: <b style="color: saddlebrown">ab</b></h4>
+        <br>
+        <hr>
+        <br>
+        <h4>Possible rewards:</h4>
+        <center>
+        <table class="table">
+            <colgroup>
+                <col style="width: 35%;">   <!-- Action column -->
+                <col style="width: 35%;">   <!-- If valid column -->
+                <col style="width: 30%;">   <!-- If invalid column -->
+            </colgroup>
+            <tr>
+                <td style="font-weight: bold">Action</td>
+                <td style="font-weight: bold">If valid</td>
+                <td style="font-weight: bold">If invalid</td>
+            </tr>
+            <tr>
+                <td><button type="button" class="action-button" data-letter="A" id="action-button">A</button></td>
+                <td>{{possible_rewards.0}}</td>
+                <td>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td><button type="button" class="action-button" data-letter="B" id="action-button">B</button></td>
+                <td>{{possible_rewards.1}}</td>
+                <td>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td><button type="button" class="action-button" data-letter="C" id="action-button">C</button></td>
+                <td>{{possible_rewards.2}}</td>
+                <td>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td><button type="button" class="action-button" data-letter="D" id="action-button">D</button></td>
+                <td>{{possible_rewards.3}}</td>
+                <td>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td><button type="button" class="action-button" data-letter="E" id="action-button">E</button></td>
+                <td>{{possible_rewards.4}}</td>
+                <td>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td><button type="button" class="action-button" data-letter="F" id="action-button">F</button></td>
+                <td>{{possible_rewards.5}}</td>
+                <td>{{C.INVALID_REWARD}}</td>
+            </tr>
+            <tr>
+                <td><button type="button" class="action-button" data-letter="G" id="action-button">G</button></td>
+                <td>{{possible_rewards.6}}</td>
+                <td>{{C.INVALID_REWARD}}</td>
+            </tr>
+        </table>
+            </center>
+        <h4>Your action choice:</h4>
+        <div id="receiver-output"></div>
+        <div id="error-message-receiver"></div>
+
+        <form method="post">
+            <input type="hidden" name="action" id="action-field">
+            <button id="submit-action-button" type="button">Submit Choice</button>
+        </form>
+    </div>
+
+</div>
+  <br>
+
+  <h3>Information Feedback</h3>
+  <p>
+      The payoff you obtain in each round will be the <b>initial endowment ({{C.ENDOWMENT}} points) + assigned reward - cost of message</b>. Again remember that you will only
+      obtain the assigned reward if the action is valid, but the cost of message is incurred regardless of the validity of the action.
+    At the end of each round, you will be provided with a summary of what happened in the round, including the assignment
+    of rewards to actions, which actions were valid, the Sender's choice of message, the Receiver's choice of action,
+    the message cost incurred, and your reward for the round.
+  </p>
+
+  <h3>Your Cash Payment</h3>
+  <p>
+      The computer will randomly select <span class="red">2 rounds</span> out of the {{num_playrounds}} to calculate your cash payment.
+      The higher payoff among the 2 will be selected as the payoff of the experiment. The points will be exchanged to dollars with a <b>{{C.CONVERSION_RATE}}:1 ratio</b> rounded up.
+      Your total payment will be the amount you earned in the selected round plus a ${{C.SHOW_UP_FEE}} show-up fee.
+  </p>
+
+  <h3>Quiz and Practice</h3>
+  <p>
+    To ensure your comprehension, we will give you a quiz and a practice round. After answering on your own,
+    we will review the quiz. You will then participate in 1 practice round. At the beginning of the practice round,
+    you will be randomly assigned to the role of either a Sender or a Receiver. Your role in the official rounds
+    will match your practice role.
+  </p>
+
+  <h3>Administration</h3>
+  <p>
+    Your decisions as well as your monetary payment will be kept confidential. Do not discuss your decisions with
+    other participants. At the end, you will receive your cash payment, sign your name for receipt, and may leave.
+  </p>
+  <p>
+    If you have any questions, raise your hand. Otherwise, we will proceed to the quiz.
+  </p>
+
+  <h3>Quiz</h3>
+  <div class="quiz-question">
+    1. I will remain as a Sender or a Receiver in all {{num_playrounds}} rounds.<br>
+    {{formfield "q1"}}
+  </div>
+  <div class="quiz-question">
+    2. I will be paired with the same participant in all {{num_playrounds}} rounds.<br>
+    {{formfield "q2"}}
+  </div>
+  <div class="quiz-question">
+    3. At the start of each round, the Sender, but not the Receiver, will learn which actions are valid.<br>
+    {{formfield "q3"}}
+  </div>
+  <div class="quiz-question">
+    4. The Sender will be responsible for choosing an action for the pair, while the Receiver will be sending messages.<br>
+    {{formfield "q4"}}
+  </div>
+  <div class="quiz-question">
+    5. Only the Sender will pay the cost of the message.<br>
+    {{formfield "q5"}}
+  </div>
+
+  <center><button type="submit">Submit</button></center>
+</body>
+{{ endblock }}
+
+{% block app_styles %}
+
+<style>
+    body {
+      line-height: 1.5;
+      font-size: 20px;
+      margin: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 2em;
+      font-size: 40px;
+      font-weight: bold;
+    }
+    h2, h3 {
+      text-align: center;
+      margin-top: 2em;
+      font-size: 35px;
+    }
+    h5 {
+        font-size: 25px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: underline;
+    }
+    h4 {
+        font-size: 22px;
+    }
+    hr {
+      border:none;
+      border-top:3px dashed black;
+      color:#fff;
+      background-color:#fff;
+      height:1px;
+    }
+    .row {
+        display: flex;
+        justify-content: center;
+        align-items: stretch; /* ensures all children match tallest height */
+        flex-wrap: wrap;      /* allows stacking on small screens */
+    }
+    .column1{
+        width: 46%;
+        padding: 5px;
+        height: auto;
+        font-size: 15px;
+    }
+    .column2{
+        float: left;
+        width: 60%;
+        padding: 10px;
+    }
+    .column3{
+        float: left;
+        width: 40%;
+        padding: 10px;
+    }
+    .column4{
+        width: 46%;
+        padding: 5px;
+        height: auto;
+        font-size: 15px;
+    }
+    .red {
+      color: red;
+      font-weight: bold;
+    }
+    .quiz-question {
+      margin-top: 1em;
+    }
+    .otree-form-errors {
+            display: none;
+        }
+    h6 {
+      text-align: center;
+      font-size: 25px;
+    }
+    .letter-button {
+        width: 45px;
+        height: 45px;
+        margin: 10px;
+        font-size: 23px;
+        font-weight: bold;
+        border-color: black;
+    }
+    #output {
+      margin-top: 0px;
+      font-size: 24px;
+      font-weight: bold;
+      border: 1px solid #ccc;
+      min-height: 40px;
+      text-align: center;
+    }
+    #error-message-sender {
+        font-size: 20px;
+        color: red;
+        margin-bottom: 10px;
+    }
+    #error-message-receiver {
+        font-size: 20px;
+        color: red;
+        margin-bottom: 10px;
+    }
+    #backspace-button {
+        margin-top: 5px;
+    }
+    #cost-display {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    #submit-message-button {
+        border-color: white;
+        font-size: 25px;
+        background-color: yellowgreen;
+    }
+    p {
+      text-align: justify;
+    }
+    .highlight {
+    background-color: orange;
+    }
+    td {
+        border: 1px solid black;
+        font-size: 20px;
+        text-align: center;
+        vertical-align: middle;
+    }
+    #receiver-output {
+      margin-top: 0px;
+      font-size: 24px;
+      font-weight: bold;
+      border: 1px solid #ccc;
+      width: 50px;
+      min-height: 40px;
+      text-align: center;
+    }
+    #submit-action-button {
+        border-color: white;
+        font-size: 25px;
+        background-color: yellowgreen;
+    }
+    #action-button {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .otree-body, .container, .content {
+      width: 100% !important;
+      max-width: 70% !important;
+      margin: 0 auto !important;
+      padding: 0 10px; /* optional small horizontal padding */
+    }
+  </style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const letters = ['#','%','a','b','c','d','e','f','g'];
+  const buttonsDiv = document.getElementById('buttons');
+  const outputDiv = document.getElementById('output');
+  const backspaceBtn = document.getElementById('backspace-button');
+  const errorDivSender = document.getElementById('error-message-sender');
+  const errorDivReceiver = document.getElementById('error-message-receiver');
+  const submitBtn = document.getElementById('submit-message-button');
+  const costDiv = document.getElementById('cost-display');
+  const costPerSymbol = {{ C.COST }};
+  const maxLength = 10;
+  let errorTimeoutSender;
+  let errorTimeoutReceiver;
+
+  function updateCost() {
+    const numSymbols = outputDiv.innerText.length;
+    // First symbol free: only charge for symbols beyond the first
+    const chargeableSymbols = Math.max(0, numSymbols - 1);
+    costDiv.innerText = "Total cost: " + (chargeableSymbols * costPerSymbol) + " points";
+}
+
+  // Create buttons dynamically
+  letters.forEach(letter => {
+    const btn = document.createElement('button');
+    btn.innerText = letter;
+    btn.className = 'letter-button';
+    btn.type = 'button'; // prevents form submission
+    btn.onclick = () => {
+      if (outputDiv.innerText.length < maxLength) {
+        outputDiv.innerText += letter; // append letter
+        clearErrorSender();
+        updateCost();
+      } else {
+        showErrorSender('Maximum 10 symbols allowed.');
+      }
+    };
+    buttonsDiv.appendChild(btn);
+  });
+
+  backspaceBtn.onclick = () => {
+    outputDiv.innerText = outputDiv.innerText.slice(0, -1);
+    updateCost();
+  };
+
+
+
+  function showErrorSender(message) {
+    errorDivSender.innerText = message;
+    clearTimeout(errorTimeoutSender); // clear previous timeout if any
+    errorTimeoutSender = setTimeout(() => {
+      errorDivSender.innerText = '';
+    }, 3000); // hide after 3 seconds
+  }
+
+  function clearErrorSender() {
+    errorDivSender.innerText = '';
+    clearTimeout(errorTimeoutSender);
+  }
+
+  function showErrorReceiver(message) {
+    errorDivReceiver.innerText = message;
+    clearTimeout(errorTimeoutReceiver); // clear previous timeout if any
+    errorTimeoutReceiver = setTimeout(() => {
+      errorDivReceiver.innerText = '';
+    }, 3000); // hide after 3 seconds
+  }
+
+  function clearErrorReceiver() {
+    errorDivReceiver.innerText = '';
+    clearTimeout(errorTimeoutReceiver);
+  }
+
+
+    submitBtn.onclick = () => {
+    const inputField = document.querySelector('input[name="message"]');
+    if (!inputField) return;
+    };
+
+  const actionButtons = document.querySelectorAll(".action-button");
+  const receiverOutput = document.getElementById("receiver-output");
+  const actionsubmitBtn = document.getElementById('submit-action-button');
+
+  if (receiverOutput && actionButtons.length > 0) {
+        actionButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                receiverOutput.innerText = this.innerText; // only one symbol
+                actionButtons.forEach(btn => {
+                btn.closest("tr").classList.remove("highlight");
+                btn.classList.remove("highlight");
+            });
+
+            // Highlight this row and button
+            this.closest("tr").classList.add("highlight");
+            this.classList.add("highlight");
+            });
+        });
+    }
+
+
+    actionsubmitBtn.onclick = () => {
+    const inputField = document.querySelector('input[name="action"]');
+    if (!inputField) return;
+    if (receiverOutput.innerText === '') {
+        showErrorReceiver('Please select an action.');
+        return;
+    }
+  };
+
+</script>
+
+{{endblock}}
