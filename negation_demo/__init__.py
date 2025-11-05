@@ -179,9 +179,9 @@ class StartWaitPage(WaitPage):
         else:
             group.valid_no = 2
         if player[0].round_number == 2:
-            valid = ['A','B','D','E','G']
+            valid = ['B','C','D','F','G']
         elif player[0].round_number == 3:
-            valid = ['B','C']
+            valid = ['A','C']
         else:
             valid = random.sample(letters, group.valid_no)
         valid_sorted = sorted(valid)
