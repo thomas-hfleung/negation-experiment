@@ -33,29 +33,29 @@
   </p>
   <p>
     In each round, the computer randomly assigns positive rewards to actions. Each of the seven positive rewards is assigned to one of the seven actions.
-    At the same time, the computer randomly determines which actions are <b>valid</b>. There are either <b>two valid actions and five invalid actions</b>
-    or <b>five valid actions and two invalid actions</b>, with the probability of having five valid actions as <b>{{player.prob_5}}</b>.
+    At the same time, the computer randomly determines which actions are <b>valid</b>. There are either <b>two valid actions and five other actions</b>
+    or <b>five valid actions and two other actions</b>, with the probability of having five valid actions as <b>{{player.prob_5}}</b>.
   </p>
   <p>
       Both participants in the same pair obtain the <b>same reward</b>. The reward is determined jointly by the <b>Action</b>
       taken and the <b>Validity</b> of that action. For your pair to receive a positive reward, the receiver must take a <b>valid action</b>.
-      The reward from an <b>invalid action</b> is <b>{{C.INVALID_REWARD}} points</b>.
+      The reward from any <b>other action</b> is <b>{{C.INVALID_REWARD}} points</b>.
   </p>
 
 
   <h3>The Sender’s Decision</h3>
   <p>
-    If you are a Sender, only you will learn <b>which actions are valid</b>. You will not learn the assignment of rewards to actions.
+    If you are a Sender, you, but not the receiver, will learn <b>which actions are valid</b>. You will not learn the assignment of rewards to actions.
     After learning which actions are valid, you choose a <b>message</b> to send to the Receiver.
   </p>
   <p>
     Each message is a string of up to 10 symbols. You can <b>freely</b> assemble your message using the symbols:
     <b>$</b>, <b>%</b>, <b>#</b>, <b>a</b>, <b>b</b>, <b>c</b>, <b>d</b>, <b>e</b>, <b>f</b>, or <b>g</b> by clicking the corresponding buttons.
     You can change your message by using the “Delete” button. Once you have finished assembling your message,
-    you can click the “Send Message” button. You are allowed to send an empty message. The receiver will see "<b>No message</b>" when that is the case.
+    you can click the “Send Message” button.
   </p>
   <p>
-    The first symbol in your message is costless. Each additional symbol in the message that you send <b>costs</b>
+    The first symbol in your message is costless. Each additional symbol <b>costs</b>
       both you and the Receiver <b>{{C.COST}} points</b>. Both players are endowed with {{C.ENDOWMENT}} points in each round. An example of the screen a Sender will see is as follows.
   </p>
   <br>
@@ -102,11 +102,11 @@
       If you are a Receiver, you will take <b>one</b> of the seven actions <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>,
       <b>E</b>, <b>F</b>, or <b>G</b>. Each action is assigned a different positive reward from among <b>100, 90, 80, 70, 60, 50, and 40 points</b>.
     You, but not the Sender, will see the <b>assignment of positive rewards to actions</b>.
-    In addition, you observe the message from the Sender, who knows which actions are valid and which actions are invalid.
+    In addition, you observe the message from the Sender, who knows which actions are valid.
   </p>
   <p>
       If you choose a <b>valid action</b>, both you and the Sender will receive the positive reward assigned to that action.
-      If you choose an <b>invalid action</b>, your reward and the Sender’s reward is <b>{{C.INVALID_REWARD}} points</b>.
+      If you choose any <b>other action</b>, your reward and the Sender’s reward is <b>{{C.INVALID_REWARD}} points</b>.
       You can choose an action by clicking the corresponding button. An example of the screen a Receiver will see is as follows.
   </p>
   <br>
@@ -185,17 +185,17 @@
 
   <h3>Information Feedback – for both Sender and Receiver</h3>
   <p>
-      At the end of each round, you will be provided with a summary of what happened in the round, including the assignment of positive rewards to actions,
-      which actions were valid, the Sender’s choice of message, the Receiver’s choice of action, the message cost incurred, and your reward for the round.
+      At the end of each round, you will be provided with a summary of what happened in that round, including the assignment of positive rewards to actions,
+      which actions were valid, the Sender’s choice of message, the Receiver’s choice of action, the message cost incurred, and your reward for that round.
   </p>
 
   <h3>Your Cash Payment</h3>
   <p>
-      The payoff you obtain in each round will be the <b>initial endowment ({{C.ENDOWMENT}} points) + assigned reward - cost of message</b>.
+      In each round both players are <b>endowed with {{C.ENDOWMENT}} points</b>. The <b>payoff in points</b> you obtain in each round will be the <b>endowment</b> minus the <b>message cost</b> plus the <b>reward</b> for that round.
       Again remember that you will only obtain the assigned positive reward if the action is valid, but the cost of message is incurred regardless of the validity of the action.
       The computer will randomly select <span class="red">2 rounds</span> out of the {{num_playrounds}} to calculate your cash payment.
-      The higher payoff among the 2 will be selected as the payoff of the experiment. The points will be exchanged to US dollars with a <b>{{C.CONVERSION_RATE}}:1 ratio</b> rounded up.
-      Your total payment will be the amount you earned in the selected round plus a ${{C.SHOW_UP_FEE}} show-up fee.
+      The higher payoff among the 2 will be selected as the payoff of the experiment. The points you earned will be converted to US dollars at a <b>{{C.CONVERSION_RATE}}:1 ratio</b> rounded up (thus, for example, 100 points correspond to $25.00).
+      Your total cash payment will be the amount you earned in the selected round plus a ${{C.SHOW_UP_FEE}} show-up fee.
   </p>
 
   <h3>Quiz and Practice</h3>
@@ -207,7 +207,7 @@
 
   <h3>Administration</h3>
   <p>
-    Your decisions as well as your monetary payment will be kept confidential. Remember that you have to make your decisions entirely on your own.
+      Your decisions as well as your monetary payment will be kept confidential. Remember that you have to make your decisions entirely on your own.
       Please do not discuss your decisions with any other participants.
   </p>
   <p>
