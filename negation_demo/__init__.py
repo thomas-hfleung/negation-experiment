@@ -11,7 +11,7 @@ Your app description
 
 
 class C(BaseConstants):
-    NAME_IN_URL = 'negation_demo'
+    NAME_IN_URL = 'communication_demo'
     PLAYERS_PER_GROUP = 2
     NUM_ROUNDS = 3
     COST = 4
