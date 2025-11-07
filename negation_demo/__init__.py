@@ -178,7 +178,9 @@ class StartWaitPage(WaitPage):
             group.valid_no=5
         else:
             group.valid_no = 2
-        if player[0].round_number == 2:
+        if player[0].round_number == 1:
+            valid = ['D', 'G']
+        elif player[0].round_number == 2:
             valid = ['B','C','D','F','G']
         elif player[0].round_number == 3:
             valid = ['A','C']
