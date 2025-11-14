@@ -10,7 +10,7 @@
         <h2>You are the {{player.type}}.</h2>
         <br>
         <h4>
-            Observed Available Actions:
+            Observed Actions:
             {% for action in sender_actions %}
                 {% if action in valid_actions %}
                     <span style="color: blue; font-weight: bold;">{{ action }}</span>
@@ -62,10 +62,10 @@
     <div class="divider"></div>
     <div class = column1 style = "display: flex; flex-direction: column; justify-content: center">
         <h3>Reminder:</h3>
-        <h5>Probability that the Sender's observed available actions matches the Receiver's available actions: {{player.prob_align_actions}}</h5>
+        <h5>Probability that the Sender's observed actions matches the Receiver's Available Actions: {{prob_align}}%</h5>
         <br>
-        <h5>Probability of 5 valid actions: {{player.prob_5}}</h5>
-        <h5>Probability of 2 valid actions: {{prob_2}}</h5>
+        <h5>Probability of 5 valid actions: {{prob_5}}%</h5>
+        <h5>Probability of 2 valid actions: {{prob_2}}%</h5>
     </div>
 </div>
 

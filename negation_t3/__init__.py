@@ -94,8 +94,9 @@ class Instructions(Page):
             num_playrounds = C.NUM_ROUNDS - 1,
             num_players = player.session.num_participants,
             num_groups = int(player.session.num_participants/2),
-            prob_2=1 - player.prob_5,
-            prob_not_align = round(1-player.prob_align_actions,2)
+            prob_5= round(player.prob_5 * 100),
+            prob_align = round(player.prob_align_actions * 100),
+            prob_not_align = round((1-player.prob_align_actions) * 100)
         )
 
 class StartWaitPage(WaitPage):
@@ -134,7 +135,9 @@ class Sender(Page):
             sender_actions = ", ".join(json.loads(group.sender_actions)),
             valid_actions = json.loads(group.valid_actions),
             invalid_actions = json.loads(group.invalid_actions),
-            prob_2 = 1-player.prob_5
+            prob_5 = round(player.prob_5 * 100),
+            prob_2 = round(100 - player.prob_5 * 100),
+            prob_align = round(player.prob_align_actions * 100),
         )
 
     @staticmethod
@@ -157,7 +160,9 @@ class Receiver(Page):
         return dict(
             receiver_actions=" , ".join(json.loads(group.receiver_actions)),
             action_reward_pairs = action_reward_pairs,
-            prob_2=1 - player.prob_5
+            prob_5=round(player.prob_5 * 100),
+            prob_2=round(100 - player.prob_5 * 100),
+            prob_align=round(player.prob_align_actions * 100),
         )
 
     @staticmethod
@@ -204,7 +209,9 @@ class Results(Page):
             invalid_actions=json.loads(group.invalid_actions),
             possible_rewards=json.loads(group.possible_rewards),
             action_reward_pairs=action_reward_pairs,
-            prob_2=1 - player.prob_5
+            prob_5=round(player.prob_5 * 100),
+            prob_2=round(100 - player.prob_5 * 100),
+            prob_align=round(player.prob_align_actions * 100),
         )
 
 class AllGroupsWaitPage(WaitPage):
