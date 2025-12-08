@@ -7,7 +7,7 @@
 <br>
 <h6>
     In this round, the valid actions are <b style="color: blue">{{valid_actions_string}}</b>. <br>
-    You are your partner both start with <b>{{C.ENDOWMENT}}</b> points. <br>
+    You and your partner both start with <b>{{C.ENDOWMENT}}</b> points. <br>
     {{if group.message == ""}}<b style="color: saddlebrown">No message</b>{{else}}The message <b style="color: saddlebrown">{{group.message}}</b>{{endif}} was sent and cost <b>{{group.message_cost}}</b> points.<br>
     Action <b style="color: orange">{{group.action}}</b> was chosen, which yields reward <b>{{group.reward}}</b> points to both players. <br>
     <br>
@@ -22,9 +22,9 @@
             Observed Available Actions:
             {% for action in sender_actions %}
                 {% if action in valid_actions %}
-                    <span style="color: blue; font-weight: bold;">{{ action }}</span>
+                    <span style="font-weight: bold; text-decoration: underline">{{ action }}</span>
                 {% elif action in invalid_actions %}
-                    <span style="color: red; font-weight: bold;">{{ action }}</span>
+                    <span style="font-weight: bold;">{{ action }}</span>
                 {% else %}
                     {{action}}
                 {% endif %}
@@ -32,8 +32,8 @@
         </h4>
         <br>
         <h4><b>Reminder</b>:</h4>
-        <h4>Actions highlighted in <span style="color: blue; font-weight: bold">blue</span> are the <span style="color: blue; font-weight: bold">valid</span> actions.</h4>
-        <h4>Only the <span style="color: blue; font-weight: bold">valid</span> actions are always available to the Receiver.</h4>
+        <h4>Actions <span style="text-decoration: underline">underlined</span> are the <span style="font-weight: bold">valid</span> actions.</h4>
+        <h4>Only the <span style="font-weight: bold">valid</span> actions are always available to the Receiver.</h4>
 
         <br>
         <h4>Sender's message: {{if group.message == ""}}<b style="color: saddlebrown">No message</b> {{else}} <b style="color: saddlebrown">{{group.message}}</b>{{endif}}</h4>
@@ -42,7 +42,11 @@
         <hr>
         <br>
         <h4>Symbols to compose your message:</h4>
-        <div id="buttons">
+        <div id="symbol_buttons">
+          <!-- Buttons will go here -->
+        </div>
+        <div id="letter_buttons">
+          <!-- Buttons will go here -->
         </div><br><br>
         <h4>Cost: {{C.COST}} points per symbol (First one is free)</h4>
     </div>
@@ -67,7 +71,7 @@
             <tr>
                 <td style="font-weight: bold">Action</td>
                 <td style="font-weight: bold">If valid</td>
-                <td style="font-weight: bold">If invalid</td>
+                <td style="font-weight: bold">If otherwise</td>
             </tr>
             {% for letter, reward in action_reward_pairs %}
     <tr>
@@ -106,7 +110,7 @@
 
 <hr>
 <h3>Reminder:</h3>
-<h4>Probability that the Sender's observed actions matches the Receiver's Available Actions: {{prob_align}}%</h4>
+<h4>Probability that the seven observed actions matches with the Receiver's: {{prob_align}}%</h4>
 <br>
 <h4>Probability of 5 valid actions: {{prob_5}}%</h4>
 <h4>Probability of 2 valid actions: {{prob_2}}%</h4>
@@ -193,17 +197,29 @@
 
 {% block scripts %}
 <script>
-  letters = ['$','%', '#', 'a','b','c','d','e','f','g','h','j','k','l','m']
-  const buttonsDiv = document.getElementById('buttons');
+  const symbols = ['*','#','%'];
+  const letters = ['a','b','c','d','e','f','g','h','j','k','l','m'];
+  const symbolsDiv = document.getElementById('symbol_buttons');
+  const lettersDiv = document.getElementById('letter_buttons');
 
   // Create buttons dynamically
-  if (buttonsDiv) {
+  if (symbolsDiv) {
+      symbols.forEach(symbol => {
+        const btn = document.createElement('button');
+        btn.innerText = symbol;
+        btn.className = 'letter-button';
+        btn.type = 'button'; // prevents form submission
+        symbolsDiv.appendChild(btn);
+      });
+  }
+
+  if (lettersDiv) {
       letters.forEach(letter => {
         const btn = document.createElement('button');
         btn.innerText = letter;
         btn.className = 'letter-button';
         btn.type = 'button'; // prevents form submission
-        buttonsDiv.appendChild(btn);
+        lettersDiv.appendChild(btn);
       });
   }
 </script>

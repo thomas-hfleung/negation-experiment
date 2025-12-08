@@ -9,7 +9,7 @@
 <div class = "row">
     <div class = column1 style = "display: flex; flex-direction: column; justify-content: center">
         <h3>Reminder:</h3>
-        <h5>Probability that the Sender's observed actions matches the Receiver's Available Actions: {{prob_align}}%</h5>
+        <h5>Probability that the seven observed actions matches with the Receiver's: {{prob_align}}%</h5>
         <br>
         <h5>Probability of 5 valid actions: {{prob_5}}%</h5>
         <h5>Probability of 2 valid actions: {{prob_2}}%</h5>
@@ -35,7 +35,7 @@
             <tr>
                 <td style="font-weight: bold">Action</td>
                 <td style="font-weight: bold">If valid</td>
-                <td style="font-weight: bold">If invalid</td>
+                <td style="font-weight: bold">If otherwise</td>
             </tr>
             {% for action, reward in action_reward_pairs %}
     <tr>

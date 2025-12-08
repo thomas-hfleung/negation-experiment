@@ -13,9 +13,9 @@
             Observed Actions:
             {% for action in sender_actions %}
                 {% if action in valid_actions %}
-                    <span style="color: blue; font-weight: bold;">{{ action }}</span>
+                    <span style="font-weight: bold; text-decoration: underline">{{ action }}</span>
                 {% elif action in invalid_actions %}
-                    <span style="color: red; font-weight: bold;">{{ action }}</span>
+                    <span style="font-weight: bold;">{{ action }}</span>
                 {% else %}
                     {{action}}
                 {% endif %}
@@ -29,13 +29,16 @@
         -->
         <br>
         <h4><b>Reminder</b>:</h4>
-        <h4>Actions highlighted in <span style="color: blue; font-weight: bold">blue</span> are the <span style="color: blue; font-weight: bold">valid</span> actions.</h4>
-        <h4>Only the <span style="color: blue; font-weight: bold">valid</span> actions are always available to the Receiver.</h4>
+        <h4>Actions <span style="text-decoration: underline">underlined</span> are the <span style="font-weight: bold">valid</span> actions.</h4>
+        <h4>Only the <span style="font-weight: bold">valid</span> actions are always available to the Receiver.</h4>
         <br>
         <hr>
         <br>
         <h4>Symbols to compose your message:</h4>
-        <div id="buttons">
+        <div id="symbol_buttons">
+          <!-- Buttons will go here -->
+        </div>
+        <div id="letter_buttons">
           <!-- Buttons will go here -->
         </div><br><br>
         <h4>Cost: {{C.COST}} points per symbol (First one is free)</h4>
@@ -62,7 +65,7 @@
     <div class="divider"></div>
     <div class = column1 style = "display: flex; flex-direction: column; justify-content: center">
         <h3>Reminder:</h3>
-        <h5>Probability that the Sender's observed actions matches the Receiver's Available Actions: {{prob_align}}%</h5>
+        <h5>Probability that the seven observed actions matches with the Receiver's: {{prob_align}}%</h5>
         <br>
         <h5>Probability of 5 valid actions: {{prob_5}}%</h5>
         <h5>Probability of 2 valid actions: {{prob_2}}%</h5>
@@ -183,8 +186,10 @@
 
 {% block scripts %}
 <script>
-  letters = ['$','%', '#', 'a','b','c','d','e','f','g','h','j','k','l','m'];
-  const buttonsDiv = document.getElementById('buttons');
+  symbols = ['*','#','%'];
+  letters = ['a','b','c','d','e','f','g','h','j','k','l','m'];
+  const symbolsDiv = document.getElementById('symbol_buttons');
+  const lettersDiv = document.getElementById('letter_buttons');
   const outputDiv = document.getElementById('output');
   const backspaceBtn = document.getElementById('backspace-button');
   const errorDiv = document.getElementById('error-message');
@@ -202,6 +207,23 @@
 }
 
   // Create buttons dynamically
+  symbols.forEach(symbol => {
+    const btn = document.createElement('button');
+    btn.innerText = symbol;
+    btn.className = 'letter-button';
+    btn.type = 'button'; // prevents form submission
+    btn.onclick = () => {
+      if (outputDiv.innerText.length < maxLength) {
+        outputDiv.innerText += symbol; // append letter
+        clearError();
+        updateCost();
+      } else {
+        showError('Maximum 10 symbols allowed.');
+      }
+    };
+    symbolsDiv.appendChild(btn);
+  });
+
   letters.forEach(letter => {
     const btn = document.createElement('button');
     btn.innerText = letter;
@@ -216,7 +238,7 @@
         showError('Maximum 10 symbols allowed.');
       }
     };
-    buttonsDiv.appendChild(btn);
+    lettersDiv.appendChild(btn);
   });
 
   backspaceBtn.onclick = () => {
@@ -240,12 +262,17 @@
   }
 
 
+    if (submitBtn) {
     submitBtn.onclick = () => {
     const inputField = document.querySelector('input[name="message"]');
     if (!inputField) return;
+    if (outputDiv.innerText === '') {
+        showError('Please enter at least one symbol.');
+        return;
+    }
     inputField.value = outputDiv.innerText;  // attach output to form field
     inputField.form.submit();                // submit the form
-    };
+  };}
 
 </script>
 

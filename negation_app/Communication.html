@@ -296,6 +296,7 @@
     clearTimeout(errorTimeout);
   }
 
+  // submit button with error check
   if (submitBtn) {
     submitBtn.onclick = () => {
     const inputField = document.querySelector('input[name="message"]');
@@ -308,6 +309,14 @@
     inputField.form.submit();                // submit the form
   };
   }
+
+  // submit button without error check
+  submitBtn.onclick = () => {
+    const inputField = document.querySelector('input[name="message"]');
+    if (!inputField) return;
+    inputField.value = outputDiv.innerText;  // attach output to form field
+    inputField.form.submit();                // submit the form
+    };
 
   const actionButtons = document.querySelectorAll(".action-button");
   const receiverOutput = document.getElementById("receiver-output");
@@ -384,3 +393,7 @@
                 <td {% if "G" not in valid_actions %}style="background-color: red;"{% endif %}>{{C.INVALID_REWARD}}</td>
             </tr>
         </table>
+
+
+{{if group.message == ""}}<b style="color: saddlebrown">No message</b> {{else}} <b style="color: saddlebrown">{{group.message}}</b>{{endif}}</h4>
+

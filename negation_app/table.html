@@ -13,7 +13,7 @@
             {% endif %}
         </td>
         <td>
-            ${{ t.lottery_high_b|to2}} with a probability of {{ t.probability }}%, ${{ t.lottery_low_b|to2 }} otherwise.
+            ${{ t.lottery_high_b}} with a probability of {{ t.probability }}%, ${{ t.lottery_low_b }} otherwise.
         </td>
         <td>
             {% if t.chose_safe == None %}
@@ -21,7 +21,7 @@
             {% endif %}
         </td>
         <td>
-            ${{ t.lottery_high_a|to2 }} with a probability of {{ t.probability }}%, ${{ t.lottery_low_a|to2 }} otherwise.
+            ${{ t.lottery_high_a }} with a probability of {{ t.probability }}%, ${{ t.lottery_low_a }} otherwise.
         </td>
     </tr>
     {% endfor %}

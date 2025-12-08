@@ -51,7 +51,7 @@
   </p>
   <p>
     Each message is a string of up to 10 symbols. You can freely assemble your message using the symbols:
-    <b>$</b>, <b>%</b>, <b>#</b>, <b>a</b>, <b>b</b>, <b>c</b>, <b>d</b>, <b>e</b>, <b>f</b>, or <b>g</b> by clicking the corresponding buttons.
+    <b>*</b>, <b>%</b>, <b>#</b>, <b>a</b>, <b>b</b>, <b>c</b>, <b>d</b>, <b>e</b>, <b>f</b>, or <b>g</b> by clicking the corresponding buttons.
     You can change your message by using the “Delete” button. Once you have finished assembling your message,
     you can click the “Send Message” button. You are allowed to send an empty message. The receiver will see "No message" when that is the case.
   </p>
@@ -64,15 +64,18 @@
     <div class = column1>
         <h5>Sender</h5>
         <br>
-        <h4>Receiver's available actions: <b style = "color: red">A</b> , <b style = "color: blue">B</b> , <b style = "color: red">C</b> , <b style = "color: red">D</b> , <b style = "color: red">E</b> , <b style = "color: red">F</b> , <b style = "color: blue">G</b></h4>
+        <h4>Receiver's available actions: <b>A</b> , <b style = "text-decoration: underline">B</b> , <b>C</b> , <b>D</b> , <b>E</b> , <b>F</b> , <b style = "text-decoration: underline">G</b></h4>
          <br>
         <h4><b>Reminder</b>:</h4>
-        <h4>Actions highlighted in <span style="color: blue; font-weight: bold">blue</span> are the <span style="color: blue; font-weight: bold">valid</span> actions.</h4>
+        <h4>Actions <span style="text-decoration: underline">underlined</span> are the <span style="font-weight: bold">valid</span> actions.</h4>
         <br>
         <hr>
         <br>
         <h4>Symbols to compose your message:</h4>
-        <div id="buttons">
+        <div id="symbol_buttons">
+          <!-- Buttons will go here -->
+        </div>
+        <div id="letter_buttons">
           <!-- Buttons will go here -->
         </div><br><br>
         <h4>Cost: {{C.COST}} points per symbol (First one is free)</h4>
@@ -116,7 +119,7 @@
         <br>
         <h4>Actions available: <b>A</b> , <b>B</b> , <b>C</b> , <b>D</b> , <b>E</b> , <b>F</b> , <b>G</b></h4>
         <br>
-        <h4>Sender's message: <b style="color: saddlebrown">ab</b></h4>
+        <h4>Sender's message: <b style="color: saddlebrown"></b></h4>
         <br>
         <hr>
         <br>
@@ -131,7 +134,7 @@
             <tr>
                 <td style="font-weight: bold">Action</td>
                 <td style="font-weight: bold">If valid</td>
-                <td style="font-weight: bold">If invalid</td>
+                <td style="font-weight: bold">If otherwise</td>
             </tr>
             <tr>
                 <td><button type="button" class="action-button" data-letter="A" id="action-button">A</button></td>
@@ -401,8 +404,10 @@
 
 {% block scripts %}
 <script>
-  const letters = ['$','#','%','a','b','c','d','e','f','g'];
-  const buttonsDiv = document.getElementById('buttons');
+  const symbols = ['*','#','%'];
+  const letters = ['a','b','c','d','e','f','g'];
+  const symbolsDiv = document.getElementById('symbol_buttons');
+  const lettersDiv = document.getElementById('letter_buttons');
   const outputDiv = document.getElementById('output');
   const backspaceBtn = document.getElementById('backspace-button');
   const errorDivSender = document.getElementById('error-message-sender');
@@ -422,6 +427,23 @@
 }
 
   // Create buttons dynamically
+  symbols.forEach(symbol => {
+    const btn = document.createElement('button');
+    btn.innerText = symbol;
+    btn.className = 'letter-button';
+    btn.type = 'button'; // prevents form submission
+    btn.onclick = () => {
+      if (outputDiv.innerText.length < maxLength) {
+        outputDiv.innerText += symbol; // append letter
+        clearErrorSender();
+        updateCost();
+      } else {
+        showErrorSender('Maximum 10 symbols allowed.');
+      }
+    };
+    symbolsDiv.appendChild(btn);
+  });
+
   letters.forEach(letter => {
     const btn = document.createElement('button');
     btn.innerText = letter;
@@ -436,7 +458,7 @@
         showErrorSender('Maximum 10 symbols allowed.');
       }
     };
-    buttonsDiv.appendChild(btn);
+    lettersDiv.appendChild(btn);
   });
 
   backspaceBtn.onclick = () => {
@@ -472,11 +494,16 @@
     clearTimeout(errorTimeoutReceiver);
   }
 
-
+    if (submitBtn) {
     submitBtn.onclick = () => {
     const inputField = document.querySelector('input[name="message"]');
     if (!inputField) return;
-    };
+    if (outputDiv.innerText === '') {
+        showErrorSender('Please enter at least one symbol.');
+        return;
+    }
+  };
+  }
 
   const actionButtons = document.querySelectorAll(".action-button");
   const receiverOutput = document.getElementById("receiver-output");

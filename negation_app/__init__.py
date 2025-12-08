@@ -48,7 +48,7 @@ class Player(BasePlayer):
     RA_raw_responses = models.LongStringField()
     RA_chose_safe = models.BooleanField()
     RA_won_lottery = models.BooleanField()
-    RA_payoff = models.FloatField()
+    RA_payoff = models.IntegerField()
     Q_gender = models.IntegerField(label="<h4>1. What is your gender?</h4>",
                                    choices=[[1, "Female"], [2, "Male"],
                                             [3, "Prefer not to answer"], [4, "Other (please specify)"]],
@@ -99,10 +99,10 @@ class Player(BasePlayer):
 
 class Trial(ExtraModel):
     player = models.Link(Player)
-    lottery_high_a = models.FloatField()
-    lottery_low_a = models.FloatField()
-    lottery_high_b = models.FloatField()
-    lottery_low_b = models.FloatField()
+    lottery_high_a = models.IntegerField()
+    lottery_low_a = models.IntegerField()
+    lottery_high_b = models.IntegerField()
+    lottery_low_b = models.IntegerField()
     probability = models.IntegerField()
     chose_safe = models.BooleanField()
     randomly_chosen = models.BooleanField(initial=False)
@@ -110,7 +110,6 @@ class Trial(ExtraModel):
 # functions
 def read_csv():
     import csv
-    import random
 
     f = open(__name__ + '/lottery.csv', encoding='utf8')
     rows = list(csv.DictReader(f))
@@ -120,9 +119,11 @@ def read_csv():
 
 def creating_session(subsession):
     if subsession.round_number == 1:
+        subsession.set_group_matrix([[p.id_in_subsession] for p in subsession.get_players()])
+    elif subsession.round_number == 2:
         subsession.group_randomly()
     else:
-        subsession.group_like_round(1)
+        subsession.group_like_round(2)
     for i in subsession.get_players():
         i.prob_5 = round(subsession.session.config['prob_5'],2)
         if i.id_in_group == 1:
@@ -166,6 +167,11 @@ class Instructions(Page):
             prob_2= round(1 - player.prob_5, 2)
         )
 
+class StartPractice(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
 class StartWaitPage(WaitPage):
     @staticmethod
     def after_all_players_arrive(group:Group):
@@ -194,15 +200,16 @@ class Sender(Page):
             actions = ", ".join(['A','B','C','D','E','F','G']),
             valid_actions = json.loads(group.valid_actions),
             invalid_actions = json.loads(group.invalid_actions),
-            prob_2 = round(1 - player.prob_5, 2)
+            prob_5=round(player.prob_5 * 100),
+            prob_2=round(100 - player.prob_5 * 100)
         )
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.type == "Sender"
+        return player.type == "Sender" or player.round_number == 1
 
 class ReceiverWaitPage(WaitPage):
-    body_text = "Waiting for the Sender's message."
+    body_text = "You are the Receiver. <br> Waiting for Sender's message."
 
     def is_displayed(player: Player):
         return player.type == "Receiver"
@@ -215,12 +222,13 @@ class Receiver(Page):
         group = player.group
         return dict(
             possible_rewards = json.loads(group.possible_rewards),
-            prob_2=round(1 - player.prob_5, 2)
+            prob_5=round(player.prob_5 * 100),
+            prob_2=round(100 - player.prob_5 * 100),
         )
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.type == "Receiver"
+        return player.type == "Receiver" or player.round_number == 1
 
 
 class ResultsWaitPage(WaitPage):
@@ -260,8 +268,14 @@ class Results(Page):
             invalid_actions=json.loads(group.invalid_actions),
             valid_actions_string=", ".join(json.loads(group.valid_actions)),
             possible_rewards=json.loads(group.possible_rewards),
-            prob_2=round(1 - player.prob_5, 2)
+            prob_5=round(player.prob_5 * 100),
+            prob_2=round(100 - player.prob_5 * 100),
         )
+
+class StartOfficial(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
 
 class AllGroupsWaitPage(WaitPage):
     wait_for_all_groups = True
@@ -345,4 +359,4 @@ class FinalPayoff(Page):
         )
 
 
-page_sequence = [Instructions, StartWaitPage, Sender, ReceiverWaitPage, Receiver, ResultsWaitPage, Results, AllGroupsWaitPage, Questionnaire, Risk_preference, FinalPayoff]
+page_sequence = [Instructions, StartPractice, StartWaitPage, Sender, ReceiverWaitPage, Receiver, ResultsWaitPage, Results, StartOfficial, AllGroupsWaitPage, Questionnaire, Risk_preference, FinalPayoff]

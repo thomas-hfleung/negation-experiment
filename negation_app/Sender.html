@@ -7,15 +7,15 @@
 <br>
 <div class = "row">
     <div class = column1>
-        <h2>You are the {{player.type}}.</h2>
+        <h2>You are the Sender.</h2>
         <br>
         <h4>
             Receiver's available actions:
             {% for action in actions %}
                 {% if action in valid_actions %}
-                    <span style="color: blue; font-weight: bold;">{{ action }}</span>
+                    <span style="font-weight: bold; text-decoration: underline">{{ action }}</span>
                 {% elif action in invalid_actions %}
-                    <span style="color: red; font-weight: bold;">{{ action }}</span>
+                    <span style="font-weight: bold;">{{ action }}</span>
                 {% else %}
                     {{action}}
                 {% endif %}
@@ -23,14 +23,18 @@
         </h4>
         <br>
         <h4><b>Reminder</b>:</h4>
-        <h4>Actions highlighted in <span style="color: blue; font-weight: bold">blue</span> are the <span style="color: blue; font-weight: bold">valid</span> actions.</h4>
+        <h4>Actions <span style="text-decoration: underline">underlined</span> are the <span style="font-weight: bold">valid</span> actions.</h4>
         <br>
         <hr>
         <br>
         <h4>Symbols to compose your message:</h4>
-        <div id="buttons">
+        <div id="symbol_buttons">
           <!-- Buttons will go here -->
-        </div><br><br>
+        </div>
+        <div id="letter_buttons">
+          <!-- Buttons will go here -->
+        </div>
+        <br><br>
         <h4>Cost: {{C.COST}} points per symbol (First one is free)</h4>
         <br>
         <h4>Your message choice:</h4>
@@ -55,8 +59,8 @@
     <div class="divider"></div>
     <div class = column1 style = "display: flex; flex-direction: column; justify-content: center">
         <h3>Reminder:</h3>
-        <h5>Probability of 5 valid actions: {{player.prob_5}}</h5>
-        <h5>Probability of 2 valid actions: {{prob_2}}</h5>
+        <h5>Probability of 5 valid actions: {{prob_5}}%</h5>
+        <h5>Probability of 2 valid actions: {{prob_2}}%</h5>
     </div>
 </div>
 
@@ -177,8 +181,10 @@
 
 {% block scripts %}
 <script>
-  const letters = ['$','#','%','a','b','c','d','e','f','g'];
-  const buttonsDiv = document.getElementById('buttons');
+  const symbols = ['*','#','%'];
+  const letters = ['a','b','c','d','e','f','g'];
+  const symbolsDiv = document.getElementById('symbol_buttons');
+  const lettersDiv = document.getElementById('letter_buttons');
   const outputDiv = document.getElementById('output');
   const backspaceBtn = document.getElementById('backspace-button');
   const errorDiv = document.getElementById('error-message');
@@ -196,6 +202,23 @@
 }
 
   // Create buttons dynamically
+  symbols.forEach(symbol => {
+    const btn = document.createElement('button');
+    btn.innerText = symbol;
+    btn.className = 'letter-button';
+    btn.type = 'button'; // prevents form submission
+    btn.onclick = () => {
+      if (outputDiv.innerText.length < maxLength) {
+        outputDiv.innerText += symbol; // append letter
+        clearError();
+        updateCost();
+      } else {
+        showError('Maximum 10 symbols allowed.');
+      }
+    };
+    symbolsDiv.appendChild(btn);
+  });
+
   letters.forEach(letter => {
     const btn = document.createElement('button');
     btn.innerText = letter;
@@ -210,7 +233,7 @@
         showError('Maximum 10 symbols allowed.');
       }
     };
-    buttonsDiv.appendChild(btn);
+    lettersDiv.appendChild(btn);
   });
 
   backspaceBtn.onclick = () => {
@@ -233,13 +256,19 @@
     clearTimeout(errorTimeout);
   }
 
-
+  if (submitBtn) {
     submitBtn.onclick = () => {
     const inputField = document.querySelector('input[name="message"]');
     if (!inputField) return;
+    if (outputDiv.innerText === '') {
+        showError('Please enter at least one symbol.');
+        return;
+    }
     inputField.value = outputDiv.innerText;  // attach output to form field
     inputField.form.submit();                // submit the form
-    };
+  };}
+
+
 
 </script>
 

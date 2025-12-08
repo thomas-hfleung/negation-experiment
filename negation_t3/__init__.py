@@ -52,9 +52,11 @@ class Player(BasePlayer):
 # functions
 def creating_session(subsession):
     if subsession.round_number == 1:
+        subsession.set_group_matrix([[p.id_in_subsession] for p in subsession.get_players()])
+    elif subsession.round_number == 2:
         subsession.group_randomly()
     else:
-        subsession.group_like_round(1)
+        subsession.group_like_round(2)
     for i in subsession.get_players():
         i.prob_5 = round(subsession.session.config['prob_5'],2)
         i.prob_align_actions = subsession.session.config['prob_align_action']
@@ -99,6 +101,11 @@ class Instructions(Page):
             prob_not_align = round((1-player.prob_align_actions) * 100)
         )
 
+class StartPractice(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
 class StartWaitPage(WaitPage):
     @staticmethod
     def after_all_players_arrive(group:Group):
@@ -142,10 +149,10 @@ class Sender(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.type == "Sender"
+        return player.type == "Sender" or player.round_number == 1
 
 class ReceiverWaitPage(WaitPage):
-    body_text = "Waiting for the Sender's message."
+    body_text = "You are the Receiver. <br> Waiting for Sender's message."
 
     def is_displayed(player: Player):
         return player.type == "Receiver"
@@ -167,7 +174,7 @@ class Receiver(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.type == "Receiver"
+        return player.type == "Receiver" or player.round_number == 1
 
 
 class ResultsWaitPage(WaitPage):
@@ -214,6 +221,11 @@ class Results(Page):
             prob_align=round(player.prob_align_actions * 100),
         )
 
+class StartOfficial(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
 class AllGroupsWaitPage(WaitPage):
     wait_for_all_groups = True
     body_text = "Waiting for all participants to finish this round."
@@ -239,4 +251,4 @@ class FinalPayoff(Page):
         )
 
 
-page_sequence = [Instructions, StartWaitPage, Sender, ReceiverWaitPage, Receiver, ResultsWaitPage, Results, AllGroupsWaitPage, FinalPayoff]
+page_sequence = [Instructions, StartPractice, StartWaitPage, Sender, ReceiverWaitPage, Receiver, ResultsWaitPage, Results, StartOfficial, AllGroupsWaitPage, FinalPayoff]
