@@ -14,6 +14,7 @@ class C(BaseConstants):
     NAME_IN_URL = 'communication'
     PLAYERS_PER_GROUP = 2
     NUM_ROUNDS = 6
+    PRACTICE_ROUNDS = 3
     COST = 4
     INVALID_REWARD = 0
     SHOW_UP_FEE = 7
@@ -118,20 +119,20 @@ def read_csv():
     return rows
 
 def creating_session(subsession):
-    if subsession.round_number == 1:
+    if subsession.round_number <= C.PRACTICE_ROUNDS :
         subsession.set_group_matrix([[p.id_in_subsession] for p in subsession.get_players()])
-    elif subsession.round_number == 2:
+    elif subsession.round_number == C.PRACTICE_ROUNDS + 1:
         subsession.group_randomly()
     else:
-        subsession.group_like_round(2)
+        subsession.group_like_round(C.PRACTICE_ROUNDS + 1)
     for i in subsession.get_players():
         i.prob_5 = round(subsession.session.config['prob_5'],2)
         if i.id_in_group == 1:
             i.type = "Sender"
         else:
             i.type = "Receiver"
-        if i.round_number >= 2:
-            i.play_round_number = i.round_number - 1
+        if i.round_number > C.PRACTICE_ROUNDS:
+            i.play_round_number = i.round_number - C.PRACTICE_ROUNDS
         stimuli = read_csv()
         for stim in stimuli:
             Trial.create(player=i, **stim)
@@ -161,7 +162,7 @@ class Instructions(Page):
     def vars_for_template(player: Player):
         return dict(
             possible_rewards = random.sample([40,50,60,70,80,90,100], 7),
-            num_playrounds = C.NUM_ROUNDS - 1,
+            num_playrounds = C.NUM_ROUNDS - C.PRACTICE_ROUNDS,
             num_players = player.session.num_participants,
             num_groups = int(player.session.num_participants/2),
             prob_2= round(1 - player.prob_5, 2)
@@ -180,10 +181,17 @@ class StartWaitPage(WaitPage):
         rewards = [40,50,60,70,80,90,100]
         random_rewards = random.sample(rewards, 7)
         group.possible_rewards = json.dumps(random_rewards)
-        if random.random() < player[0].prob_5:
-            group.valid_no=5
-        else:
+        if player[0].round_number == 1:
+            group.valid_no = 5
+        elif player[0].round_number == 2:
             group.valid_no = 2
+        elif player[0].round_number == 3:
+            group.valid_no = 5
+        else:
+            if random.random() < player[0].prob_5:
+                group.valid_no=5
+            else:
+                group.valid_no = 2
         valid = random.sample(letters, group.valid_no)
         valid_sorted = sorted(valid)
         group.valid_actions = json.dumps(valid_sorted)
@@ -206,7 +214,7 @@ class Sender(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.type == "Sender" or player.round_number == 1
+        return player.type == "Sender" or player.round_number <= C.PRACTICE_ROUNDS
 
 class ReceiverWaitPage(WaitPage):
     body_text = "You are the Receiver. <br> Waiting for Sender's message."
@@ -228,7 +236,7 @@ class Receiver(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.type == "Receiver" or player.round_number == 1
+        return player.type == "Receiver" or player.round_number <= C.PRACTICE_ROUNDS
 
 
 class ResultsWaitPage(WaitPage):
@@ -275,7 +283,7 @@ class Results(Page):
 class StartOfficial(Page):
     @staticmethod
     def is_displayed(player: Player):
-        return player.round_number == 1
+        return player.round_number == C.PRACTICE_ROUNDS
 
 class AllGroupsWaitPage(WaitPage):
     wait_for_all_groups = True
@@ -327,8 +335,8 @@ class Risk_preference(Page):
                 RA_payoff = trial.lottery_low_b
         player.RA_payoff = RA_payoff
         participant = player.participant
-        selected_rounds = random.sample(range(2, C.NUM_ROUNDS + 1), 2)
-        participant.selected_rounds = [selected_rounds[0] - 1, selected_rounds[1] - 1]
+        selected_rounds = random.sample(range(C.PRACTICE_ROUNDS + 1, C.NUM_ROUNDS + 1), 2)
+        participant.selected_rounds = [selected_rounds[0] - C.PRACTICE_ROUNDS, selected_rounds[1] - C.PRACTICE_ROUNDS]
         p1 = player.in_round(selected_rounds[0]).payoff
         p2 = player.in_round(selected_rounds[1]).payoff
         participant.selected_payoffs = [p1, p2]
@@ -346,11 +354,11 @@ class FinalPayoff(Page):
 
         rounds_data = []
         for p in player.in_all_rounds():
-            if p.round_number > 1:
+            if p.round_number > C.PRACTICE_ROUNDS:
                 rounds_data.append({
-                    'round_number': p.round_number-1,
+                    'round_number': p.round_number-C.PRACTICE_ROUNDS,
                     'payoff': int(p.payoff),  # removes decimals if you’re using integer points
-                    'is_selected': p.round_number - 1 in selected_rounds
+                    'is_selected': p.round_number - C.PRACTICE_ROUNDS in selected_rounds
                 })
         return dict(
             rounds_data=rounds_data,

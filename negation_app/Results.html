@@ -1,8 +1,8 @@
 {{ block content }}
-{{if player.round_number <= 1}}
-<h1>Practice Round - Result</h1>
+{{if player.round_number <= C.PRACTICE_ROUNDS}}
+<h1>Practice Round {{player.round_number}}</h1>
 {{else}}
-    <h1>Round {{player.play_round_number}} - Result</h1>
+    <h1>Round {{player.play_round_number}}</h1>
 {{endif}}
 <br>
 <h6>

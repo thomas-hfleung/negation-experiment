@@ -14,11 +14,13 @@ class C(BaseConstants):
     NAME_IN_URL = 'communication_t3'
     PLAYERS_PER_GROUP = 2
     NUM_ROUNDS = 6
+    PRACTICE_ROUNDS = 3
     COST = 4
     INVALID_REWARD = 0
     SHOW_UP_FEE = 7
     ENDOWMENT = COST * 10
     CONVERSION_RATE = 4
+    table_template = __name__ + '/table.html'
 
 
 class Subsession(BaseSubsession):
@@ -48,15 +50,88 @@ class Player(BasePlayer):
     type = models.StringField()
     prob_5 = models.FloatField()
     prob_align_actions = models.FloatField()
+    RA_raw_responses = models.LongStringField()
+    RA_chose_safe = models.BooleanField()
+    RA_won_lottery = models.BooleanField()
+    RA_payoff = models.IntegerField()
+    Q_gender = models.IntegerField(label="<h4>1. What is your gender?</h4>",
+                                   choices=[[1, "Female"], [2, "Male"],
+                                            [3, "Prefer not to answer"], [4, "Other (please specify)"]],
+                                   widget=widgets.RadioSelect)
+    Q_gender_other = models.StringField(blank=True)
+    Q_eth_amnative = models.BooleanField(label="American Indian or Alaska Native", blank=True, initial=False)
+    Q_eth_asian = models.BooleanField(label="Asian", blank=True, initial=False)
+    Q_eth_black = models.BooleanField(label="Black or African American", blank=True, initial=False)
+    Q_eth_pacific = models.BooleanField(label="Native Hawaiian or other Pacific Islander", blank=True, initial=False)
+    Q_eth_white = models.BooleanField(label="White", blank=True, initial=False)
+    Q_eth_other_option = models.BooleanField(label="Other (please specify)", blank=True, initial=False)
+    Q_eth_prefer_not = models.BooleanField(label="Prefer not to answer", blank=True, initial=False)
+    Q_eth_other = models.StringField(label="If other, please specify:", blank=True)
+    Q_native_lang = models.StringField(label="<h4>3. What is your native or first language?</h4>")
+    # Q_ethnicity = models.MultipleChoiceField(label="<h4>2. What is your ethnicity (select all that apply)?</h4>",
+    #                                         choices=[[1, "American Indian or Alaska Native"], [2, "Asian"],
+    #                                                  [3, "Black or African American"],
+    #                                                  [4, "Native Hawaiian or other Pacific Islander"], [5, "White"],
+    #                                                  [6, "Other (please specify)"], [7, "Prefer not to answer"]],
+    #                                         widget=widgets.RadioSelect)
+    # Q_native_lang = models.IntegerField(label="<h4>3. What is your native or first language?</h4>",
+    #                                  choices=[[1, "English"], [2, "Spanish"],
+    #                                           [3, "Chinese (Mandarin or Cantonese)"],
+    #                                           [4, "Hindi or other South Asian language"], [5, "Korean"],
+    #                                           [6, "Japanese"], [7, "Arabic"], [8, "Other (please specify)"]],
+    #                                  widget=widgets.RadioSelect)
+    # Q_native_lang_other = models.StringField(blank=True)
+    Q_year = models.IntegerField(label="<h4>4. What is your year in school?</h4>",
+                                 choices=[[1, "First-year"], [2, "Sophomore"],
+                                          [3, "Junior"], [4, "Senior"], [5, "Prefer not to answer"],
+                                          [6, "Other (please specify)"]],
+                                 widget=widgets.RadioSelect)
+    Q_year_other = models.StringField(blank=True)
+    Q_major_busi = models.BooleanField(blank=True, initial=False)
+    Q_major_econ = models.BooleanField(blank=True, initial=False)
+    Q_major_eng = models.BooleanField(blank=True, initial=False)
+    Q_major_hum = models.BooleanField(blank=True, initial=False)
+    Q_major_sci = models.BooleanField(blank=True, initial=False)
+    Q_major_sosci = models.BooleanField(blank=True, initial=False)
+    Q_major_undeclared = models.BooleanField(blank=True, initial=False)
+    Q_major_prefer_not = models.BooleanField(blank=True, initial=False)
+    Q_major_other_option = models.BooleanField(blank=True, initial=False)
+    Q_major_other = models.StringField(blank=True)
+    # Q_major = models.IntegerField(label="<h4>5. What is your major? (select all that apply)</h4>",
+    #                               choices=[[1, "Business"], [2, "Economics"],
+    #                                        [3, "Engineering"], [4, "Humanities"], [5, "Science"], [6, "Social Science"], [7, "Undeclared"], [8, "Prefer not to answer"], [9, "Other (please specify)"]],
+    #                               widget=widgets.RadioSelect)
+    Q_comments = models.LongStringField(
+        label="<h4>6. Please share any comments about today's study. This question is optional and will not affect your payment.</h4>",
+        blank=True)
+
+class Trial(ExtraModel):
+    player = models.Link(Player)
+    lottery_high_a = models.IntegerField()
+    lottery_low_a = models.IntegerField()
+    lottery_high_b = models.IntegerField()
+    lottery_low_b = models.IntegerField()
+    probability = models.IntegerField()
+    chose_safe = models.BooleanField()
+    randomly_chosen = models.BooleanField(initial=False)
 
 # functions
+def read_csv():
+    import csv
+
+    f = open(__name__ + '/lottery.csv', encoding='utf8')
+    rows = list(csv.DictReader(f))
+
+    #random.shuffle(rows)
+    return rows
+
 def creating_session(subsession):
-    if subsession.round_number == 1:
+    if subsession.round_number <= C.PRACTICE_ROUNDS:
         subsession.set_group_matrix([[p.id_in_subsession] for p in subsession.get_players()])
-    elif subsession.round_number == 2:
+    elif subsession.round_number == C.PRACTICE_ROUNDS + 1:
         subsession.group_randomly()
     else:
-        subsession.group_like_round(2)
+        subsession.group_like_round(C.PRACTICE_ROUNDS + 1)
     for i in subsession.get_players():
         i.prob_5 = round(subsession.session.config['prob_5'],2)
         i.prob_align_actions = subsession.session.config['prob_align_action']
@@ -64,8 +139,11 @@ def creating_session(subsession):
             i.type = "Sender"
         else:
             i.type = "Receiver"
-        if i.round_number >= 2:
-            i.play_round_number = i.round_number - 1
+        if i.round_number > C.PRACTICE_ROUNDS:
+            i.play_round_number = i.round_number - C.PRACTICE_ROUNDS
+        stimuli = read_csv()
+        for stim in stimuli:
+            Trial.create(player=i, **stim)
 
 
 # PAGES
@@ -93,7 +171,7 @@ class Instructions(Page):
     def vars_for_template(player: Player):
         return dict(
             possible_rewards = random.sample([40,50,60,70,80,90,100], 7),
-            num_playrounds = C.NUM_ROUNDS - 1,
+            num_playrounds = C.NUM_ROUNDS - C.PRACTICE_ROUNDS,
             num_players = player.session.num_participants,
             num_groups = int(player.session.num_participants/2),
             prob_5= round(player.prob_5 * 100),
@@ -116,19 +194,42 @@ class StartWaitPage(WaitPage):
         group.possible_rewards = json.dumps(random_rewards)
         receiver_actions = random.sample(letters, 7)
         group.receiver_actions = json.dumps(sorted(receiver_actions))
-        if random.random() < player[0].prob_5:
-            group.valid_no=5
-        else:
-            group.valid_no = 2
-        valid = random.sample(receiver_actions, group.valid_no)
-        valid_sorted = sorted(valid)
-        group.valid_actions = json.dumps(valid_sorted)
-        if random.random() < player[0].prob_align_actions:
+        if player[0].round_number == 1:
+            group.valid_no = 5
+            valid = random.sample(receiver_actions, group.valid_no)
+            valid_sorted = sorted(valid)
+            group.valid_actions = json.dumps(valid_sorted)
             group.sender_actions = group.receiver_actions
-        else:
+        elif player[0].round_number == 2:
+            group.valid_no = 2
+            valid = random.sample(receiver_actions, group.valid_no)
+            valid_sorted = sorted(valid)
+            group.valid_actions = json.dumps(valid_sorted)
             remaining = list(set(letters) - set(valid))
             extra = random.sample(remaining, 7 - group.valid_no)
             group.sender_actions = json.dumps(sorted(json.loads(group.valid_actions) + extra))
+        elif player[0].round_number == 3:
+            group.valid_no = 5
+            valid = random.sample(receiver_actions, group.valid_no)
+            valid_sorted = sorted(valid)
+            group.valid_actions = json.dumps(valid_sorted)
+            remaining = list(set(letters) - set(valid))
+            extra = random.sample(remaining, 7 - group.valid_no)
+            group.sender_actions = json.dumps(sorted(json.loads(group.valid_actions) + extra))
+        else:
+            if random.random() < player[0].prob_5:
+                group.valid_no = 5
+            else:
+                group.valid_no = 2
+            valid = random.sample(receiver_actions, group.valid_no)
+            valid_sorted = sorted(valid)
+            group.valid_actions = json.dumps(valid_sorted)
+            if random.random() < player[0].prob_align_actions:
+                group.sender_actions = group.receiver_actions
+            else:
+                remaining = list(set(letters) - set(valid))
+                extra = random.sample(remaining, 7 - group.valid_no)
+                group.sender_actions = json.dumps(sorted(json.loads(group.valid_actions) + extra))
         invalid = sorted(set(json.loads(group.sender_actions)) - set(valid))
         group.invalid_actions = json.dumps(invalid)
 
@@ -149,7 +250,7 @@ class Sender(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.type == "Sender" or player.round_number == 1
+        return player.type == "Sender" or player.round_number <= C.PRACTICE_ROUNDS
 
 class ReceiverWaitPage(WaitPage):
     body_text = "You are the Receiver. <br> Waiting for Sender's message."
@@ -174,7 +275,7 @@ class Receiver(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.type == "Receiver" or player.round_number == 1
+        return player.type == "Receiver" or player.round_number <= C.PRACTICE_ROUNDS
 
 
 class ResultsWaitPage(WaitPage):
@@ -194,16 +295,16 @@ class ResultsWaitPage(WaitPage):
 
 
 class Results(Page):
-    def before_next_page(player: Player, timeout_happened):
-        if player.round_number == C.NUM_ROUNDS:
-            participant = player.participant
-            selected_rounds = random.sample(range(2, C.NUM_ROUNDS + 1), 2)
-            participant.selected_rounds = [selected_rounds[0]-1, selected_rounds[1]-1]
-            p1 = player.in_round(selected_rounds[0]).payoff
-            p2 = player.in_round(selected_rounds[1]).payoff
-            participant.selected_payoffs = [p1, p2]
-            participant.highest_payoff = max(p1, p2)
-            participant.payoff = math.ceil(participant.highest_payoff/C.CONVERSION_RATE + C.SHOW_UP_FEE)
+    #def before_next_page(player: Player, timeout_happened):
+    #    if player.round_number == C.NUM_ROUNDS:
+    #        participant = player.participant
+    #        selected_rounds = random.sample(range(C.PRACTICE_ROUNDS + 1, C.NUM_ROUNDS + 1), 2)
+    #        participant.selected_rounds = [selected_rounds[0]-C.PRACTICE_ROUNDS, selected_rounds[1]-C.PRACTICE_ROUNDS]
+    #        p1 = player.in_round(selected_rounds[0]).payoff
+    #        p2 = player.in_round(selected_rounds[1]).payoff
+    #        participant.selected_payoffs = [p1, p2]
+    #        participant.highest_payoff = max(p1, p2)
+    #        participant.payoff = math.ceil(participant.highest_payoff/C.CONVERSION_RATE + C.SHOW_UP_FEE)
 
     def vars_for_template(player: Player):
         group = player.group
@@ -224,11 +325,65 @@ class Results(Page):
 class StartOfficial(Page):
     @staticmethod
     def is_displayed(player: Player):
-        return player.round_number == 1
+        return player.round_number == C.PRACTICE_ROUNDS
 
 class AllGroupsWaitPage(WaitPage):
     wait_for_all_groups = True
     body_text = "Waiting for all participants to finish this round."
+
+class Questionnaire(Page):
+    form_model = 'player'
+    form_fields = ['Q_gender', 'Q_gender_other', 'Q_eth_amnative', 'Q_eth_asian', 'Q_eth_black', 'Q_eth_pacific', 'Q_eth_white', 'Q_eth_other_option', 'Q_eth_prefer_not', 'Q_eth_other',
+                   'Q_native_lang', 'Q_year', 'Q_year_other', 'Q_major_busi', 'Q_major_econ', 'Q_major_eng', 'Q_major_hum', 'Q_major_sci', 'Q_major_sosci', 'Q_major_undeclared', 'Q_major_other',
+                   'Q_major_other_option', 'Q_major_prefer_not', 'Q_comments']
+
+    def is_displayed(player: Player):
+        return player.round_number == C.NUM_ROUNDS
+
+class Risk_preference(Page):
+    form_model = 'player'
+    form_fields = ['RA_raw_responses']
+
+    def is_displayed(player: Player):
+        return player.round_number == C.NUM_ROUNDS
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(trials=Trial.filter(player=player))
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+
+        trials = Trial.filter(player=player)
+
+        responses = json.loads(player.RA_raw_responses)
+        for trial in trials:
+            trial.chose_safe = responses["{} - {}".format(trial.id,trial.probability)]
+
+        trial = random.choice(trials)
+        trial.randomly_chosen = True
+        player.RA_chose_safe = trial.chose_safe
+        if player.RA_chose_safe:
+            player.RA_won_lottery = (trial.probability / 100) > random.random()
+            if player.RA_won_lottery:
+                RA_payoff = trial.lottery_high_a
+            else:
+                RA_payoff = trial.lottery_low_a
+        else:
+            player.RA_won_lottery = (trial.probability / 100) > random.random()
+            if player.RA_won_lottery:
+                RA_payoff = trial.lottery_high_b
+            else:
+                RA_payoff = trial.lottery_low_b
+        player.RA_payoff = RA_payoff
+        participant = player.participant
+        selected_rounds = random.sample(range(C.PRACTICE_ROUNDS + 1, C.NUM_ROUNDS + 1), 2)
+        participant.selected_rounds = [selected_rounds[0] - C.PRACTICE_ROUNDS, selected_rounds[1] - C.PRACTICE_ROUNDS]
+        p1 = player.in_round(selected_rounds[0]).payoff
+        p2 = player.in_round(selected_rounds[1]).payoff
+        participant.selected_payoffs = [p1, p2]
+        participant.highest_payoff = max(p1, p2)
+        participant.payoff = math.ceil(participant.highest_payoff / C.CONVERSION_RATE + player.RA_payoff + C.SHOW_UP_FEE)
 
 class FinalPayoff(Page):
     def is_displayed(player: Player):
@@ -236,19 +391,22 @@ class FinalPayoff(Page):
 
     def vars_for_template(player: Player):
         selected_rounds = player.participant.vars.get("selected_rounds", [])
+        trials = Trial.filter(player=player, randomly_chosen=True)
+
 
         rounds_data = []
         for p in player.in_all_rounds():
-            if p.round_number > 1:
+            if p.round_number > C.PRACTICE_ROUNDS:
                 rounds_data.append({
-                    'round_number': p.round_number-1,
+                    'round_number': p.round_number-C.PRACTICE_ROUNDS,
                     'payoff': int(p.payoff),  # removes decimals if you’re using integer points
-                    'is_selected': p.round_number - 1 in selected_rounds
+                    'is_selected': p.round_number - C.PRACTICE_ROUNDS in selected_rounds
                 })
         return dict(
             rounds_data=rounds_data,
-            max_round_payoff = player.participant.payoff - C.SHOW_UP_FEE
+            max_round_payoff = player.participant.payoff - player.RA_payoff - C.SHOW_UP_FEE,
+            trials=trials
         )
 
 
-page_sequence = [Instructions, StartPractice, StartWaitPage, Sender, ReceiverWaitPage, Receiver, ResultsWaitPage, Results, StartOfficial, AllGroupsWaitPage, FinalPayoff]
+page_sequence = [Instructions, StartPractice, StartWaitPage, Sender, ReceiverWaitPage, Receiver, ResultsWaitPage, Results, StartOfficial, AllGroupsWaitPage, Questionnaire, Risk_preference, FinalPayoff]
