@@ -165,7 +165,8 @@ class Instructions(Page):
             num_playrounds = C.NUM_ROUNDS - C.PRACTICE_ROUNDS,
             num_players = player.session.num_participants,
             num_groups = int(player.session.num_participants/2),
-            prob_2= round(1 - player.prob_5, 2)
+            prob_2=round(100 - player.prob_5 * 100),
+            prob_5 = round(player.prob_5 * 100)
         )
 
 class StartPractice(Page):

@@ -174,7 +174,8 @@ class Instructions(Page):
             num_playrounds = C.NUM_ROUNDS - C.PRACTICE_ROUNDS,
             num_players = player.session.num_participants,
             num_groups = int(player.session.num_participants/2),
-            prob_5= round(player.prob_5 * 100),
+            prob_5=round(player.prob_5 * 100),
+            prob_2=round(100 - player.prob_5 * 100),
             prob_align = round(player.prob_align_actions * 100),
             prob_not_align = round((1-player.prob_align_actions) * 100)
         )
@@ -196,40 +197,31 @@ class StartWaitPage(WaitPage):
         group.receiver_actions = json.dumps(sorted(receiver_actions))
         if player[0].round_number == 1:
             group.valid_no = 5
-            valid = random.sample(receiver_actions, group.valid_no)
-            valid_sorted = sorted(valid)
-            group.valid_actions = json.dumps(valid_sorted)
-            group.sender_actions = group.receiver_actions
+            random_no = -0.1
         elif player[0].round_number == 2:
             group.valid_no = 2
-            valid = random.sample(receiver_actions, group.valid_no)
-            valid_sorted = sorted(valid)
-            group.valid_actions = json.dumps(valid_sorted)
-            remaining = list(set(letters) - set(valid))
-            extra = random.sample(remaining, 7 - group.valid_no)
-            group.sender_actions = json.dumps(sorted(json.loads(group.valid_actions) + extra))
+            random_no = 1.1
         elif player[0].round_number == 3:
             group.valid_no = 5
-            valid = random.sample(receiver_actions, group.valid_no)
-            valid_sorted = sorted(valid)
-            group.valid_actions = json.dumps(valid_sorted)
-            remaining = list(set(letters) - set(valid))
-            extra = random.sample(remaining, 7 - group.valid_no)
-            group.sender_actions = json.dumps(sorted(json.loads(group.valid_actions) + extra))
+            random_no = 1.1
         else:
+            random_no = random.random()
             if random.random() < player[0].prob_5:
                 group.valid_no = 5
             else:
                 group.valid_no = 2
-            valid = random.sample(receiver_actions, group.valid_no)
-            valid_sorted = sorted(valid)
-            group.valid_actions = json.dumps(valid_sorted)
-            if random.random() < player[0].prob_align_actions:
-                group.sender_actions = group.receiver_actions
-            else:
-                remaining = list(set(letters) - set(valid))
-                extra = random.sample(remaining, 7 - group.valid_no)
-                group.sender_actions = json.dumps(sorted(json.loads(group.valid_actions) + extra))
+        valid = random.sample(receiver_actions, group.valid_no)
+        valid_sorted = sorted(valid)
+        group.valid_actions = json.dumps(valid_sorted)
+        if random_no < player[0].prob_align_actions:
+            group.sender_actions = json.dumps(json.loads(group.receiver_actions))
+        else:
+            remaining = list(set(letters) - set(receiver_actions))
+            extra_random = random.sample(remaining, 2)
+            invalid_receiver = random.sample(list(set(receiver_actions) - set(valid)), 7 - group.valid_no - 2)
+            group.sender_actions = json.dumps(sorted(json.loads(group.valid_actions) + extra_random + invalid_receiver))
+            #extra = random.sample(remaining, 7 - group.valid_no)
+            #group.sender_actions = json.dumps(sorted(json.loads(group.valid_actions) + extra))
         invalid = sorted(set(json.loads(group.sender_actions)) - set(valid))
         group.invalid_actions = json.dumps(invalid)
 
@@ -239,6 +231,8 @@ class Sender(Page):
 
     def vars_for_template(player: Player):
         group = player.group
+        assert isinstance(group.sender_actions, str)
+        assert group.sender_actions.startswith('[')
         return dict(
             sender_actions = ", ".join(json.loads(group.sender_actions)),
             valid_actions = json.loads(group.valid_actions),

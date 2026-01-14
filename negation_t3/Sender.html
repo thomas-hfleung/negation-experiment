@@ -31,6 +31,14 @@
         <h4><b>Reminder</b>:</h4>
         <h4>Actions <span style="text-decoration: underline">underlined</span> are the <span style="font-weight: bold">valid</span> actions.</h4>
         <h4>Only the <span style="font-weight: bold">valid</span> actions are always available to the Receiver.</h4>
+        {{if player.round_number <= C.PRACTICE_ROUNDS}}
+        <br>
+            {{if group.valid_no == 5}}
+            <h4><b>Note:</b> There are {{group.valid_no}} valid actions in this round, which happens with {{prob_5}}% chance.</h4>
+            {{else}}
+            <h4><b>Note:</b> There are {{group.valid_no}} valid actions in this round, which happens with {{prob_2}}% chance.</h4>
+            {{endif}}
+        {{endif}}
         <br>
         <hr>
         <br>

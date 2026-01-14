@@ -11,13 +11,13 @@ SESSION_CONFIGS = [
         name='Negation_t1',
         app_sequence=['negation_app'],
         num_demo_participants=2,
-        prob_5=1/3,
+        prob_5=0.3,
     ),
     dict(
         name='Negation_t2',
         app_sequence=['negation_app'],
         num_demo_participants=2,
-        prob_5=2/3,
+        prob_5=0.7,
     ),
     dict(
         name='Negation_t3',

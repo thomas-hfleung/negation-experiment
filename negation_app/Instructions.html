@@ -12,52 +12,51 @@
   <br>
   <p>
     Welcome to the experiment. This experiment studies decision making in pairs of individuals.
-    The experiment will last approximately one hour. There will be
+    It will last approximately 90 minutes. There will be
     <span class="red">{{num_playrounds}}</span> rounds, and in each round you will be making one decision.
-    Please read these instructions carefully. The cash payment you will receive at the end of the
-    experiment will depend on the decisions you make. You will not learn
-    the identity of any participants, nor will any participants learn your identity, even after the end of the experiment.
+    Please read these instructions carefully. The cash payment you will receive at the end of the experiment will depend on the decisions you make.
+      You will not learn the identity of any participants, nor will any participants learn your identity, even after the end of the experiment.
   </p>
 
   <h3>Your Role and Your Partner</h3>
   <p>
-    There are <span class="red">{{num_players}}</span> participants in today's session. Half of the participants will be randomly assigned
+    There are <span class="red">{{num_players}}</span> participants in today's session. Following the practice rounds, Half of the participants will be randomly assigned
     to the role of a <b>Sender</b>. The other half will be randomly assigned to the role of a <b>Receiver</b>.
-    <b>Your role stays the same throughout the experiment.</b> Each Sender will be paired with a Receiver so that
-    <span class="red">{{num_groups}}</span> pairs are formed. <b>The pairs stay the same throughout the entire experiment too.</b>
+    Your <b>role stays the same</b> throughout the experiment. Each Sender will be paired with a Receiver so that
+      <span class="red">{{num_groups}}</span> pairs are formed. You <b>remain in the same pair</b> for the duration of the experiment.
   </p>
 
-  <h3>Actions and Reward</h3>
+  <h3>Actions and Rewards</h3>
   <p>
     There are seven actions <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>,
-    <b>E</b>, <b>F</b>, and <b>G</b> – and seven positive rewards, 100, 90, 80, 70, 60, 50, and 40 points.
+      <b>E</b>, <b>F</b>, and <b>G</b> and seven positive rewards, <b>100, 90, 80, 70, 60, 50</b>, and <b>40 points</b>.
   </p>
   <p>
-    In each round, the computer randomly assigns rewards to actions. Each of the seven rewards is assigned to one of
-    the seven actions. At the same time, the computer randomly determines which actions are <b>valid</b>. There are either <b>five valid actions</b>
-    or <b>two valid actions</b> with the probability of having five valid actions as <b>{{player.prob_5}}</b>. The reward from an action that is not valid is 0 points instead of the assigned reward.
+    In each round, the computer randomly assigns each of the seven positive rewards to one of the seven actions.
+      All possible assignments are equally likely. At the same time, the computer randomly determines which actions are <b>valid</b>.
+      There are either <b>two valid actions and five other actions</b> or <b>five valid actions and two other actions</b>, with a {{prob_2}}% and {{prob_5}}% chance respectively.
+      For any fixed number of valid actions, all selections of valid actions are equally likely.
   </p>
   <p>
-    Both participants in the same pair obtain the same reward. The reward is determined jointly by the <b>Action</b>
-    taken and the <b>Validity</b> of that action. For your pair to receive a positive reward, the receiver must take an action that is <b>valid</b>.
-      Both players are endowed with {{C.ENDOWMENT}} points in each round.
+    Both participants in the same pair obtain the <b>same reward</b>. The reward is determined jointly by the <b>action</b>
+    taken and the <b>validity</b> of that action. For your pair to receive a positive reward, the Receiver must take a <b>valid action</b>.
+      The reward from any <b>other action</b> is <b>0 points</b>.
   </p>
 
 
   <h3>The Sender’s Decision</h3>
   <p>
-    If you are a Sender, only you will learn which actions are <b>valid</b>. You will not learn the assignment of rewards to actions.
-    After learning which actions are valid, you choose a <b>message</b> to send to the Receiver.
+      If you are a Sender, you, but not the Receiver, will learn <b>which actions are valid</b>. The valid actions will be underlined.
+      You will not learn the assignment of rewards to actions. After learning which actions are valid, you choose a <b>message</b> to send to the Receiver.
   </p>
   <p>
-    Each message is a string of up to 10 symbols. You can freely assemble your message using the symbols:
+      Each message is a string of up to 10 symbols. You can <b>freely</b> assemble your message using the symbols:
     <b>*</b>, <b>%</b>, <b>#</b>, <b>a</b>, <b>b</b>, <b>c</b>, <b>d</b>, <b>e</b>, <b>f</b>, or <b>g</b> by clicking the corresponding buttons.
-    You can change your message by using the “Delete” button. Once you have finished assembling your message,
-    you can click the “Send Message” button. You are allowed to send an empty message. The receiver will see "No message" when that is the case.
+    You can change your message by using the “Delete” button. Once you have finished assembling your message, click the “Send Message” button.
   </p>
   <p>
-    The first symbol in your message is costless. Each additional symbol in the message that you send <b>costs</b>
-    both you and the Receiver <span class="red">{{C.COST}}</span> points. An example of the screen a Sender will see is as follows.
+    The first symbol in your message is costless. Each additional symbol <b>costs</b>
+    both you and the Receiver <b>{{C.COST}}</b> points. An example of the screen a Sender will see is as follows.
   </p>
   <br>
   <div class = "row">
@@ -104,13 +103,15 @@
 
   <h3>The Receiver’s Decision</h3>
   <p>
-    If you are a Receiver, only you will see the <b>assignment of rewards to actions</b>. You can also observe the message from the Sender.
-    Each action is assigned a different reward from among 100, 90, 80, 70, 60, 50, and 40 points.
+      If you are a Receiver, you will take <b>one</b> of the seven actions <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>,
+      <b>E</b>, <b>F</b>, or <b>G</b>.
+      In each round, each action is randomly assigned a different positive reward from among <b>100, 90, 80, 70, 60, 50</b>, and <b>40 points</b>.
+      You, but not the Sender, will see the <b>assignment of positive rewards to actions</b>. In addition, you see the message from the Sender, who knows which actions are valid.
   </p>
   <p>
-    If you choose an action that is <b>valid</b>, both you and the Sender will receive the reward assigned to that action.
-    If you choose an invalid action, your reward and the Sender’s reward is {{C.INVALID_REWARD}} points. You can choose the action by clicking the corresponding button.
-    An example of the screen a Receiver will see is as follows.
+      If you choose a <b>valid action</b>, both you and the Sender will receive the positive reward assigned to that action.
+      If you choose any <b>other action</b>, your reward and the Sender’s reward is <b>0 points</b>. You choose an action by clicking the corresponding button.
+      An example of the screen that a Receiver will see is as follows.
   </p>
   <br>
   <div class = "row">
@@ -186,37 +187,62 @@
 </div>
   <br>
 
-  <h3>Information Feedback</h3>
+  <h3>Information Feedback - for both Sender and Receiver</h3>
   <p>
-      The payoff you obtain in each round will be the <b>initial endowment ({{C.ENDOWMENT}} points) + assigned reward - cost of message</b>. Again remember that you will only
-      obtain the assigned reward if the action is valid, but the cost of message is incurred regardless of the validity of the action.
-    At the end of each round, you will be provided with a summary of what happened in the round, including the assignment
-    of rewards to actions, which actions were valid, the Sender's choice of message, the Receiver's choice of action,
-    the message cost incurred, and your reward for the round.
+    At the end of each round, you will be provided with a summary of what happened in that round, including which actions were valid,
+      the Sender’s choice of message, the message cost incurred, the assignment of positive rewards to actions, the Receiver’s choice of action, and your reward for that round.
   </p>
 
   <h3>Your Cash Payment</h3>
   <p>
-      The computer will randomly select <span class="red">2 rounds</span> out of the {{num_playrounds}} to calculate your cash payment.
-      The higher payoff among the 2 will be selected as the payoff of the experiment. The points will be exchanged to dollars with a <b>{{C.CONVERSION_RATE}}:1 ratio</b> rounded up.
-      Your total payment will be the amount you earned in the selected round plus a ${{C.SHOW_UP_FEE}} show-up fee.
+      In each round both players are <b>endowed with {{C.ENDOWMENT}} points</b>.
+      The <b>payoff in points</b> you obtain in each round will be the [<b>{{C.ENDOWMENT}} points endowment</b> − the <b>message cost</b> + the <b>reward</b> for that round].
+      The computer will randomly select <b>2 rounds</b> out of the {{num_playrounds}} rounds to calculate your cash payment.
+      The higher payoff among the 2 rounds will be selected as your payoff of the experiment.
+      The points you earned will be converted to US dollars at a <b>4:1 exchange rate</b>, rounded up (thus, for example, 100 points correspond to $25.00).
+      Your total cash payment will be the amount you earned in the selected round plus a $7 show-up fee.
   </p>
+
+  <h3>Timeline</h3>
+  {{if prob_5 == 50}}
+  <center>
+  <img src="{% static 'Baseline.jpg' %}"
+     style="width: 60%; height: auto;"
+     alt="Figure">
+  </center>
+  {{elif prob_5 == 30}}
+  <center>
+  <img src="{% static 'T1.jpg' %}"
+     style="width: 60%; height: auto;"
+     alt="Figure">
+  </center>
+  {{elif prob_5 == 70}}
+  <center>
+  <img src="{% static 'T2.jpg' %}"
+     style="width: 60%; height: auto;"
+     alt="Figure">
+  </center>
+  {{endif}}
+  Figure 1 shows the timeline of one round. It summarizes what happens in one round according to the instructions above.
 
   <h3>Quiz and Practice</h3>
   <p>
-    To ensure your comprehension, we will give you a quiz and {{C.PRACTICE_ROUNDS}} practice round. After answering on your own,
-    we will review the quiz. You will then participate in {{C.PRACTICE_ROUNDS}} practice round. At the beginning of the practice round,
-    you will be randomly assigned to the role of either a Sender or a Receiver. Your role in the official rounds
-    will match your practice role.
+    To ensure your comprehension of the instructions, we will give you a quiz and {{C.PRACTICE_ROUNDS}} practice rounds.
+      We will go through the quiz after you answer it on your own. You will then participate in 1 practice round.
+      In the practice rounds, you will act as both Sender and Receiver.
+      Once the practice round is over, the computer will tell you “The official rounds begin now!” and you will be randomly assigned to either the role of Sender or the role of Receiver.
   </p>
 
   <h3>Administration</h3>
   <p>
-    Your decisions as well as your monetary payment will be kept confidential. Do not discuss your decisions with
-    other participants. At the end, you will receive your cash payment, sign your name for receipt, and may leave.
+    Your decisions as well as your monetary payment will be kept confidential. Remember that you have to make your decisions entirely on your own.
+      Please do not discuss your decisions with any other participants.
   </p>
   <p>
-    If you have any questions, raise your hand. Otherwise, we will proceed to the quiz.
+      Upon finishing the experiment, you will receive your cash payment. You will be asked to sign your name to acknowledge your receipt of the payment. You are then free to leave.
+  </p>
+  <p>
+    If you have any question, please raise your hand. We will answer your question individually. If there is no question, we will proceed to the quiz now.
   </p>
 
   <h3>Quiz</h3>

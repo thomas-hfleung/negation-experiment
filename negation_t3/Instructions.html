@@ -12,7 +12,7 @@
   <br>
   <p>
     Welcome to the experiment. This experiment studies decision making in pairs of individuals.
-    The experiment will last approximately one and a half hours. There will be
+    It will last approximately 90 minutes. There will be
     <span class="red">{{num_playrounds}}</span> rounds, and in each round you will be making one decision.
     Please read these instructions carefully. The cash payment you will receive at the end of the experiment will depend on the decisions you make.
       You will not learn the identity of any participants, nor will any participants learn your identity, even after the end of the experiment.
@@ -20,39 +20,47 @@
 
   <h3>Your Role and Your Partner</h3>
   <p>
-    There are <span class="red">{{num_players}}</span> participants in today's session. Half of the participants will be randomly assigned
+    There are <span class="red">{{num_players}}</span> participants in today's session. Following the practice rounds, Half of the participants will be randomly assigned
     to the role of a <b>Sender</b>. The other half will be randomly assigned to the role of a <b>Receiver</b>.
-    <b>Your role stays the same</b> throughout the experiment. Each Sender will be paired with a Receiver so that
-    <span class="red">{{num_groups}}</span> pairs are formed. You <b>remain in the same pair</b> for the duration of the experiment.
+    Your <b>role stays the same</b> throughout the experiment. Each Sender will be paired with a Receiver so that
+      <span class="red">{{num_groups}}</span> pairs are formed. You <b>remain in the same pair</b> for the duration of the experiment.
   </p>
 
   <h3>Actions and Rewards</h3>
   <p>
-    There are twelve actions <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>,
-    <b>E</b>, <b>F</b>, <b>G</b>, <b>H</b>, <b>J</b>, <b>K</b>, <b>L</b>, and <b>M</b> – and seven positive rewards, <b>100, 90, 80, 70, 60, 50, and 40 points</b>.
+    There are twelve possible actions <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>,
+    <b>E</b>, <b>F</b>, <b>G</b>, <b>H</b>, <b>J</b>, <b>K</b>, <b>L</b>, and <b>M</b> and seven positive rewards, <b>100, 90, 80, 70, 60, 50, and 40 points</b>.
   </p>
   <p>
-      In each round, the computer randomly with equal chance selects <b>seven</b> actions as the <b>Receiver Available Actions</b> and assigns randomly with equal chance
-      each of the seven positive rewards to one of the seven Receiver Available Actions.
+      In each round, the computer randomly selects seven actions from the twelve possible actions. Only these seven actions will be available for the Receiver to take in that round.
+      Then, it randomly assigns each of the seven positive rewards with equal chance to one of the seven actions available to the Receiver.
   </p>
   <p>
-      Then the computer randomly with equal chance determines which Receiver Available Actions are <b>valid</b>. There are either <b>two valid actions and five other actions</b> or
-      <b>five valid actions and two other actions</b> – both possibilities have a <b>{{prob_5}}%</b> probability.
+      The computer also randomly determines which of the actions available to the Receiver are <b>valid</b>.
+      There are either <b>two valid actions and five other actions</b> or <b>five valid actions and two other actions</b>, with a {{prob_2}}% and {{prob_5}}% chance respectively.
+      For any fixed number of valid actions, all selections of valid actions are equally likely.
   </p>
   <p>
-      With <b>{{prob_align}}%</b> probability, the sender will observe all seven Receiver Available Actions, which include the (two or five) valid actions and the (five or two) other Receiver Available Actions.
+      In each round the computer also selects seven actions from the twelve possible actions, which are shown to the Sender.
   </p>
   <p>
-      With <b>{{prob_not_align}}%</b> probability, the sender will observe seven actions, which include the (two or five) valid actions;
-      the (five or two) other actions are drawn randomly with equal chance from the set of <b>all remaining</b> actions, excluding the valid ones.
-      For example, if there are five valid actions in this round (e.g. A, B, C, D, E), the two other actions observed by the Sender will be randomly with equal chance drawn from the remaining actions (F, G, H, J, K, L, M).
+      With <b>{{prob_align}}%</b> chance, the seven actions which the Sender sees are the same as the seven actions available to the Receiver.
+      For the Sender, the two or five valid actions are underlined.
   </p>
   <p>
-      In all cases, the set of actions observed by the Sender <b>always includes the valid actions</b>.
+      With <b>{{prob_not_align}}%</b> chance, two of the seven actions which the Sender sees differ from the seven actions available to the Receiver.
+      The Sender always sees the two or five valid actions, which are underlined.
+      The two actions that differ are drawn with equal chance from all possible actions other than those available to the Receiver.
   </p>
   <p>
-      Both participants in the same pair obtain the <b>same reward</b>. The reward is determined jointly by the <b>Action</b> taken and the <b>Validity</b> of that action.
-      For your pair to receive a positive reward, the receiver must take a <b>valid action</b>. The reward from any <b>other action</b> is <b>{{C.INVALID_REWARD}} points</b>.
+      <b>Example:</b> Suppose the computer selects the seven actions A, B, C, D, E, F, G as the actions available to the Receiver and the five actions A, B, E, F, G as being valid.
+      Then with 80% chance the Sender sees <u>A</u>, <u>B</u>, C, D, <u>E</u>, <u>F</u>, <u>G</u>, that is, the Sender sees the same actions as the Receiver, with the valid actions underlined.
+      With 20% chance the Sender sees <u>A</u>, <u>B</u>, X, Y, <u>E</u>, <u>F</u>, <u>G</u>, where the actions X and Y are drawn from H, J, K, L, M. Again, the valid actions are underlined.
+  </p>
+  <p>
+      Both participants in the same pair obtain the <b>same reward</b>. The reward is determined jointly by the <b>action</b>
+    taken and the <b>validity</b> of that action. For your pair to receive a positive reward, the Receiver must take a <b>valid action</b>.
+      The reward from any <b>other action</b> is <b>{{C.INVALID_REWARD}} points</b>.
 
   </p>
   <!--
@@ -83,8 +91,7 @@
   <p>
       Each message is a string of up to 10 symbols. You can <b>freely</b> assemble your message using the symbols:
     <b>*</b>, <b>%</b>, <b>#</b>, <b>a</b>, <b>b</b>, <b>c</b>, <b>d</b>, <b>e</b>, <b>f</b>, <b>g</b>, <b>h</b>, <b>j</b>, <b>k</b>, <b>l</b>, and <b>m</b> by clicking the corresponding buttons.
-    You can change your message by using the “Delete” button. Once you have finished assembling your message,
-    you can click the “Send Message” button. <!--You are allowed to send an empty message. The receiver will see "No message" when that is the case. -->
+    You can change your message by using the “Delete” button. Once you have finished assembling your message, click the “Send Message” button. <!--You are allowed to send an empty message. The receiver will see "No message" when that is the case. -->
   </p>
   <p>
       The first symbol in your message is costless. Each additional symbol <b>costs</b> both you and the Receiver <b>{{C.COST}}</b> points. An example of the screen a Sender will see is as follows.
@@ -135,8 +142,8 @@
 
   <h3>The Receiver’s Decision</h3>
   <p>
-      If you are a Receiver, you will take <b>one</b> of the seven Receiver Available Actions. Each action is assigned a different positive reward from among <b>100, 90, 80, 70, 60, 50, and 40 points</b>.
-      You, but not the Sender, will see the <b>assignment of positive rewards to actions</b>. In addition, you observe the message from the Sender, who knows which actions are valid.
+      If you are a Receiver, you will take <b>one</b> of the seven Receiver actions available to you. Each of those actions is assigned a different positive reward from among <b>100, 90, 80, 70, 60, 50, and 40 points</b>.
+      You, but not the Sender, will see the <b>assignment of positive rewards to actions</b>. In addition, you see the message from the Sender, who knows which actions are valid.
   </p>
   <p>
       If you choose a <b>valid action</b>, both you and the Sender will receive the positive reward assigned to that action. If you choose any <b>other action</b>,
@@ -219,24 +226,35 @@
 
   <h3>Information Feedback – for both Sender and Receiver</h3>
   <p>
-      At the end of each round, you will be provided with a summary of what happened in that round, including the assignment of positive rewards to actions,
-      which actions were valid, the Sender’s choice of message, the Receiver’s choice of action, the message cost incurred, and your reward for that round.
+      At the end of each round, you will be provided with a summary of what happened in that round, including which actions the Sender saw, which actions were valid,
+      the Sender’s choice of message, the message cost incurred, the actions available to the Receiver, the assignment of positive rewards to actions,
+      the Receiver’s choice of action, and your reward for that round.
   </p>
 
   <h3>Your Cash Payment</h3>
   <p>
-      In each round both players are <b>endowed with {{C.ENDOWMENT}} points</b>. The <b>payoff in points</b> you obtain in each round will be the <b>endowment</b> minus the <b>message cost</b> plus the <b>reward</b> for that round.
-      Again remember that you will only obtain the assigned positive reward if the action is valid, but the cost of message is incurred regardless of the validity of the action.
-      The computer will randomly select <span class="red">2 rounds</span> out of the {{num_playrounds}} to calculate your cash payment.
-      The higher payoff among the 2 will be selected as the payoff of the experiment. The points you earned will be converted to US dollars at a <b>{{C.CONVERSION_RATE}}:1 ratio</b> rounded up (thus, for example, 100 points correspond to $25.00).
-      Your total cash payment will be the amount you earned in the selected round plus a ${{C.SHOW_UP_FEE}} show-up fee.
+      In each round both players are <b>endowed with {{C.ENDOWMENT}} points</b>.
+      The <b>payoff in points</b> you obtain in each round will be the [<b>{{C.ENDOWMENT}} points endowment</b> − the <b>message cost</b> + the <b>reward</b> for that round].
+      The computer will randomly select <b>2 rounds</b> out of the {{num_playrounds}} to calculate your cash payment.
+      The higher payoff among the 2 rounds will be selected as your payoff of the experiment.
+      The points you earned will be converted to US dollars at a <b>4:1 exchange rate</b>, rounded up (thus, for example, 100 points correspond to $25.00).
+      Your total cash payment will be the amount you earned in the selected round plus a $7 show-up fee.
   </p>
+
+  <h3>Timeline</h3>
+  <center>
+  <img src="{% static 'T3.jpg' %}"
+     style="width: 60%; height: auto;"
+     alt="Figure">
+  </center>
+  Figure 1 shows the timeline of one round. It summarizes what happens in one round according to the instructions above.
 
   <h3>Quiz and Practice</h3>
   <p>
-      To ensure your comprehension of the instructions, we will give you a quiz and a practice round. We will go through the quiz after you answer it on your own.
-      You will then participate in 1 practice round. At the beginning of the practice round, you will be randomly assigned to the role of either a Sender or a Receiver.
-      Your role in the official rounds is the same as that in the practice round. Once the practice round is over, the computer will tell you “The official rounds begin now!”
+      To ensure your comprehension of the instructions, we will give you a quiz and {{C.PRACTICE_ROUNDS}} practice rounds.
+      We will go through the quiz after you answer it on your own. You will then participate in 1 practice round.
+      In the practice rounds, you will act as both Sender and Receiver.
+      Once the practice round is over, the computer will tell you “The official rounds begin now!” and you will be randomly assigned to either the role of Sender or the role of Receiver.
   </p>
 
   <h3>Administration</h3>
