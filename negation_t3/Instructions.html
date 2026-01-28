@@ -29,7 +29,7 @@
   <h3>Actions and Rewards</h3>
   <p>
     There are twelve possible actions <b>A</b>, <b>B</b>, <b>C</b>, <b>D</b>,
-    <b>E</b>, <b>F</b>, <b>G</b>, <b>H</b>, <b>J</b>, <b>K</b>, <b>L</b>, and <b>M</b> and seven positive rewards, <b>100, 90, 80, 70, 60, 50, and 40 points</b>.
+    <b>E</b>, <b>F</b>, <b>G</b>, <b>H</b>, <b>I</b>, <b>J</b>, <b>K</b>, and <b>L</b> and seven positive rewards, <b>100, 90, 80, 70, 60, 50, and 40 points</b>.
   </p>
   <p>
       In each round, the computer randomly selects seven actions from the twelve possible actions. Only these seven actions will be available for the Receiver to take in that round.
@@ -55,7 +55,7 @@
   <p>
       <b>Example:</b> Suppose the computer selects the seven actions A, B, C, D, E, F, G as the actions available to the Receiver and the five actions A, B, E, F, G as being valid.
       Then with 80% chance the Sender sees <u>A</u>, <u>B</u>, C, D, <u>E</u>, <u>F</u>, <u>G</u>, that is, the Sender sees the same actions as the Receiver, with the valid actions underlined.
-      With 20% chance the Sender sees <u>A</u>, <u>B</u>, X, Y, <u>E</u>, <u>F</u>, <u>G</u>, where the actions X and Y are drawn from H, J, K, L, M. Again, the valid actions are underlined.
+      With 20% chance the Sender sees <u>A</u>, <u>B</u>, X, Y, <u>E</u>, <u>F</u>, <u>G</u>, where the actions X and Y are drawn from H, I, J, K, L. Again, the valid actions are underlined.
   </p>
   <p>
       Both participants in the same pair obtain the <b>same reward</b>. The reward is determined jointly by the <b>action</b>
@@ -90,7 +90,7 @@
   </p>
   <p>
       Each message is a string of up to 10 symbols. You can <b>freely</b> assemble your message using the symbols:
-    <b>*</b>, <b>%</b>, <b>#</b>, <b>a</b>, <b>b</b>, <b>c</b>, <b>d</b>, <b>e</b>, <b>f</b>, <b>g</b>, <b>h</b>, <b>j</b>, <b>k</b>, <b>l</b>, and <b>m</b> by clicking the corresponding buttons.
+    <b>*</b>, <b>%</b>, <b>#</b>, <b>a</b>, <b>b</b>, <b>c</b>, <b>d</b>, <b>e</b>, <b>f</b>, <b>g</b>, <b>h</b>, <b>i</b>, <b>j</b>, <b>k</b>, and <b>l</b> by clicking the corresponding buttons.
     You can change your message by using the “Delete” button. Once you have finished assembling your message, click the “Send Message” button. <!--You are allowed to send an empty message. The receiver will see "No message" when that is the case. -->
   </p>
   <p>
@@ -101,7 +101,7 @@
     <div class = column1>
         <h5>Sender</h5>
         <br>
-        <h4>Observed Available Actions: <b>A</b> , <b>C</b> , <b style="text-decoration: underline">D</b> , <b>F</b> , <b>G</b> , <b style="text-decoration: underline">L</b> , <b>M</b></h4>
+        <h4>Observed Available Actions: <b>A</b> , <b>C</b> , <b style="text-decoration: underline">D</b> , <b>E</b> , <b>F</b> , <b>G</b> , <b style="text-decoration: underline">L</b></h4>
         <br>
         <h4><b>Reminder</b>:</h4>
         <h4>Actions <span style="text-decoration: underline">underlined</span> are the <span style="font-weight: bold">valid</span> actions.</h4>
@@ -155,7 +155,7 @@
     <div class = column4>
         <h5>Receiver</h5>
         <br>
-        <h4>Actions available: <b>B</b> , <b>C</b> , <b>D</b> , <b>F</b> , <b>H</b> , <b>K</b> , <b>L</b></h4>
+        <h4>Actions available: <b>B</b> , <b>C</b> , <b>D</b> , <b>E</b> , <b>F</b> , <b>K</b> , <b>L</b></h4>
         <br>
         <h4>Sender's message: <b style="color: saddlebrown"></b></h4>
         <br>
@@ -190,12 +190,12 @@
                 <td>{{C.INVALID_REWARD}}</td>
             </tr>
             <tr>
-                <td><button type="button" class="action-button" data-letter="F" id="action-button">F</button></td>
+                <td><button type="button" class="action-button" data-letter="E" id="action-button">E</button></td>
                 <td>{{possible_rewards.3}}</td>
                 <td>{{C.INVALID_REWARD}}</td>
             </tr>
             <tr>
-                <td><button type="button" class="action-button" data-letter="H" id="action-button">H</button></td>
+                <td><button type="button" class="action-button" data-letter="F" id="action-button">F</button></td>
                 <td>{{possible_rewards.4}}</td>
                 <td>{{C.INVALID_REWARD}}</td>
             </tr>
@@ -287,7 +287,7 @@
     {{formfield "q4"}}
   </div>
   <div class="quiz-question">
-      5. If the valid actions are <b>A</b> and <b>B</b>, the sender can observe the actions B, C, F, G, J, L, M. <br>
+      5. If the valid actions are <b>A</b> and <b>B</b>, the sender can observe the actions B, C, F, G, J, K, L. <br>
     {{formfield "q5"}}
   </div>
   <div class="quiz-question">
@@ -459,7 +459,7 @@
 {% block scripts %}
 <script>
   symbols = ['*','#','%'];
-  letters = ['a','b','c','d','e','f','g','h','j','k','l','m'];
+  letters = ['a','b','c','d','e','f','g','h','i','j','k','l'];
   const symbolsDiv = document.getElementById('symbol_buttons');
   const lettersDiv = document.getElementById('letter_buttons');
   const outputDiv = document.getElementById('output');

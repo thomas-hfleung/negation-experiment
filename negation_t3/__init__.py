@@ -189,7 +189,7 @@ class StartWaitPage(WaitPage):
     @staticmethod
     def after_all_players_arrive(group:Group):
         player = group.get_players()
-        letters = ['A','B','C','D','E','F','G','H','J','K','L','M']
+        letters = ['A','B','C','D','E','F','G','H','I','J','K','L']
         rewards = [40,50,60,70,80,90,100]
         random_rewards = random.sample(rewards, 7)
         group.possible_rewards = json.dumps(random_rewards)
