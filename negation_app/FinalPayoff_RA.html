@@ -1,0 +1,79 @@
+{{ block content }}
+<h1>Final Payoff</h1>
+<br>
+<p>
+    <strong>Round {{participant.selected_rounds.0}} and {{participant.selected_rounds.1}}</strong> were randomly selected for your payment. <br>
+    Your payoff from these two rounds are <b>{{participant.selected_payoffs.0}} points and {{participant.selected_payoffs.1}} points</b> respectively.  <br>
+    The highest payoff {{participant.highest_payoff}} points converted to dollars with a <b>{{C.CONVERSION_RATE}}:1 ratio</b> is <b>${{max_round_payoff}}</b>.
+</p>
+
+<br>
+
+    <p>Here is the row that was randomly chosen in the lottery selection.</p>
+
+    <table class="table table-striped">
+    <tr>
+        <td><b>Lottery 1</b></td>
+        <td><b>Lottery 2</b></td>
+    </tr>
+        {% for t in trials %}
+    <tr>
+        <td {{if not player.RA_chose_safe}} style="background-color: yellow; font-weight: bold;" {{ endif }}>
+            ${{ t.lottery_high_b}} with a probability of {{ t.probability }}%, ${{ t.lottery_low_b }} otherwise.
+        </td>
+        <td {{if player.RA_chose_safe}} style="background-color: yellow; font-weight: bold;" {{ endif }}>
+            ${{ t.lottery_high_a }} with a probability of {{ t.probability }}%, ${{ t.lottery_low_a }} otherwise.
+        </td>
+    </tr>
+        {% endfor %}
+</table>
+
+    <p>
+        {{ if player.RA_chose_safe }}
+        You chose <b>Lottery 2</b> and {{ if player.RA_won_lottery }}won{{ else }}lost{{ endif }} the small lottery,
+        {{ else }}
+        You chose <b>Lottery 1</b> and {{ if player.RA_won_lottery }}won{{ else }}lost{{ endif }} the small lottery, {{ endif }}
+        so your reward from the lottery is <b>${{ player.RA_payoff }}</b>.
+    </p>
+
+    <br><br>
+<h2>
+    Your total payment for the experiment is <strong>${{max_round_payoff}} + ${{player.RA_payoff}} + ${{C.SHOW_UP_FEE}} (show-up fee) = ${{participant.payoff}}</strong>.
+</h2>
+<br><br>
+<table class="table">
+  <tr>
+    <td style="font-weight: bold">Round</td>
+    <td style="font-weight: bold">Payoff</td>
+  </tr>
+  {% for row in rounds_data %}
+  <tr {{if row.is_selected}} style="background-color: yellow; font-weight: bold;" {{ endif }}>
+    <td>{{ row.round_number }}</td>
+    <td>{{ row.payoff }}</td>
+  </tr>
+  {% endfor %}
+</table>
+<br>
+
+{{ endblock }}
+
+{% block app_styles %}
+<style>
+    h1 {
+        font-size: 35px;
+        text-align: center;
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    p {
+        font-size: 20px;
+    }
+    td {
+        border: 1px solid black;
+        font-size: 20px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+</style>
+{%endblock%}
