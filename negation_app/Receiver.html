@@ -1,6 +1,6 @@
 {{ block content }}
 {{if player.round_number <= C.PRACTICE_ROUNDS}}
-<h1>Practice Round {{player.round_number}}</h1>
+<h1>Practice Round {{player.round_number}} (Against yourself)</h1>
 {{else}}
     <h1>Round {{player.play_round_number}}</h1>
 {{endif}}
@@ -19,9 +19,7 @@
         <h4>Actions available: <b>A</b> , <b>B</b> , <b>C</b> , <b>D</b> , <b>E</b> , <b>F</b> , <b>G</b></h4>
         <br>
         <h4>Sender's message: <b style="color: saddlebrown">{{group.message}}</b></h4>
-        <br>
         <hr>
-        <br>
         <h4>Possible rewards:</h4>
         <center>
         <table class="table">
@@ -33,7 +31,7 @@
             <tr>
                 <td style="font-weight: bold">Action</td>
                 <td style="font-weight: bold">If valid</td>
-                <td style="font-weight: bold">If otherwise</td>
+                <td style="font-weight: bold">Otherwise</td>
             </tr>
             <tr>
                 <td><button type="button" class="action-button" data-letter="A" id="action-button">A</button></td>

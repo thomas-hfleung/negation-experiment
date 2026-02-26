@@ -13,17 +13,17 @@
   <p>
     Welcome to the experiment. This experiment studies decision making in pairs of individuals.
     It will last approximately 90 minutes. There will be
-    <span class="red">{{num_playrounds}}</span> rounds, and in each round you will be making one decision.
+    <b>{{num_playrounds}}</b> rounds, and in each round you will be making one decision.
     Please read these instructions carefully. The cash payment you will receive at the end of the experiment will depend on the decisions you make.
       You will not learn the identity of any participants, nor will any participants learn your identity, even after the end of the experiment.
   </p>
 
   <h3>Your Role and Your Partner</h3>
   <p>
-    There are <span class="red">{{num_players}}</span> participants in today's session. Following the practice rounds, half of the participants will be randomly assigned
+    There are <b>{{num_players}}</b> participants in today's session. Following the practice rounds, half of the participants will be randomly assigned
     to the role of a <b>Sender</b>. The other half will be randomly assigned to the role of a <b>Receiver</b>.
     Your <b>role stays the same</b> throughout the experiment. Each Sender will be paired with a Receiver so that
-      <span class="red">{{num_groups}}</span> pairs are formed. You <b>remain in the same pair</b> for the duration of the experiment.
+      <b>{{num_groups}}</b> pairs are formed. You <b>remain in the same pair</b> for the duration of the experiment.
   </p>
 
   <h3>Actions and Rewards</h3>
@@ -45,17 +45,17 @@
   </p>
   <p>
       With <b>{{prob_align}}%</b> chance, the seven actions which the Sender sees are the same as the seven actions available to the Receiver.
-      For the Sender, the two or five valid actions are underlined.
+      For the Sender, the two or five valid actions are <span style="text-decoration: underline">underlined</span>.
   </p>
   <p>
       With <b>{{prob_not_align}}%</b> chance, two of the seven actions which the Sender sees differ from the seven actions available to the Receiver.
-      The Sender always sees the two or five valid actions, which are underlined.
+      The Sender always sees the two or five valid actions, which are <span style="text-decoration: underline">underlined</span>.
       The two actions that differ are drawn with equal chance from all possible actions other than those available to the Receiver.
   </p>
   <p>
       <b>Example:</b> Suppose the computer selects the seven actions A, B, C, D, E, F, G as the actions available to the Receiver and the five actions A, B, E, F, G as being valid.
-      Then with 80% chance the Sender sees <u>A</u>, <u>B</u>, C, D, <u>E</u>, <u>F</u>, <u>G</u>, that is, the Sender sees the same actions as the Receiver, with the valid actions underlined.
-      With 20% chance the Sender sees <u>A</u>, <u>B</u>, X, Y, <u>E</u>, <u>F</u>, <u>G</u>, where the actions X and Y are drawn from H, I, J, K, L. Again, the valid actions are underlined.
+      Then with 80% chance the Sender sees <u>A</u>, <u>B</u>, C, D, <u>E</u>, <u>F</u>, <u>G</u>, that is, the Sender sees the same actions as the Receiver, with the valid actions <span style="text-decoration: underline">underlined</span>.
+      With 20% chance the Sender sees <u>A</u>, <u>B</u>, X, Y, <u>E</u>, <u>F</u>, <u>G</u>, where the actions X and Y are drawn from H, I, J, K, L. Again, the valid actions are <span style="text-decoration: underline">underlined</span>.
   </p>
   <p>
       Both participants in the same pair obtain the <b>same reward</b>. The reward is determined jointly by the <b>action</b>
@@ -89,7 +89,7 @@
       After learning which actions are valid, you choose a <b>message</b> to send to the Receiver.
   </p>
   <p>
-      Each message is a string of up to 10 symbols. You can <b>freely</b> assemble your message using the symbols:
+      Each message is a string of up to 10 symbols. You can freely assemble your message using the symbols:
     <b>*</b>, <b>%</b>, <b>#</b>, <b>a</b>, <b>b</b>, <b>c</b>, <b>d</b>, <b>e</b>, <b>f</b>, <b>g</b>, <b>h</b>, <b>i</b>, <b>j</b>, <b>k</b>, and <b>l</b> by clicking the corresponding buttons.
     You can change your message by using the “Delete” button. Once you have finished assembling your message, click the “Send Message” button. <!--You are allowed to send an empty message. The receiver will see "No message" when that is the case. -->
   </p>
@@ -106,16 +106,14 @@
         <h4><b>Reminder</b>:</h4>
         <h4>Actions <span style="text-decoration: underline">underlined</span> are the <span style="font-weight: bold">valid</span> actions.</h4>
         <h4>Only the <span style="font-weight: bold">valid</span> actions are always available to the Receiver.</h4>
-        <br>
         <hr>
-        <br>
         <h4>Symbols to compose your message:</h4>
         <div id="symbol_buttons">
           <!-- Buttons will go here -->
         </div>
         <div id="letter_buttons">
           <!-- Buttons will go here -->
-        </div><br><br>
+        </div><br>
         <h4>Cost: {{C.COST}} points per symbol (First one is free)</h4>
         <br>
         <h4>Your message choice:</h4>
@@ -128,8 +126,7 @@
             </div>
         </div>
         <div id="error-message-sender"></div>
-        <br>
-        <div id="cost-display">Total cost: 0 points</div>
+        <div id="cost-display">Total cost: <span style="color: red">0 points</span></div>
         <br>
 
         <form method="post">
@@ -157,10 +154,8 @@
         <br>
         <h4>Actions available: <b>B</b> , <b>C</b> , <b>D</b> , <b>E</b> , <b>F</b> , <b>K</b> , <b>L</b></h4>
         <br>
-        <h4>Sender's message: <b style="color: saddlebrown"></b></h4>
-        <br>
+        <h4>Sender's message: <span class="placeholder-box">"The Sender's message"</span></h4>
         <hr>
-        <br>
         <h4>Possible rewards:</h4>
         <center>
         <table class="table">
@@ -172,7 +167,7 @@
             <tr>
                 <td style="font-weight: bold">Action</td>
                 <td style="font-weight: bold">If valid</td>
-                <td style="font-weight: bold">If otherwise</td>
+                <td style="font-weight: bold">Otherwise</td>
             </tr>
             <tr>
                 <td><button type="button" class="action-button" data-letter="B" id="action-button">B</button></td>
@@ -234,10 +229,10 @@
   <h3>Your Cash Payment</h3>
   <p>
       In each round both players are <b>endowed with {{C.ENDOWMENT}} points</b>.
-      The <b>payoff in points</b> you obtain in each round will be the [<b>{{C.ENDOWMENT}} points endowment</b> − the <b>message cost</b> + the <b>reward</b> for that round].
+      The <b>payoff in points</b> you obtain in each round will be the [<b>{{C.ENDOWMENT}} points endowment</b> <b>−</b> the <b>message cost</b> <b>+</b> the <b>reward</b> for that round].
       The computer will randomly select <b>2 rounds</b> out of the {{num_playrounds}} to calculate your cash payment.
       The higher payoff among the 2 rounds will be selected as your payoff of the experiment.
-      The points you earned will be converted to US dollars at a <b>4:1 exchange rate</b>, rounded up (thus, for example, 100 points correspond to $25.00).
+      The points you earned will be converted to US dollars at a <b>6:1 exchange rate</b>, rounded up (thus, for example, 100 points correspond to $16.66).
       Your total cash payment will be the amount you earned in the selected round plus a $7 show-up fee.
   </p>
 
@@ -252,7 +247,7 @@
   <h3>Quiz and Practice</h3>
   <p>
       To ensure your comprehension of the instructions, we will give you a quiz and {{C.PRACTICE_ROUNDS}} practice rounds.
-      We will go through the quiz after you answer it on your own. In the practice rounds, you will act as both Sender and Receiver.
+      We will go through the quiz after you answer it on your own. In the practice rounds, you will act as both Sender and Receiver and <b>play against yourself</b>.
       Once the practice round is over, the computer will tell you “The official rounds begin now!” and you will be randomly assigned to either the role of Sender or the role of Receiver.
   </p>
 
@@ -452,6 +447,15 @@
       margin: 0 auto !important;
       padding: 0 10px; /* optional small horizontal padding */
     }
+    .placeholder-box {
+        display: inline-block;
+        vertical-align: middle;
+        width: 250px;          /* Width to fit a few symbols */
+        height: 40px;          /* Matches your #output height */
+        border: 1px solid #ccc;
+        background-color: #f9f9f9; /* Light grey to show it's a box */
+        margin-left: 10px;
+        color: saddlebrown;
   </style>
 {% endblock %}
 
@@ -476,7 +480,10 @@
     const numSymbols = outputDiv.innerText.length;
     // First symbol free: only charge for symbols beyond the first
     const chargeableSymbols = Math.max(0, numSymbols - 1);
-    costDiv.innerText = "Total cost: " + (chargeableSymbols * costPerSymbol) + " points";
+    const totalCost = chargeableSymbols * costPerSymbol;
+
+    // Using innerHTML to preserve the red color styling
+    costDiv.innerHTML = `Total cost: <span style="color: red">${totalCost} points</span>`;
 }
 
   // Create buttons dynamically

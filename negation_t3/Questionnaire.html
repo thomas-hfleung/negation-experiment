@@ -57,7 +57,7 @@
 <h3>{{ formfield "Q_native_lang" }}</h3><br>
 <h3>{{ formfield "Q_year" }}</h3>
 {{ formfield 'Q_year_other' label=" " }}
-<h4>2. What is your major (select all that apply)?</h4>
+<h4>5. What is your major (select all that apply)?</h4>
 <div class="form-check">
     <input class="form-check-input" type="checkbox" value="True" name="Q_major_busi">
     <label class="form-check-label">
@@ -118,6 +118,13 @@
 <div id="ethnicity-warning" style="color:red; display:none; margin-top:8px; font-size: 20px; font-weight: bold">
   Please select at least one option.
 </div>
+<br>
+{{if player.type == "Sender"}}
+<h3>{{ formfield 'Q_sender_strategy'}}</h3>
+{{else}}
+<h3>{{ formfield 'Q_receiver_strategy'}}</h3>
+{{endif}}
+<br>
 <h3>{{ formfield 'Q_comments'}}</h3>
 <br>
 <button>Next</button>

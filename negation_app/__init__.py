@@ -19,7 +19,7 @@ class C(BaseConstants):
     INVALID_REWARD = 0
     SHOW_UP_FEE = 7
     ENDOWMENT = COST * 10
-    CONVERSION_RATE = 4
+    CONVERSION_RATE = 6
     table_template = __name__ + '/table.html'
 
 
@@ -96,7 +96,9 @@ class Player(BasePlayer):
     #                               choices=[[1, "Business"], [2, "Economics"],
     #                                        [3, "Engineering"], [4, "Humanities"], [5, "Science"], [6, "Social Science"], [7, "Undeclared"], [8, "Prefer not to answer"], [9, "Other (please specify)"]],
     #                               widget=widgets.RadioSelect)
-    Q_comments = models.LongStringField(label="<h4>6. Please share any comments about today's study. This question is optional and will not affect your payment.</h4>", blank = True)
+    Q_sender_strategy = models.LongStringField(label="<h4>6. Please explain the strategy you used to compose messages.</h4>", blank = True)
+    Q_receiver_strategy = models.LongStringField(label="<h4>6. Please explain how you interpreted the messages received. Could you identify any patterns?</h4>", blank = True)
+    Q_comments = models.LongStringField(label="<h4>7. Please share any thoughts about today's study. This question is optional and will not affect your payment.</h4>", blank = True)
 
 class Trial(ExtraModel):
     player = models.Link(Player)
@@ -294,47 +296,25 @@ class Questionnaire(Page):
     form_model = 'player'
     form_fields = ['Q_gender', 'Q_gender_other', 'Q_eth_amnative', 'Q_eth_asian', 'Q_eth_black', 'Q_eth_pacific', 'Q_eth_white', 'Q_eth_other_option', 'Q_eth_prefer_not', 'Q_eth_other',
                    'Q_native_lang', 'Q_year', 'Q_year_other', 'Q_major_busi', 'Q_major_econ', 'Q_major_eng', 'Q_major_hum', 'Q_major_sci', 'Q_major_sosci', 'Q_major_undeclared', 'Q_major_other',
-                   'Q_major_other_option', 'Q_major_prefer_not', 'Q_comments']
-
-    def is_displayed(player: Player):
-        return player.round_number == C.NUM_ROUNDS
-
-class Risk_preference(Page):
-    form_model = 'player'
-    form_fields = ['RA_raw_responses']
-
-    def is_displayed(player: Player):
-        return player.round_number == C.NUM_ROUNDS
+                   'Q_major_other_option', 'Q_major_prefer_not', 'Q_sender_strategy', 'Q_receiver_strategy', 'Q_comments']
 
     @staticmethod
-    def vars_for_template(player: Player):
-        return dict(trials=Trial.filter(player=player))
+    def error_message(player, values):
+        # 1. Check Sender logic
+        if player.type == "Sender":
+            if not values['Q_sender_strategy'] or values['Q_sender_strategy'].strip() == "":
+                return "Please explain your strategy as a Sender."
+
+        # 2. Check Receiver logic
+        if player.type == "Receiver":
+            if not values['Q_receiver_strategy'] or values['Q_receiver_strategy'].strip() == "":
+                return "Please explain your interpretation as a Receiver."
+
+    def is_displayed(player: Player):
+        return player.round_number == C.NUM_ROUNDS
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
-
-        trials = Trial.filter(player=player)
-
-        responses = json.loads(player.RA_raw_responses)
-        for trial in trials:
-            trial.chose_safe = responses["{} - {}".format(trial.id,trial.probability)]
-
-        trial = random.choice(trials)
-        trial.randomly_chosen = True
-        player.RA_chose_safe = trial.chose_safe
-        if player.RA_chose_safe:
-            player.RA_won_lottery = (trial.probability / 100) > random.random()
-            if player.RA_won_lottery:
-                RA_payoff = trial.lottery_high_a
-            else:
-                RA_payoff = trial.lottery_low_a
-        else:
-            player.RA_won_lottery = (trial.probability / 100) > random.random()
-            if player.RA_won_lottery:
-                RA_payoff = trial.lottery_high_b
-            else:
-                RA_payoff = trial.lottery_low_b
-        player.RA_payoff = RA_payoff
         participant = player.participant
         selected_rounds = random.sample(range(C.PRACTICE_ROUNDS + 1, C.NUM_ROUNDS + 1), 2)
         participant.selected_rounds = [selected_rounds[0] - C.PRACTICE_ROUNDS, selected_rounds[1] - C.PRACTICE_ROUNDS]
@@ -342,7 +322,53 @@ class Risk_preference(Page):
         p2 = player.in_round(selected_rounds[1]).payoff
         participant.selected_payoffs = [p1, p2]
         participant.highest_payoff = max(p1, p2)
-        participant.payoff = math.ceil(participant.highest_payoff / C.CONVERSION_RATE + player.RA_payoff + C.SHOW_UP_FEE)
+        participant.payoff = math.ceil(
+            participant.highest_payoff / C.CONVERSION_RATE + C.SHOW_UP_FEE) #+ player.RA_payoff
+
+# class Risk_preference(Page):
+#     form_model = 'player'
+#     form_fields = ['RA_raw_responses']
+#
+#     def is_displayed(player: Player):
+#         return player.round_number == C.NUM_ROUNDS
+#
+#     @staticmethod
+#     def vars_for_template(player: Player):
+#         return dict(trials=Trial.filter(player=player))
+#
+#     @staticmethod
+#     def before_next_page(player: Player, timeout_happened):
+#
+#         trials = Trial.filter(player=player)
+#
+#         responses = json.loads(player.RA_raw_responses)
+#         for trial in trials:
+#             trial.chose_safe = responses["{} - {}".format(trial.id,trial.probability)]
+#
+#         trial = random.choice(trials)
+#         trial.randomly_chosen = True
+#         player.RA_chose_safe = trial.chose_safe
+#         if player.RA_chose_safe:
+#             player.RA_won_lottery = (trial.probability / 100) > random.random()
+#             if player.RA_won_lottery:
+#                 RA_payoff = trial.lottery_high_a
+#             else:
+#                 RA_payoff = trial.lottery_low_a
+#         else:
+#             player.RA_won_lottery = (trial.probability / 100) > random.random()
+#             if player.RA_won_lottery:
+#                 RA_payoff = trial.lottery_high_b
+#             else:
+#                 RA_payoff = trial.lottery_low_b
+#         player.RA_payoff = RA_payoff
+#         participant = player.participant
+#         selected_rounds = random.sample(range(C.PRACTICE_ROUNDS + 1, C.NUM_ROUNDS + 1), 2)
+#         participant.selected_rounds = [selected_rounds[0] - C.PRACTICE_ROUNDS, selected_rounds[1] - C.PRACTICE_ROUNDS]
+#         p1 = player.in_round(selected_rounds[0]).payoff
+#         p2 = player.in_round(selected_rounds[1]).payoff
+#         participant.selected_payoffs = [p1, p2]
+#         participant.highest_payoff = max(p1, p2)
+#         participant.payoff = math.ceil(participant.highest_payoff / C.CONVERSION_RATE + player.RA_payoff + C.SHOW_UP_FEE)
 
 class FinalPayoff(Page):
     def is_displayed(player: Player):
@@ -350,7 +376,7 @@ class FinalPayoff(Page):
 
     def vars_for_template(player: Player):
         selected_rounds = player.participant.vars.get("selected_rounds", [])
-        trials = Trial.filter(player=player, randomly_chosen=True)
+        #trials = Trial.filter(player=player, randomly_chosen=True)
 
 
         rounds_data = []
@@ -363,9 +389,9 @@ class FinalPayoff(Page):
                 })
         return dict(
             rounds_data=rounds_data,
-            max_round_payoff=player.participant.payoff - player.RA_payoff - C.SHOW_UP_FEE,
-            trials=trials
+            max_round_payoff=player.participant.payoff - C.SHOW_UP_FEE #- player.RA_payoff
+            #trials=trials
         )
 
 
-page_sequence = [Instructions, StartPractice, StartWaitPage, Sender, ReceiverWaitPage, Receiver, ResultsWaitPage, Results, StartOfficial, AllGroupsWaitPage, Questionnaire, Risk_preference, FinalPayoff]
+page_sequence = [Instructions, StartPractice, StartWaitPage, Sender, ReceiverWaitPage, Receiver, ResultsWaitPage, Results, StartOfficial, AllGroupsWaitPage, Questionnaire, FinalPayoff]

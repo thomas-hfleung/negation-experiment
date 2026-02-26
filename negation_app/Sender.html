@@ -1,6 +1,6 @@
 {{ block content }}
 {{if player.round_number <= C.PRACTICE_ROUNDS}}
-<h1>Practice Round {{player.round_number}}</h1>
+<h1>Practice Round {{player.round_number}} (Against yourself)</h1>
 {{else}}
     <h1>Round {{player.play_round_number}}</h1>
 {{endif}}
@@ -32,9 +32,7 @@
             <h4><b>Note:</b> There are {{group.valid_no}} valid actions in this round, which happens with {{prob_2}}% chance.</h4>
             {{endif}}
         {{endif}}
-        <br>
         <hr>
-        <br>
         <h4>Symbols to compose your message:</h4>
         <div id="symbol_buttons">
           <!-- Buttons will go here -->
@@ -42,7 +40,7 @@
         <div id="letter_buttons">
           <!-- Buttons will go here -->
         </div>
-        <br><br>
+        <br>
         <h4>Cost: {{C.COST}} points per symbol (First one is free)</h4>
         <br>
         <h4>Your message choice:</h4>
@@ -55,8 +53,7 @@
             </div>
         </div>
         <div id="error-message"></div>
-        <br>
-        <div id="cost-display">Total cost: 0 points</div>
+        <div id="cost-display">Total cost: <span style="color: red">0 points</span></div>
         <br>
 
         <form method="post">
@@ -206,7 +203,10 @@
     const numSymbols = outputDiv.innerText.length;
     // First symbol free: only charge for symbols beyond the first
     const chargeableSymbols = Math.max(0, numSymbols - 1);
-    costDiv.innerText = "Total cost: " + (chargeableSymbols * costPerSymbol) + " points";
+    const totalCost = chargeableSymbols * costPerSymbol;
+
+    // Using innerHTML to preserve the red color styling
+    costDiv.innerHTML = `Total cost: <span style="color: red">${totalCost} points</span>`;
 }
 
   // Create buttons dynamically

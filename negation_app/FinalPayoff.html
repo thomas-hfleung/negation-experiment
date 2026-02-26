@@ -7,38 +7,11 @@
     The highest payoff {{participant.highest_payoff}} points converted to dollars with a <b>{{C.CONVERSION_RATE}}:1 ratio</b> is <b>${{max_round_payoff}}</b>.
 </p>
 
-<br>
 
-    <p>Here is the row that was randomly chosen in the lottery selection.</p>
-
-    <table class="table table-striped">
-    <tr>
-        <td><b>Lottery 1</b></td>
-        <td><b>Lottery 2</b></td>
-    </tr>
-        {% for t in trials %}
-    <tr>
-        <td {{if not player.RA_chose_safe}} style="background-color: yellow; font-weight: bold;" {{ endif }}>
-            ${{ t.lottery_high_b}} with a probability of {{ t.probability }}%, ${{ t.lottery_low_b }} otherwise.
-        </td>
-        <td {{if player.RA_chose_safe}} style="background-color: yellow; font-weight: bold;" {{ endif }}>
-            ${{ t.lottery_high_a }} with a probability of {{ t.probability }}%, ${{ t.lottery_low_a }} otherwise.
-        </td>
-    </tr>
-        {% endfor %}
-</table>
-
-    <p>
-        {{ if player.RA_chose_safe }}
-        You chose <b>Lottery 2</b> and {{ if player.RA_won_lottery }}won{{ else }}lost{{ endif }} the small lottery,
-        {{ else }}
-        You chose <b>Lottery 1</b> and {{ if player.RA_won_lottery }}won{{ else }}lost{{ endif }} the small lottery, {{ endif }}
-        so your reward from the lottery is <b>${{ player.RA_payoff }}</b>.
-    </p>
 
     <br><br>
 <h2>
-    Your total payment for the experiment is <strong>${{max_round_payoff}} + ${{player.RA_payoff}} + ${{C.SHOW_UP_FEE}} (show-up fee) = ${{participant.payoff}}</strong>.
+    Your total payment for the experiment is <strong>${{max_round_payoff}} + ${{C.SHOW_UP_FEE}} (show-up fee) = ${{participant.payoff}}</strong>.
 </h2>
 <br><br>
 <table class="table">

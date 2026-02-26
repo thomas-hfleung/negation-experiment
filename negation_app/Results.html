@@ -1,16 +1,16 @@
 {{ block content }}
 {{if player.round_number <= C.PRACTICE_ROUNDS}}
-<h1>Practice Round {{player.round_number}}</h1>
+<h1>Practice Round {{player.round_number}} (Against yourself)</h1>
 {{else}}
     <h1>Round {{player.play_round_number}}</h1>
 {{endif}}
 <br>
 <h6>
-    In this round, the valid actions are <b style="color: blue">{{valid_actions_string}}</b>. <br>
+    In this round, the valid actions are <b>{{valid_actions_string}}</b>. <br>
     You and your partner both start with <b>{{C.ENDOWMENT}}</b> points. <br>
-    {{if group.message == ""}}<b style="color: saddlebrown">No message</b>{{else}}The message <b style="color: saddlebrown">{{group.message}}</b>{{endif}} was sent and cost <b>{{group.message_cost}}</b> points.<br>
+    {{if group.message == ""}}<b style="color: saddlebrown">No message</b>{{else}}The message <b style="color: saddlebrown">{{group.message}}</b>{{endif}} was sent and cost <b style="color: red">{{group.message_cost}}</b> <span style="color: red">points</span>.<br>
     Action <b style="color: orange">{{group.action}}</b> was chosen, which yields reward <b>{{group.reward}}</b> points to both players. <br><br>
-    <b>You and your partner both get {{C.ENDOWMENT}} - {{group.message_cost}} + {{group.reward}} = {{player.payoff}} points for this round.</b>
+    <b>You and your partner both get {{C.ENDOWMENT}} <span style="color: red">- {{group.message_cost}}</span> + {{group.reward}} = {{player.payoff}} points for this round.</b>
 </h6>
 <br><br>
 <div class = "row">
@@ -34,15 +34,13 @@
         <h4>Actions <span style="text-decoration: underline">underlined</span> are the <span style="font-weight: bold">valid</span> actions.</h4>
         <br>
         <h4>Sender's message: <b style="color: saddlebrown">{{group.message}}</b></h4>
-        <h4>Total cost: {{group.message_cost}} points</h4>
-        <br>
+        <h4>Total cost: <span style="color: red">{{group.message_cost}} points</span></h4>
         <hr>
-        <br>
         <h4>Symbols to compose your message:</h4>
         <div id="symbol_buttons">
         </div>
         <div id="letter_buttons">
-        </div><br><br>
+        </div><br>
         <h4>Cost: {{C.COST}} points per symbol (First one is free)</h4>
     </div>
     <div class="divider"></div>
@@ -52,9 +50,7 @@
         <h4>Actions available: <b>A</b> , <b>B</b> , <b>C</b> , <b>D</b> , <b>E</b> , <b>F</b> , <b>G</b></h4>
         <br>
         <h4>Receiver's action: <b style="color: orange">{{group.action}}</b></h4>
-        <br>
         <hr>
-        <br>
         <h4>Possible rewards:</h4>
         <center>
         <table class="table">
@@ -66,7 +62,7 @@
             <tr>
                 <td style="font-weight: bold">Action</td>
                 <td style="font-weight: bold">If valid</td>
-                <td style="font-weight: bold">If otherwise</td>
+                <td style="font-weight: bold">Otherwise</td>
             </tr>
             <tr>
                 <td {% if group.action == "A" %}style="background-color: orange;"{% endif %}><button type="button" class="action-button" data-letter="A" id="action-button" {% if group.action == "A" %}style="background-color: orange;"{% endif %}>A</button></td>
