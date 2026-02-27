@@ -3,61 +3,10 @@
 <br>
 <h3>{{ formfield "Q_gender" }}</h3>
 {{ formfield 'Q_gender_other' label=" " }}
-<h4>2. What is your ethnicity (select all that apply)?</h4>
-<div class="form-check">
-    <input class="form-check-input" type="checkbox" value="True" name="Q_eth_amnative">
-    <label class="form-check-label">
-    American Indian or Alaska Native
-    </label>
-</div>
-<div class="form-check">
-    <input class="form-check-input" type="checkbox" value="True" name="Q_eth_asian">
-    <label class="form-check-label">
-    Asian
-    </label>
-</div>
-<div class="form-check">
-    <input class="form-check-input" type="checkbox" value="True" name="Q_eth_black">
-    <label class="form-check-label">
-    Black or African American
-    </label>
-</div>
-<div class="form-check">
-    <input class="form-check-input" type="checkbox" value="True" name="Q_eth_pacific">
-    <label class="form-check-label">
-    Native Hawaiian or other Pacific Islander
-    </label>
-</div>
-<div class="form-check">
-    <input class="form-check-input" type="checkbox" value="True" name="Q_eth_white">
-    <label class="form-check-label">
-    White
-    </label>
-</div>
-<div class="form-check">
-    <input class="form-check-input" type="checkbox" value="True" name="Q_eth_prefer_not">
-    <label class="form-check-label">
-    Prefer not to answer
-    </label>
-</div>
-<div class="form-check">
-    <input class="form-check-input" type="checkbox" value="True" name="Q_eth_other_option">
-    <label class="form-check-label">
-    Other (Please specify)
-    </label>
-    {{ formfield 'Q_eth_other' label=" " }}
-</div>
-
-
-<div id="ethnicity-warning" style="color:red; display:none; margin-top:8px; font-size: 20px; font-weight: bold">
-  Please select at least one option.
-</div>
-<br>
-
 <h3>{{ formfield "Q_native_lang" }}</h3><br>
 <h3>{{ formfield "Q_year" }}</h3>
 {{ formfield 'Q_year_other' label=" " }}
-<h4>5. What is your major (select all that apply)?</h4>
+<h4>4. What is your major (select all that apply)?</h4>
 <div class="form-check">
     <input class="form-check-input" type="checkbox" value="True" name="Q_major_busi">
     <label class="form-check-label">
@@ -115,17 +64,17 @@
 </div>
 
 
-<div id="ethnicity-warning" style="color:red; display:none; margin-top:8px; font-size: 20px; font-weight: bold">
+<div id="major-warning" style="color:red; display:none; margin-top:8px; font-size: 20px; font-weight: bold">
   Please select at least one option.
 </div>
 <br>
 {{if player.type == "Sender"}}
-<h3>{{ formfield 'Q_sender_strategy'}}</h3>
+    {{ formfield 'Q_sender_strategy'}}
 {{else}}
-<h3>{{ formfield 'Q_receiver_strategy'}}</h3>
+    {{ formfield 'Q_receiver_strategy'}}
 {{endif}}
 <br>
-<h3>{{ formfield 'Q_comments'}}</h3>
+{{ formfield 'Q_comments'}}
 <br>
 <button>Next</button>
 {{ endblock }}
@@ -151,6 +100,14 @@
     .form-check-label {
         font-size: 20px;
     }
+    textarea {
+        height: 170px; /* Makes the boxes taller */
+        width: 60vw;      /* Makes the boxes span the full width of the container */
+        font-size: 18px;   /* Makes the text inside easier to read */
+        padding: 10px;     /* Adds space between the text and the border */
+        border: 2px solid #ccc;
+        border-radius: 5px;
+    }
 
 </style>
 {%endblock%}
@@ -164,7 +121,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // List all your field base names
     const questionPrefixes = [
         "Q_gender",
-        "Q_eth",
         "Q_native_lang",
         "Q_year",
         "Q_major"
@@ -223,21 +179,20 @@ document.addEventListener("DOMContentLoaded", function() {
         checkbox.addEventListener("change", update);
         update();
     }
-    wireCheckboxOther("Q_eth_other_option", "Q_eth_other");
     wireCheckboxOther("Q_major_other_option", "Q_major_other");
 
 
-    const checkboxes = document.querySelectorAll('input[name^="Q_eth_"]');
+    const checkboxes = document.querySelectorAll('input[name^="Q_major_"]');
     const form = document.getElementById('form');  // oTree gives the main form this id
-    const eth_warning = document.getElementById("ethnicity-warning");
+    const major_warning = document.getElementById("major-warning");
 
     form.addEventListener('submit', function(event) {
         const checked = [...checkboxes].some(cb => cb.checked);
         if (!checked) {
             event.preventDefault();
-            eth_warning.style.display = "block";
+            major_warning.style.display = "block";
         } else {
-            eth_warning.style.display = "none"; // hide warning if valid
+            major_warning.style.display = "none"; // hide warning if valid
         }
     });
 });

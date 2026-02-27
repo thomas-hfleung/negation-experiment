@@ -55,15 +55,15 @@ class Player(BasePlayer):
                                             [3, "Prefer not to answer"], [4, "Other (please specify)"]],
                                    widget=widgets.RadioSelect)
     Q_gender_other = models.StringField(blank=True)
-    Q_eth_amnative = models.BooleanField(label="American Indian or Alaska Native", blank=True, initial=False)
-    Q_eth_asian = models.BooleanField(label="Asian", blank=True, initial=False)
-    Q_eth_black = models.BooleanField(label="Black or African American", blank=True, initial=False)
-    Q_eth_pacific = models.BooleanField(label="Native Hawaiian or other Pacific Islander", blank=True, initial=False)
-    Q_eth_white = models.BooleanField(label="White", blank=True, initial=False)
-    Q_eth_other_option = models.BooleanField(label="Other (please specify)", blank=True, initial=False)
-    Q_eth_prefer_not = models.BooleanField(label="Prefer not to answer", blank=True, initial=False)
-    Q_eth_other = models.StringField(label="If other, please specify:", blank=True)
-    Q_native_lang = models.StringField(label="<h4>3. What is your native or first language?</h4>")
+    # Q_eth_amnative = models.BooleanField(label="American Indian or Alaska Native", blank=True, initial=False)
+    # Q_eth_asian = models.BooleanField(label="Asian", blank=True, initial=False)
+    # Q_eth_black = models.BooleanField(label="Black or African American", blank=True, initial=False)
+    # Q_eth_pacific = models.BooleanField(label="Native Hawaiian or other Pacific Islander", blank=True, initial=False)
+    # Q_eth_white = models.BooleanField(label="White", blank=True, initial=False)
+    # Q_eth_other_option = models.BooleanField(label="Other (please specify)", blank=True, initial=False)
+    # Q_eth_prefer_not = models.BooleanField(label="Prefer not to answer", blank=True, initial=False)
+    # Q_eth_other = models.StringField(label="If other, please specify:", blank=True)
+    Q_native_lang = models.StringField(label="<h4>2. What is your native or first language?</h4>")
     #Q_ethnicity = models.MultipleChoiceField(label="<h4>2. What is your ethnicity (select all that apply)?</h4>",
     #                                         choices=[[1, "American Indian or Alaska Native"], [2, "Asian"],
     #                                                  [3, "Black or African American"],
@@ -77,7 +77,7 @@ class Player(BasePlayer):
     #                                           [6, "Japanese"], [7, "Arabic"], [8, "Other (please specify)"]],
     #                                  widget=widgets.RadioSelect)
     #Q_native_lang_other = models.StringField(blank=True)
-    Q_year = models.IntegerField(label="<h4>4. What is your year in school?</h4>",
+    Q_year = models.IntegerField(label="<h4>3. What is your year in school?</h4>",
                                  choices=[[1, "First-year"], [2, "Sophomore"],
                                           [3, "Junior"], [4, "Senior"], [5, "Prefer not to answer"], [6, "Other (please specify)"]],
                                  widget=widgets.RadioSelect)
@@ -96,9 +96,9 @@ class Player(BasePlayer):
     #                               choices=[[1, "Business"], [2, "Economics"],
     #                                        [3, "Engineering"], [4, "Humanities"], [5, "Science"], [6, "Social Science"], [7, "Undeclared"], [8, "Prefer not to answer"], [9, "Other (please specify)"]],
     #                               widget=widgets.RadioSelect)
-    Q_sender_strategy = models.LongStringField(label="<h4>6. Please explain the strategy you used to compose messages.</h4>", blank = True)
-    Q_receiver_strategy = models.LongStringField(label="<h4>6. Please explain how you interpreted the messages received. Could you identify any patterns?</h4>", blank = True)
-    Q_comments = models.LongStringField(label="<h4>7. Please share any thoughts about today's study. This question is optional and will not affect your payment.</h4>", blank = True)
+    Q_sender_strategy = models.LongStringField(label="<h4>5. Please explain your reasoning in composing messages.</h4>", blank = True)
+    Q_receiver_strategy = models.LongStringField(label="<h4>5. Please explain how you interpreted the messages received.</h4>", blank = True)
+    Q_comments = models.LongStringField(label="<h4>6. Please share any thoughts about today's study.</h4>")
 
 class Trial(ExtraModel):
     player = models.Link(Player)
@@ -294,7 +294,7 @@ class AllGroupsWaitPage(WaitPage):
 
 class Questionnaire(Page):
     form_model = 'player'
-    form_fields = ['Q_gender', 'Q_gender_other', 'Q_eth_amnative', 'Q_eth_asian', 'Q_eth_black', 'Q_eth_pacific', 'Q_eth_white', 'Q_eth_other_option', 'Q_eth_prefer_not', 'Q_eth_other',
+    form_fields = ['Q_gender', 'Q_gender_other',
                    'Q_native_lang', 'Q_year', 'Q_year_other', 'Q_major_busi', 'Q_major_econ', 'Q_major_eng', 'Q_major_hum', 'Q_major_sci', 'Q_major_sosci', 'Q_major_undeclared', 'Q_major_other',
                    'Q_major_other_option', 'Q_major_prefer_not', 'Q_sender_strategy', 'Q_receiver_strategy', 'Q_comments']
 

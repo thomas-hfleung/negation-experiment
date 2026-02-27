@@ -19,7 +19,6 @@
         <h2>You are the Receiver.</h2>
         <br>
         <h4>Actions available: <b>{{receiver_actions}}</b></h4>
-        <br>
         <h4>Sender's message: {{if group.message == ""}}<b style="color: saddlebrown">No message</b> {{else}} <b style="color: saddlebrown">{{group.message}}</b>{{endif}}</h4>
         <hr>
         <h4>Possible rewards:</h4>
@@ -48,8 +47,8 @@
     {% endfor %}
         </table>
             </center>
-        <h4>Your action choice:</h4>
-        <div id="receiver-output"></div>
+        <h4>Your action choice: <div id="receiver-output"></div></h4>
+
         <div id="error-message"></div>
 
         <form method="post">
@@ -126,13 +125,17 @@
       height:1px;
     }
     #receiver-output {
-      margin-top: 0px;
-      font-size: 24px;
-      font-weight: bold;
-      border: 1px solid #ccc;
-      width: 50px;
-      min-height: 40px;
-      text-align: center;
+        display: inline-block;    /* This allows it to stay on the same line */
+        vertical-align: middle;   /* This aligns the box vertically with the text */
+        margin-left: 10px;        /* Adds a little space between the text and the box */
+        margin-top: 0px;
+        font-size: 24px;
+        font-weight: bold;
+        border: 1px solid #ccc;
+        width: 50px;
+        min-height: 40px;
+        text-align: center;
+        line-height: 40px;        /* Centers the letter vertically inside the box */
     }
     #error-message {
         font-size: 20px;

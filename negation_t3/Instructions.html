@@ -49,7 +49,7 @@
   </p>
   <p>
       With <b>{{prob_not_align}}%</b> chance, two of the seven actions which the Sender sees differ from the seven actions available to the Receiver.
-      The Sender always sees the two or five valid actions, which are <span style="text-decoration: underline">underlined</span>.
+      The Sender <i>always</i> sees the two or five valid actions, which are <span style="text-decoration: underline">underlined</span>.
       The two actions that differ are drawn with equal chance from all possible actions other than those available to the Receiver.
   </p>
   <p>
@@ -153,7 +153,6 @@
         <h5>Receiver</h5>
         <br>
         <h4>Actions available: <b>B</b> , <b>C</b> , <b>D</b> , <b>E</b> , <b>F</b> , <b>K</b> , <b>L</b></h4>
-        <br>
         <h4>Sender's message: <span class="placeholder-box">"The Sender's message"</span></h4>
         <hr>
         <h4>Possible rewards:</h4>
@@ -206,8 +205,7 @@
             </tr>
         </table>
             </center>
-        <h4>Your action choice:</h4>
-        <div id="receiver-output"></div>
+        <h4>Your action choice: <div id="receiver-output"></div></h4>
         <div id="error-message-receiver"></div>
 
         <form method="post">
@@ -422,13 +420,17 @@
         vertical-align: middle;
     }
     #receiver-output {
-      margin-top: 0px;
-      font-size: 24px;
-      font-weight: bold;
-      border: 1px solid #ccc;
-      width: 50px;
-      min-height: 40px;
-      text-align: center;
+        display: inline-block;    /* This allows it to stay on the same line */
+        vertical-align: middle;   /* This aligns the box vertically with the text */
+        margin-left: 10px;        /* Adds a little space between the text and the box */
+        margin-top: 0px;
+        font-size: 24px;
+        font-weight: bold;
+        border: 1px solid #ccc;
+        width: 50px;
+        min-height: 40px;
+        text-align: center;
+        line-height: 40px;        /* Centers the letter vertically inside the box */
     }
     #submit-action-button {
         border-color: white;
