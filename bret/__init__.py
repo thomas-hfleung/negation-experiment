@@ -19,7 +19,7 @@ Bomb Risk Elicitation Task (BRET) à la Crosetto/Filippin (2013), Journal of Ris
 which_language = {'en': False, 'de': False}  # noqa
 which_language[LANGUAGE_CODE] = True
 
-BOX_VALUE = cu(BOX_VALUE)
+# BOX_VALUE = cu(BOX_VALUE)
 
 
 def dict_from_module(module):
@@ -60,7 +60,8 @@ class Player(BasePlayer):
     bomb_col = models.IntegerField()
     boxes_collected = models.IntegerField()
     pay_this_round = models.BooleanField()
-    round_result = models.CurrencyField()
+    round_result = models.FloatField()
+    bret_payoff = models.FloatField()
 
 
 # FUNCTIONS
@@ -70,20 +71,20 @@ def set_payoff(player: Player):
 
     # determine round_result as (potential) payoff per round
     if player.bomb:
-        player.round_result = cu(0)
+        player.round_result = 0
     else:
-        player.round_result = player.boxes_collected * BOX_VALUE
+        player.round_result = player.boxes_collected * BOX_VALUE / 100
     if round_number == 1:
         participant.vars['round_to_pay'] = random.randint(1, NUM_ROUNDS)
     if RANDOM_PAYOFF:
         if round_number == participant.vars['round_to_pay']:
             player.pay_this_round = True
-            player.payoff = player.round_result
+            player.bret_payoff = player.round_result
         else:
             player.pay_this_round = False
-            player.payoff = cu(0)
+            player.bret_payoff = 0
     else:
-        player.payoff = player.round_result
+        player.bret_payoff = player.round_result
 
 
 class Instructions(Page):
@@ -152,7 +153,7 @@ class Results(Page):
             bomb_col=player.bomb_col,
             round_result=player.round_result,
             round_to_pay=participant.vars['round_to_pay'],
-            payoff=player.payoff,
+            payoff=player.bret_payoff,
             total_payoff=total_payoff,
             Lexicon=Lexicon,
             **config_dict,
