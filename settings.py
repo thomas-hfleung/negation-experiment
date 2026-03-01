@@ -26,11 +26,10 @@ SESSION_CONFIGS = [
         prob_5=0.5,
         prob_align_action = 0.8,
     ),
-dict(
-        name='Negation_demo',
-        app_sequence=['negation_demo'],
-        num_demo_participants=2,
-        prob_5=0.5,
+    dict(
+        name='BRET',
+        app_sequence=['bret'],
+        num_demo_participants=1,
     )
 ]
 

@@ -1,0 +1,18 @@
+    <p>
+        You chose to collect {{ boxes_collected }} out of {{ boxes_total }} boxes.
+    </p>
+
+    <br/>
+    {{ if bomb }}
+        <p>
+            The bomb was among your {{ boxes_collected }} collected boxes.<br/>
+        Accordingly, all your earnings in this task were destroyed and your payoff amounts to {{ payoff }}.
+        </p>
+    {{ else }}
+        <p>
+            Your collected boxes did not contain the bomb.<br/>
+        Thus, you receive {{ box_value }} cents for each of the {{ boxes_collected }} boxes
+        you collected. <br>
+            Your payoff from this task is <b>{{ payoff }}</b> cents.
+        </p>
+    {{ endif }}

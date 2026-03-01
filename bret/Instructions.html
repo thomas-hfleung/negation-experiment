@@ -1,0 +1,60 @@
+{{ block styles }}
+<link href="{{ static 'bret/css/custom.css' }}" rel="stylesheet"/>
+    <link href="{{ static 'bret/css/fontawesome-all.css' }}" rel="stylesheet"/>
+
+    <style>
+        p {
+            font-size: 20px;
+        }
+        /* Ensure the instruction bomb is visible and red */
+        .instruction-bomb {
+            color: #ff4d4d;
+            display: inline-block !important;
+            margin: 0 5px;
+            visibility: visible !important;
+        }
+        /* Bomb icons in instructions */
+        .instruction-bomb.bomb-selected {
+            color: #ff4d4d;   /* red bomb */
+        }
+
+        .instruction-bomb.bomb-unselected {
+            color: #999;      /* grey bomb */
+        }
+    </style>
+{{ endblock }}
+
+
+{{ block title }}
+{{ Lexicon.instructions }}
+{{ endblock }}
+
+{{ block content }}
+
+<div class="instructions">
+    <p>
+        In the following screen, you will see a {{ NUM_ROWS }}x{{ NUM_COLS }}-matrix containing
+        {{ num_boxes }} boxes on your screen.
+    </p>
+    <p>
+        There are {{ num_nobomb }} boxes that is worth {{ BOX_VALUE }} cent each, and one box that contains a bomb that destroys everything that has been collected <b>in this task</b>.
+        <b>The earnings you received in the previous experiment will not be affected by the bomb.</b>
+        You do not know where the bomb is located.
+        You only know that the bomb can be in any box with equal probability.
+    </p>
+    <p>
+        Your task is to choose which and how many boxes you collect. You can select a box by clicking on it. You can also drag your mouse to select multiple boxes.
+        You may deselect any boxes by clicking on it again. You can then press the "Confirm and Submit" to reveal where the bomb is.
+    </p>
+    <p>
+        A dollar sign will be shown on each of your collected boxes that does not contain the bomb.
+        If you collect the box containing the bomb, the bomb will explode and you will earn zero dollars. This is represented with a bomb symbol in red <i class="fas fa-bomb instruction-bomb bomb-selected"></i>.
+        If you do not collect the box containing the bomb, you gain the value of the boxes you have collected. You can see the location of the bomb in grey <i class="fas fa-bomb instruction-bomb bomb-unselected"></i>.
+    </p>
+    <p>
+
+    </p>
+</div>
+
+{{ next_button }}
+{{ endblock }}

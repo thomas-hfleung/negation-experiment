@@ -153,7 +153,7 @@
         <h5>Receiver</h5>
         <br>
         <h4>Actions available: <b>B</b> , <b>C</b> , <b>D</b> , <b>E</b> , <b>F</b> , <b>K</b> , <b>L</b></h4>
-        <h4>Sender's message: <span class="placeholder-box">"The Sender's message"</span></h4>
+        <h4>Sender's message: <span class="placeholder-box"></span></h4>
         <hr>
         <h4>Possible rewards:</h4>
         <center>
@@ -450,14 +450,18 @@
       padding: 0 10px; /* optional small horizontal padding */
     }
     .placeholder-box {
-        display: inline-block;
-        vertical-align: middle;
-        width: 250px;          /* Width to fit a few symbols */
-        height: 40px;          /* Matches your #output height */
+      display: inline-block;    /* This allows it to stay on the same line */
+        vertical-align: middle;   /* This aligns the box vertically with the text */
+        margin-left: 10px;        /* Adds a little space between the text and the box */
+        margin-top: 0px;
+        font-size: 24px;
+        font-weight: bold;
         border: 1px solid #ccc;
-        background-color: #f9f9f9; /* Light grey to show it's a box */
-        margin-left: 10px;
-        color: saddlebrown;
+        width: 100px;
+        min-height: 40px;
+        text-align: center;
+        line-height: 40px;
+    }
   </style>
 {% endblock %}
 

@@ -13,7 +13,7 @@ Your app description
 class C(BaseConstants):
     NAME_IN_URL = 'communication'
     PLAYERS_PER_GROUP = 2
-    NUM_ROUNDS = 43
+    NUM_ROUNDS = 5
     PRACTICE_ROUNDS = 3
     COST = 4
     INVALID_REWARD = 0
