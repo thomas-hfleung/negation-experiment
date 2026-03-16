@@ -230,14 +230,14 @@
       The <b>payoff in points</b> you obtain in each round will be the [<b>{{C.ENDOWMENT}} points endowment</b> <b>−</b> the <b>message cost</b> <b>+</b> the <b>reward</b> for that round].
       The computer will randomly select <b>2 rounds</b> out of the {{num_playrounds}} to calculate your cash payment.
       The higher payoff among the 2 rounds will be selected as your payoff of the experiment.
-      The points you earned will be converted to US dollars at a <b>6:1 exchange rate</b>, rounded up (thus, for example, 100 points correspond to $16.66).
-      Your total cash payment will be the amount you earned in the selected round plus a $7 show-up fee.
+      The points you earned will be converted to US dollars at a <b>{{conversion_rate}}:1 exchange rate</b>, rounded up (thus, for example, 100 points correspond to $16.66).
+      Your total cash payment will be the amount you earned in the selected round plus a ${{show_up}} show-up fee.
   </p>
 
   <h3>Timeline</h3>
   <center>
   <img src="{% static 'T3.jpg' %}"
-     style="width: 60%; height: auto;"
+     style="width: 80%; height: auto;"
      alt="Figure">
   </center>
   Figure 1 shows the timeline of one round. It summarizes what happens in one round according to the instructions above.

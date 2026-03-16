@@ -10,7 +10,7 @@ Your app description
 
 
 class C(BaseConstants):
-    NAME_IN_URL = 'communication'
+    NAME_IN_URL = 'communication_t4'
     PLAYERS_PER_GROUP = 2
     NUM_ROUNDS = 6
     PRACTICE_ROUNDS = 3
@@ -44,7 +44,6 @@ class Player(BasePlayer):
     q5 = models.IntegerField(choices=[[1, 'True'], [0, 'False']], widget=widgets.RadioSelect, label='')
     play_round_number = models.IntegerField(initial=0)
     type = models.StringField()
-    prob_5 = models.FloatField()
     RA_raw_responses = models.LongStringField()
     RA_chose_safe = models.BooleanField()
     RA_won_lottery = models.BooleanField()
@@ -127,7 +126,6 @@ def creating_session(subsession):
     else:
         subsession.group_like_round(C.PRACTICE_ROUNDS + 1)
     for i in subsession.get_players():
-        i.prob_5 = round(subsession.session.config['prob_5'],2)
         if i.id_in_group == 1:
             i.type = "Sender"
         else:
@@ -166,8 +164,6 @@ class Instructions(Page):
             num_playrounds = C.NUM_ROUNDS - C.PRACTICE_ROUNDS,
             num_players = player.session.num_participants,
             num_groups = int(player.session.num_participants/2),
-            prob_2=round(100 - player.prob_5 * 100),
-            prob_5 = round(player.prob_5 * 100),
             show_up = player.session.config['participation_fee'],
             conversion_rate = player.session.config['conversion_rate']
         )
@@ -185,17 +181,7 @@ class StartWaitPage(WaitPage):
         rewards = [40,50,60,70,80,90,100]
         random_rewards = random.sample(rewards, 7)
         group.possible_rewards = json.dumps(random_rewards)
-        if player[0].round_number == 1:
-            group.valid_no = 5
-        elif player[0].round_number == 2:
-            group.valid_no = 2
-        elif player[0].round_number == 3:
-            group.valid_no = 5
-        else:
-            if random.random() < player[0].prob_5:
-                group.valid_no=5
-            else:
-                group.valid_no = 2
+        group.valid_no = 5
         valid = random.sample(letters, group.valid_no)
         valid_sorted = sorted(valid)
         group.valid_actions = json.dumps(valid_sorted)
@@ -211,9 +197,7 @@ class Sender(Page):
         return dict(
             actions = ", ".join(['A','B','C','D','E','F','G']),
             valid_actions = json.loads(group.valid_actions),
-            invalid_actions = json.loads(group.invalid_actions),
-            prob_5=round(player.prob_5 * 100),
-            prob_2=round(100 - player.prob_5 * 100)
+            invalid_actions = json.loads(group.invalid_actions)
         )
 
     @staticmethod
@@ -234,8 +218,6 @@ class Receiver(Page):
         group = player.group
         return dict(
             possible_rewards = json.loads(group.possible_rewards),
-            prob_5=round(player.prob_5 * 100),
-            prob_2=round(100 - player.prob_5 * 100),
         )
 
     @staticmethod
@@ -280,8 +262,6 @@ class Results(Page):
             invalid_actions=json.loads(group.invalid_actions),
             valid_actions_string=", ".join(json.loads(group.valid_actions)),
             possible_rewards=json.loads(group.possible_rewards),
-            prob_5=round(player.prob_5 * 100),
-            prob_2=round(100 - player.prob_5 * 100),
         )
 
 class StartOfficial(Page):

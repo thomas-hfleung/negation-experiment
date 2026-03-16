@@ -28,7 +28,7 @@ NUM_ROUNDS = 1
 # note that this is only of interest for the case of <num_rounds> larger than 1
 RANDOM_PAYOFF = True
 
-# if <instructions = True>, a separate template "Instructions.html" is rendered prior to the task in round 1
+# if <instructions = True>, a separate template "BRET_Instructions.html" is rendered prior to the task in round 1
 # if <instructions = False>, the task starts immediately (e.g. in case of printed instructions)
 INSTRUCTIONS = True
 

@@ -41,7 +41,7 @@ class Constants(BaseConstants):
     players_per_group = None
     results_1_round_template = __name__ + '/results_1_round.html'
     results_multi_round_template = __name__ + '/results_multi_round.html'
-    instructions_template = __name__ + '/instructions.html'
+    instructions_template = __name__ + '/BRET_instructions.html'
 
 
 class Subsession(BaseSubsession):
@@ -87,7 +87,7 @@ def set_payoff(player: Player):
         player.bret_payoff = player.round_result
 
 
-class Instructions(Page):
+class BRET_Instructions(Page):
     @staticmethod
     def is_displayed(player: Player):
         return INSTRUCTIONS and player.round_number == 1
@@ -103,7 +103,7 @@ class Instructions(Page):
         )
 
 
-class Game(Page):
+class BRET_Game(Page):
     # form fields on player level
     form_model = 'player'
     form_fields = [
@@ -133,7 +133,7 @@ class Game(Page):
         set_payoff(player)
 
 
-class Results(Page):
+class BRET_Results(Page):
     @staticmethod
     def is_displayed(player: Player):
         return RESULTS and player.round_number == NUM_ROUNDS
@@ -141,7 +141,7 @@ class Results(Page):
     @staticmethod
     def vars_for_template(player: Player):
         participant = player.participant
-        total_payoff = sum([p.payoff for p in player.in_all_rounds()])
+        total_payoff = sum([p.bret_payoff for p in player.in_all_rounds()])
         participant.vars['bret_payoff'] = total_payoff
         return dict(
             player_in_all_rounds=player.in_all_rounds(),
@@ -161,4 +161,4 @@ class Results(Page):
         )
 
 
-page_sequence = [Instructions, Game, Results]
+page_sequence = [BRET_Instructions, BRET_Game, BRET_Results]

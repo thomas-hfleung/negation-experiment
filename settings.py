@@ -3,28 +3,38 @@ from os import environ
 SESSION_CONFIGS = [
     dict(
         name='Negation_baseline',
-        app_sequence=['negation_app'],
+        app_sequence=['negation_app','bret','payment'],
         num_demo_participants=2,
         prob_5=0.5,
+        conversion_rate=6,
     ),
     dict(
         name='Negation_t1',
-        app_sequence=['negation_app'],
+        app_sequence=['negation_app','bret','payment'],
         num_demo_participants=2,
         prob_5=0.3,
+        conversion_rate=6,
     ),
     dict(
         name='Negation_t2',
-        app_sequence=['negation_app'],
+        app_sequence=['negation_app','bret','payment'],
         num_demo_participants=2,
         prob_5=0.7,
+        conversion_rate=6,
     ),
     dict(
         name='Negation_t3',
-        app_sequence=['negation_t3'],
+        app_sequence=['negation_t3','bret','payment'],
         num_demo_participants=2,
         prob_5=0.5,
         prob_align_action = 0.8,
+        conversion_rate=6,
+    ),
+    dict(
+        name='Negation_t4',
+        app_sequence=['negation_5only','bret','payment'],
+        num_demo_participants=2,
+        conversion_rate=6,
     ),
     dict(
         name='BRET',
@@ -39,10 +49,10 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=1.00, participation_fee=0.00, doc=""
+    real_world_currency_per_point=1.00, participation_fee=7.00, doc=""
 )
 
-PARTICIPANT_FIELDS = ["selected_rounds", "highround", "selected_payoffs", "highest_payoff"]
+PARTICIPANT_FIELDS = ["selected_rounds", "highest_payoff", "selected_payoffs", "comm_payoff", "bret_payoff", "rounds_data"]
 SESSION_FIELDS = []
 
 # ISO-639 code

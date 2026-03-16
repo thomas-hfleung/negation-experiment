@@ -34,8 +34,8 @@
   <p>
     In each round, the computer randomly assigns each of the seven positive rewards to one of the seven actions.
       All possible assignments are equally likely. At the same time, the computer randomly determines which actions are <b>valid</b>.
-      There are either <b>two valid actions and five other actions</b> or <b>five valid actions and two other actions</b>, with a {{prob_2}}% and {{prob_5}}% chance respectively.
-      For any fixed number of valid actions, all selections of valid actions are equally likely.
+      There are always <b>five valid actions and two other actions</b>.
+      All selections of valid actions are equally likely.
   </p>
   <p>
     Both participants in the same pair obtain the <b>same reward</b>. The reward is determined jointly by the <b>action</b>
@@ -63,7 +63,7 @@
       <div class = column1>
           <h5>Sender</h5>
           <br>
-          <h4>Receiver's available actions: <b>A</b> , <b style = "text-decoration: underline">B</b> , <b>C</b> , <b>D</b> , <b>E</b> , <b>F</b> , <b style = "text-decoration: underline">G</b></h4>
+          <h4>Receiver's available actions: <b>A</b> , <b style = "text-decoration: underline">B</b> , <b style = "text-decoration: underline">C</b> , <b style = "text-decoration: underline">D</b> , <b>E</b> , <b style = "text-decoration: underline">F</b> , <b style = "text-decoration: underline">G</b></h4>
           <br>
           <h4><b>Reminder</b>:</h4>
           <h4>Actions <span style="text-decoration: underline">underlined</span> are the <span style="font-weight: bold">valid</span> actions.</h4>
@@ -198,25 +198,12 @@
   </p>
 
   <h3>Timeline</h3>
-  {{if prob_5 == 50}}
   <center>
-  <img src="{% static 'Baseline.jpg' %}"
+  <img src="{% static 'T4.jpg' %}"
      style="width: 80%; height: auto;"
      alt="Figure">
   </center>
-  {{elif prob_5 == 30}}
-  <center>
-  <img src="{% static 'T1.jpg' %}"
-     style="width: 80%; height: auto;"
-     alt="Figure">
-  </center>
-  {{elif prob_5 == 70}}
-  <center>
-  <img src="{% static 'T2.jpg' %}"
-     style="width: 80%; height: auto;"
-     alt="Figure">
-  </center>
-  {{endif}}
+
   Figure 1 shows the timeline of one round. It summarizes what happens in one round according to the instructions above.
 
   <h3>Quiz and Practice</h3>

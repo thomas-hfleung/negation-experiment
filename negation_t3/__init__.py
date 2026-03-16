@@ -1,7 +1,6 @@
 from otree.api import *
 import random
 import json
-import math
 
 
 
@@ -13,13 +12,13 @@ Your app description
 class C(BaseConstants):
     NAME_IN_URL = 'communication_t3'
     PLAYERS_PER_GROUP = 2
-    NUM_ROUNDS = 43
+    NUM_ROUNDS = 6
     PRACTICE_ROUNDS = 3
     COST = 4
     INVALID_REWARD = 0
-    SHOW_UP_FEE = 7
+    # SHOW_UP_FEE = 7
     ENDOWMENT = COST * 10
-    CONVERSION_RATE = 6
+    # CONVERSION_RATE = 6
     table_template = __name__ + '/table.html'
 
 
@@ -179,7 +178,9 @@ class Instructions(Page):
             prob_5=round(player.prob_5 * 100),
             prob_2=round(100 - player.prob_5 * 100),
             prob_align = round(player.prob_align_actions * 100),
-            prob_not_align = round((1-player.prob_align_actions) * 100)
+            prob_not_align = round((1-player.prob_align_actions) * 100),
+            show_up = player.session.config['participation_fee'],
+            conversion_rate = player.session.config['conversion_rate']
         )
 
 class StartPractice(Page):
@@ -352,81 +353,97 @@ class Questionnaire(Page):
     def before_next_page(player: Player, timeout_happened):
         participant = player.participant
         selected_rounds = random.sample(range(C.PRACTICE_ROUNDS + 1, C.NUM_ROUNDS + 1), 2)
-        participant.selected_rounds = [selected_rounds[0] - C.PRACTICE_ROUNDS, selected_rounds[1] - C.PRACTICE_ROUNDS]
+        participant.vars['selected_rounds'] = [
+            selected_rounds[0] - C.PRACTICE_ROUNDS,
+            selected_rounds[1] - C.PRACTICE_ROUNDS
+        ]
         p1 = player.in_round(selected_rounds[0]).payoff
         p2 = player.in_round(selected_rounds[1]).payoff
-        participant.selected_payoffs = [p1, p2]
+        participant.vars['selected_payoffs'] = [p1, p2]
         participant.highest_payoff = max(p1, p2)
-        participant.payoff = math.ceil(
-            participant.highest_payoff / C.CONVERSION_RATE + C.SHOW_UP_FEE) #+ player.RA_payoff
-
-class Risk_preference(Page):
-    form_model = 'player'
-    form_fields = ['RA_raw_responses']
-
-    def is_displayed(player: Player):
-        return player.round_number == C.NUM_ROUNDS
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        return dict(trials=Trial.filter(player=player))
-
-    @staticmethod
-    def before_next_page(player: Player, timeout_happened):
-
-        trials = Trial.filter(player=player)
-
-        responses = json.loads(player.RA_raw_responses)
-        for trial in trials:
-            trial.chose_safe = responses["{} - {}".format(trial.id,trial.probability)]
-
-        trial = random.choice(trials)
-        trial.randomly_chosen = True
-        player.RA_chose_safe = trial.chose_safe
-        if player.RA_chose_safe:
-            player.RA_won_lottery = (trial.probability / 100) > random.random()
-            if player.RA_won_lottery:
-                RA_payoff = trial.lottery_high_a
-            else:
-                RA_payoff = trial.lottery_low_a
-        else:
-            player.RA_won_lottery = (trial.probability / 100) > random.random()
-            if player.RA_won_lottery:
-                RA_payoff = trial.lottery_high_b
-            else:
-                RA_payoff = trial.lottery_low_b
-        player.RA_payoff = RA_payoff
-        participant = player.participant
-        selected_rounds = random.sample(range(C.PRACTICE_ROUNDS + 1, C.NUM_ROUNDS + 1), 2)
-        participant.selected_rounds = [selected_rounds[0] - C.PRACTICE_ROUNDS, selected_rounds[1] - C.PRACTICE_ROUNDS]
-        p1 = player.in_round(selected_rounds[0]).payoff
-        p2 = player.in_round(selected_rounds[1]).payoff
-        participant.selected_payoffs = [p1, p2]
-        participant.highest_payoff = max(p1, p2)
-        participant.payoff = math.ceil(participant.highest_payoff / C.CONVERSION_RATE + player.RA_payoff + C.SHOW_UP_FEE)
-
-class FinalPayoff(Page):
-    def is_displayed(player: Player):
-        return player.round_number == C.NUM_ROUNDS
-
-    def vars_for_template(player: Player):
-        selected_rounds = player.participant.vars.get("selected_rounds", [])
-        #trials = Trial.filter(player=player, randomly_chosen=True)
-
+        conversion = float(player.session.config['conversion_rate'])
+        comm_payoff = float(participant.highest_payoff) / conversion
+        participant.vars['comm_payoff'] = round(comm_payoff, 2)
+        # + player.RA_payoff
 
         rounds_data = []
         for p in player.in_all_rounds():
             if p.round_number > C.PRACTICE_ROUNDS:
                 rounds_data.append({
-                    'round_number': p.round_number-C.PRACTICE_ROUNDS,
+                    'round_number': p.round_number - C.PRACTICE_ROUNDS,
                     'payoff': int(p.payoff),  # removes decimals if you’re using integer points
-                    'is_selected': p.round_number - C.PRACTICE_ROUNDS in selected_rounds
+                    'is_selected': p.round_number - C.PRACTICE_ROUNDS in participant.vars['selected_rounds']
                 })
-        return dict(
-            rounds_data=rounds_data,
-            max_round_payoff = player.participant.payoff - C.SHOW_UP_FEE #- player.RA_payoff
-            #trials=trials
-        )
+        participant.vars['rounds_data'] = rounds_data
 
 
-page_sequence = [Instructions, StartPractice, StartWaitPage, Sender, ReceiverWaitPage, Receiver, ResultsWaitPage, Results, StartOfficial, AllGroupsWaitPage, Questionnaire, FinalPayoff]
+# class Risk_preference(Page):
+#     form_model = 'player'
+#     form_fields = ['RA_raw_responses']
+#
+#     def is_displayed(player: Player):
+#         return player.round_number == C.NUM_ROUNDS
+#
+#     @staticmethod
+#     def vars_for_template(player: Player):
+#         return dict(trials=Trial.filter(player=player))
+#
+#     @staticmethod
+#     def before_next_page(player: Player, timeout_happened):
+#
+#         trials = Trial.filter(player=player)
+#
+#         responses = json.loads(player.RA_raw_responses)
+#         for trial in trials:
+#             trial.chose_safe = responses["{} - {}".format(trial.id,trial.probability)]
+#
+#         trial = random.choice(trials)
+#         trial.randomly_chosen = True
+#         player.RA_chose_safe = trial.chose_safe
+#         if player.RA_chose_safe:
+#             player.RA_won_lottery = (trial.probability / 100) > random.random()
+#             if player.RA_won_lottery:
+#                 RA_payoff = trial.lottery_high_a
+#             else:
+#                 RA_payoff = trial.lottery_low_a
+#         else:
+#             player.RA_won_lottery = (trial.probability / 100) > random.random()
+#             if player.RA_won_lottery:
+#                 RA_payoff = trial.lottery_high_b
+#             else:
+#                 RA_payoff = trial.lottery_low_b
+#         player.RA_payoff = RA_payoff
+#         participant = player.participant
+#         selected_rounds = random.sample(range(C.PRACTICE_ROUNDS + 1, C.NUM_ROUNDS + 1), 2)
+#         participant.selected_rounds = [selected_rounds[0] - C.PRACTICE_ROUNDS, selected_rounds[1] - C.PRACTICE_ROUNDS]
+#         p1 = player.in_round(selected_rounds[0]).payoff
+#         p2 = player.in_round(selected_rounds[1]).payoff
+#         participant.selected_payoffs = [p1, p2]
+#         participant.highest_payoff = max(p1, p2)
+#         participant.payoff = math.ceil(participant.highest_payoff / C.CONVERSION_RATE + player.RA_payoff + C.SHOW_UP_FEE)
+
+# class FinalPayoff(Page):
+#     def is_displayed(player: Player):
+#         return player.round_number == C.NUM_ROUNDS
+#
+#     def vars_for_template(player: Player):
+#         selected_rounds = player.participant.vars.get("selected_rounds", [])
+#         #trials = Trial.filter(player=player, randomly_chosen=True)
+#
+#
+#         rounds_data = []
+#         for p in player.in_all_rounds():
+#             if p.round_number > C.PRACTICE_ROUNDS:
+#                 rounds_data.append({
+#                     'round_number': p.round_number-C.PRACTICE_ROUNDS,
+#                     'payoff': int(p.payoff),  # removes decimals if you’re using integer points
+#                     'is_selected': p.round_number - C.PRACTICE_ROUNDS in selected_rounds
+#                 })
+#         return dict(
+#             rounds_data=rounds_data,
+#             max_round_payoff = player.participant.payoff - C.SHOW_UP_FEE #- player.RA_payoff
+#             #trials=trials
+#         )
+
+
+page_sequence = [Instructions, StartPractice, StartWaitPage, Sender, ReceiverWaitPage, Receiver, ResultsWaitPage, Results, StartOfficial, AllGroupsWaitPage, Questionnaire]
