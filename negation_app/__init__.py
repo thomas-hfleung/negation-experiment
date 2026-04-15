@@ -314,32 +314,77 @@ class Questionnaire(Page):
     def is_displayed(player: Player):
         return player.round_number == C.NUM_ROUNDS
 
+    # @staticmethod
+    # def before_next_page(player: Player, timeout_happened):
+    #     participant = player.participant
+    #     selected_rounds = random.sample(range(C.PRACTICE_ROUNDS + 1, C.NUM_ROUNDS + 1), 2)
+    #     participant.vars['selected_rounds'] = [
+    #         selected_rounds[0] - C.PRACTICE_ROUNDS,
+    #         selected_rounds[1] - C.PRACTICE_ROUNDS
+    #     ]
+    #     p1 = player.in_round(selected_rounds[0]).payoff
+    #     p2 = player.in_round(selected_rounds[1]).payoff
+    #     participant.vars['selected_payoffs'] = [p1, p2]
+    #     participant.highest_payoff = max(p1, p2)
+    #     conversion = float(player.session.config['conversion_rate'])
+    #     comm_payoff = float(participant.highest_payoff) / conversion
+    #     participant.vars['comm_payoff'] = round(comm_payoff,2)
+    #      #+ player.RA_payoff
+    #
+    #     rounds_data = []
+    #     for p in player.in_all_rounds():
+    #         if p.round_number > C.PRACTICE_ROUNDS:
+    #             rounds_data.append({
+    #                 'round_number': p.round_number - C.PRACTICE_ROUNDS,
+    #                 'payoff': int(p.payoff),  # removes decimals if you’re using integer points
+    #                 'is_selected': p.round_number - C.PRACTICE_ROUNDS in participant.vars['selected_rounds']
+    #             })
+    #     participant.vars['rounds_data'] = rounds_data
+
+
+class PayoffCalculationWaitPage(WaitPage):
     @staticmethod
-    def before_next_page(player: Player, timeout_happened):
-        participant = player.participant
+    def is_displayed(player: Player):
+        return player.round_number == C.NUM_ROUNDS
+
+    @staticmethod
+    def after_all_players_arrive(group: Group):
+        import random
+
+        # 1. Draw the random rounds EXACTLY ONCE for the whole group
         selected_rounds = random.sample(range(C.PRACTICE_ROUNDS + 1, C.NUM_ROUNDS + 1), 2)
-        participant.vars['selected_rounds'] = [
+
+        # We calculate the adjusted round numbers once
+        adjusted_rounds = [
             selected_rounds[0] - C.PRACTICE_ROUNDS,
             selected_rounds[1] - C.PRACTICE_ROUNDS
         ]
-        p1 = player.in_round(selected_rounds[0]).payoff
-        p2 = player.in_round(selected_rounds[1]).payoff
-        participant.vars['selected_payoffs'] = [p1, p2]
-        participant.highest_payoff = max(p1, p2)
-        conversion = float(player.session.config['conversion_rate'])
-        comm_payoff = float(participant.highest_payoff) / conversion
-        participant.vars['comm_payoff'] = round(comm_payoff,2)
-         #+ player.RA_payoff
 
-        rounds_data = []
-        for p in player.in_all_rounds():
-            if p.round_number > C.PRACTICE_ROUNDS:
-                rounds_data.append({
-                    'round_number': p.round_number - C.PRACTICE_ROUNDS,
-                    'payoff': int(p.payoff),  # removes decimals if you’re using integer points
-                    'is_selected': p.round_number - C.PRACTICE_ROUNDS in participant.vars['selected_rounds']
-                })
-        participant.vars['rounds_data'] = rounds_data
+        # 2. Apply these same drawn rounds to EVERY player in the group
+        for player in group.get_players():
+            participant = player.participant
+            participant.vars['selected_rounds'] = adjusted_rounds
+
+            p1 = player.in_round(selected_rounds[0]).payoff
+            p2 = player.in_round(selected_rounds[1]).payoff
+
+            participant.vars['selected_payoffs'] = [p1, p2]
+            participant.highest_payoff = max(p1, p2)
+
+            conversion = float(player.session.config['conversion_rate'])
+            comm_payoff = float(participant.highest_payoff) / conversion
+            participant.vars['comm_payoff'] = round(comm_payoff, 2)
+            # + player.RA_payoff
+
+            rounds_data = []
+            for p in player.in_all_rounds():
+                if p.round_number > C.PRACTICE_ROUNDS:
+                    rounds_data.append({
+                        'round_number': p.round_number - C.PRACTICE_ROUNDS,
+                        'payoff': int(p.payoff),
+                        'is_selected': (p.round_number - C.PRACTICE_ROUNDS) in participant.vars['selected_rounds']
+                    })
+            participant.vars['rounds_data'] = rounds_data
 
 # class Risk_preference(Page):
 #     form_model = 'player'
@@ -410,4 +455,4 @@ class Questionnaire(Page):
 #         )
 
 
-page_sequence = [Instructions, StartPractice, StartWaitPage, Sender, ReceiverWaitPage, Receiver, ResultsWaitPage, Results, StartOfficial, AllGroupsWaitPage, Questionnaire]
+page_sequence = [Instructions, StartPractice, StartWaitPage, Sender, ReceiverWaitPage, Receiver, ResultsWaitPage, Results, StartOfficial, AllGroupsWaitPage, Questionnaire, PayoffCalculationWaitPage]
